@@ -1,0 +1,552 @@
+{
+  "resumen": {
+    "total_papers": 24,
+    "total_ensayos": 73,
+    "timestamp": "2026-03-26T03:22:17.949112",
+    "ultima_exploracion": "2026-03-25",
+    "n_exploraciones": 1,
+    "resumen_global": "FORM y NAT muestran cierre operatorio consolidado. TEC exhibe proto-cierre en verificación formal e IA. SOC_IV y SOC_DID tienen cierre intersubjetivo parcial bajo tensión metodológica. ARTE presenta el cierre más débil — proto-cierre simbólico-operatorio según Bueno."
+  },
+  "mapa": {
+    "FORM": {
+      "meta": {
+        "nombre": "Ciencias Formales",
+        "icono": "∑",
+        "color": "#00e5ff",
+        "descripcion": "Matemáticas, Lógica, Estadística — cierran sobre estructuras abstractas",
+        "subcampos": [
+          "Matemáticas",
+          "Lógica formal",
+          "Estadística",
+          "Teoría de la información"
+        ],
+        "bueno_ref": "Ciencias α (alpha) — cierre por axiomatización"
+      },
+      "lum_pe": {
+        "n_campos": 13,
+        "p_media": 0.7034,
+        "ipu_media": 0.6851,
+        "state_lum": "AMBER",
+        "state_dist": {
+          "AMBER": 12,
+          "GREEN": 1
+        }
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 11,
+        "titulos": [
+          "De Shannon a Bueno, Cibernética y Materialismo",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA",
+          "Metaciencia Operatoria Ensayo Académico",
+          "De Shannon a Bueno, Cibernética y Materialismo",
+          "De_Shannon_a_Bueno_Ensayo_18_Cuartillas",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA (Reparado)",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA",
+          "falacias gnoseológicas de base",
+          "Hermes",
+          "LUM_Ensayo_Integrado_2026"
+        ],
+        "carpeta": "Filosofia_y_Ciencia"
+      },
+      "resultado": {
+        "p_sintetico": 0.7034,
+        "semaforo": "AMBER",
+        "tiene_ensayos": true,
+        "hallazgo": "Las ciencias formales exhiben el cierre categorial más robusto: la categoricidad en potencia (Baldwin) garantiza completitud y determina la identidad estructural de los modelos. Evidencia convergente entre teoría de modelos y práctica matemática confirma un cierre operatorio-axiomático plenamente consolidado.",
+        "tendencia": "EXPANSIÓN — activa producción en teoría de modelos y lógica categórica (2023-2024)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "Completeness and Categoricity (in power): Formalization without Foundationalism",
+            "autores": "Baldwin, J.T.",
+            "año": 2014,
+            "url": "https://www.researchgate.net/publication/271742214_Completeness_and_categoricity_in_power_Formalization_without_foundationalism",
+            "sintesis": "Propone que la categoricidad en potencia —cierre formal de sistemas lógicos— tiene consecuencias estructurales profundas: toda teoría categórica es completa, y este cierre implica la independencia gnoseológica de la matemática respecto de sus fundamentos.",
+            "relevancia": 0.88
+          },
+          {
+            "titulo": "On the Multicategorical Meta-Theorem and the Completeness of Restricted Algebraic Deduction Systems",
+            "autores": "Fiore et al.",
+            "año": 2024,
+            "url": "https://arxiv.org/abs/2406.15584",
+            "sintesis": "Establece teoremas de solidez y completitud para multicategorías sobre categorías monoidales cartesianas, demostrando propiedades de cierre algebraico-deductivo para ocho estructuras contextuales distintas.",
+            "relevancia": 0.82
+          },
+          {
+            "titulo": "Model Theory and the Philosophy of Mathematical Practice",
+            "autores": "Baldwin, J.T.",
+            "año": 2018,
+            "url": "https://www.cambridge.org/core/books/model-theory-and-the-philosophy-of-mathematical-practice/290AC3C8D457CAB3D87DACF42BD3D8EE",
+            "sintesis": "Defiende la formalización sin fundacionalismo: el cierre categorial en matemáticas no requiere una base ontológica última, sino que se constituye por la práctica operatoria de demostración y modelo.",
+            "relevancia": 0.8
+          },
+          {
+            "titulo": "When does ℵ₁-categoricity imply ω-stability",
+            "autores": "Baldwin, J.T.",
+            "año": 2024,
+            "url": "https://homepages.math.uic.edu/~jbaldwin/model11.html",
+            "sintesis": "Investiga condiciones bajo las cuales la categoricidad en cardinales no contables implica estabilidad ω, avanzando la comprensión del cierre formal en teorías de primer orden.",
+            "relevancia": 0.76
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    },
+    "NAT": {
+      "meta": {
+        "nombre": "Ciencias Naturales",
+        "icono": "⚛",
+        "color": "#00ff88",
+        "descripcion": "Física, Química, Biología — cierran sobre referentes naturales observables",
+        "subcampos": [
+          "Física",
+          "Química",
+          "Biología",
+          "Neurociencia",
+          "Geología"
+        ],
+        "bueno_ref": "Ciencias β (beta) — cierre por leyes causales"
+      },
+      "lum_pe": {
+        "n_campos": 10,
+        "p_media": 0.7212,
+        "ipu_media": 0.7098,
+        "state_lum": "AMBER",
+        "state_dist": {
+          "AMBER": 10
+        }
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 11,
+        "titulos": [
+          "De Shannon a Bueno, Cibernética y Materialismo",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA",
+          "Metaciencia Operatoria Ensayo Académico",
+          "De Shannon a Bueno, Cibernética y Materialismo",
+          "De_Shannon_a_Bueno_Ensayo_18_Cuartillas",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA (Reparado)",
+          "EL PROBLEMA DE LA DEMARCACIÓN CIENTÍFICA",
+          "falacias gnoseológicas de base",
+          "Hermes",
+          "LUM_Ensayo_Integrado_2026"
+        ],
+        "carpeta": "Filosofia_y_Ciencia"
+      },
+      "resultado": {
+        "p_sintetico": 0.7212,
+        "semaforo": "AMBER",
+        "tiene_ensayos": true,
+        "hallazgo": "Las ciencias naturales exhiben cierre operatorio multinivel: cierre causal en física (leyes invariantes), cierre organizacional en biología (autopoiesis/clausura operacional de Maturana y Varela, Jaeger). La evidencia muestra cierre bien establecido pero con tensión entre niveles de organización (físico/biológico/cognitivo).",
+        "tendencia": "ESTABLE — consolidado en biología teórica, en expansión en filosofía de la física (2022-2024)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "The Causal Closure of Physics in Real World Contexts",
+            "autores": "Farnsworth, S. et al.",
+            "año": 2020,
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7431902/",
+            "sintesis": "Examina el cierre causal de la física en escenarios reales (biología, ingeniería), hallando que la emergencia fuerte y la causación descendente desafían el cierre fisicista simple, pero el conjunto de leyes naturales sigue siendo operatoriamente cerrado a nivel de cada nivel de organización.",
+            "relevancia": 0.87
+          },
+          {
+            "titulo": "Operational Closure and Stability",
+            "autores": "Jaeger, J. & Monk, N.",
+            "año": 2021,
+            "url": "https://philarchive.org/citations/JGEOCA",
+            "sintesis": "El cierre operacional en sistemas biológicos —donde los procesos constitutivos se producen y sostienen mutuamente— es la característica holística que define la organización viva, y constituye un análogo biológico directo del cierre categorial de Bueno.",
+            "relevancia": 0.9
+          },
+          {
+            "titulo": "Physical Causal Closure and the Invisibility of Mental Causation",
+            "autores": "Lowe, E.J.",
+            "año": 2019,
+            "url": "https://philpapers.org/rec/LOWPCC",
+            "sintesis": "Analiza el cierre causal físico como tesis sobre la completitud explicativa de la física, argumentando que las ciencias naturales logran un cierre operatorio a través de leyes causales, aunque el nivel mental plantea cuestiones de demarcación.",
+            "relevancia": 0.8
+          },
+          {
+            "titulo": "Epistemic Closure in Science",
+            "autores": "varios autores",
+            "año": 2018,
+            "url": "https://www.researchgate.net/publication/325579930_Epistemic_closure_in_science",
+            "sintesis": "Analiza la clausura epistémica como propiedad de las disciplinas científicas, examinando cómo las ciencias naturales logran demarcación a través de métodos operacionales y reproducibilidad experimental.",
+            "relevancia": 0.75
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    },
+    "SOC_IV": {
+      "meta": {
+        "nombre": "Ciencias Sociales Interpretativas",
+        "icono": "◈",
+        "color": "#ffd54f",
+        "descripcion": "Psicología, Sociología, Economía — cierran sobre operaciones intersubjetivas",
+        "subcampos": [
+          "Psicología",
+          "Sociología",
+          "Economía",
+          "Comunicación"
+        ],
+        "bueno_ref": "Ciencias γ (gamma) interpretativas — cierre parcial"
+      },
+      "lum_pe": {
+        "n_campos": 9,
+        "p_media": 0.6894,
+        "ipu_media": 0.6343,
+        "state_lum": "AMBER",
+        "state_dist": {
+          "AMBER": 9
+        }
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 10,
+        "titulos": [
+          "Esquizofrenia, analisis materialista ensayo",
+          "materialismo psicologico lum (2)",
+          "materialismo psicologico lum",
+          "psicopatía_ensayo",
+          "🔥 SISTEMA FORMAL CIENTÍFICO psicología mf",
+          "esquizofrenia_materialismo_MF_Bueno",
+          "materialismo psicologico lum - copia",
+          "materialismo psicologico lum",
+          "psicopatia_ensayo",
+          "🔥 SISTEMA FORMAL CIENTÍFICO psicología mf"
+        ],
+        "carpeta": "Psicologia"
+      },
+      "resultado": {
+        "p_sintetico": 0.6894,
+        "semaforo": "AMBER",
+        "tiene_ensayos": true,
+        "hallazgo": "Las ciencias sociales interpretativas exhiben cierre operatorio intersubjetivo: se cierra a través de consenso sobre constructos, marcos de validación y comunidades epistémicas. No es cierre axiomático (como FORM) ni causal-experimental (como NAT), sino de tipo γ: operaciones sobre operaciones humanas. La replicabilidad parcial y las crisis metodológicas indican un cierre en consolidación.",
+        "tendencia": "TENSIÓN — crisis de replicabilidad y disputas epistemológicas activas (2023-2025)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "Experimental practices and objectivity in the social sciences: re-embedding construct validity",
+            "autores": "Jiménez-Buedo, M.",
+            "año": 2021,
+            "url": "https://link.springer.com/article/10.1007/s11229-021-03215-3",
+            "sintesis": "Argumenta que la validez de constructo requiere marcos teóricos compartidos más allá de la medición objetiva, mostrando que el cierre de las ciencias sociales es consensual-operatorio: no axiomático sino intersubjetivamente validado.",
+            "relevancia": 0.83
+          },
+          {
+            "titulo": "Social Epistemology (Spring 2024 Edition)",
+            "autores": "Goldman, A. & O'Connor, C.",
+            "año": 2024,
+            "url": "https://plato.stanford.edu/archives/spr2024/entries/epistemology-social/",
+            "sintesis": "Análisis sistemático de cómo los sistemas de conocimiento social logran cierre epistémico a través de validación comunitaria, cognición distribuida y normas institucionales — un modo de cierre propio de las ciencias γ.",
+            "relevancia": 0.76
+          },
+          {
+            "titulo": "Grand challenge: social psychology without hubris",
+            "autores": "Greenwald, A.G.",
+            "año": 2023,
+            "url": "https://www.frontiersin.org/journals/social-psychology/articles/10.3389/frsps.2023.1283272/full",
+            "sintesis": "Identifica fallas sistemáticas de operacionalización en psicología social (sobreestimación de replicabilidad, subdeterminación de estímulos), mostrando que el cierre disciplinar es parcial y dependiente de marcos de medición más rigurosos.",
+            "relevancia": 0.72
+          },
+          {
+            "titulo": "Epistemic Marginalization and Methodology 50 Years after The Death of White Sociology",
+            "autores": "Johnson, O.",
+            "año": 2025,
+            "url": "https://journals.sagepub.com/doi/10.1177/23326492241302332",
+            "sintesis": "Examina cómo el cierre epistémico en sociología es disputado por tradiciones de investigación marginalizadas, revelando que el cierre en ciencias sociales es parcial y políticamente mediado.",
+            "relevancia": 0.67
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    },
+    "SOC_DID": {
+      "meta": {
+        "nombre": "Ciencias Sociales Diacrónicas",
+        "icono": "⏳",
+        "color": "#ff9800",
+        "descripcion": "Historia, Antropología, Arqueología — analizan el cambio temporal",
+        "subcampos": [
+          "Historia",
+          "Antropología",
+          "Arqueología",
+          "Demografía"
+        ],
+        "bueno_ref": "Ciencias γ (gamma) diacrónicas — proto-cierre"
+      },
+      "lum_pe": {
+        "n_campos": 7,
+        "p_media": 0.6515,
+        "ipu_media": 0.6465,
+        "state_lum": "AMBER",
+        "state_dist": {
+          "AMBER": 7
+        }
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 11,
+        "titulos": [
+          "El Camino del Vacío- análisis materialista del budismo",
+          "El Camino del Vacío- análisis materialista filosófico del budismo",
+          "La Geometría de lo Sagrado Analisis Materialista de relgiones Indias",
+          "La Geometría de lo Sagrado- Análisis Materialista de las Religiones Indias",
+          "Del_fuego_al_mapa_Upanisads_Rojas",
+          "El Camino del Vacío- análisis materialista del budismo",
+          "EL GOBIERNO SIN MANOS Y LA VIRTUD CON FORMA, Ensayo sobre filosofía china",
+          "El_Camino_del_Vacio_Completo",
+          "Imperios_del_Cielo_Ensayo_Academico",
+          "Imperios_del_Cielo_Ensayo_Editado"
+        ],
+        "carpeta": "Religiones_y_Oriente"
+      },
+      "resultado": {
+        "p_sintetico": 0.6515,
+        "semaforo": "AMBER",
+        "tiene_ensayos": true,
+        "hallazgo": "Las ciencias diacrónicas (historia, arqueología, antropología) exhiben un cierre específico por convergencia de trazas: no replican experimentos sino que acumulan evidencias de naturaleza diferente que convergen en el mismo referente pasado. Este cierre es más débil que el de las ciencias α y β, pero genuinamente operatorio a través de protocolos de datación, análisis isotópico y crítica de fuentes.",
+        "tendencia": "TRANSFORMACIÓN — creciente instrumentalización científica (genómica, IA) de las ciencias históricas (2022-2024)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "Current developments and future directions in archaeological science",
+            "autores": "Price, T.D. & Burton, J.H.",
+            "año": 2022,
+            "url": "https://www.pnas.org/doi/10.1073/pnas.2212490119",
+            "sintesis": "Revisa avances en técnicas arqueológicas (isotópicas, genómicas, datación), mostrando que el cierre empírico en ciencias históricas depende de la convergencia multimétodo —no de un único método operatorio— lo que define un modo propio de cierre diacrónico.",
+            "relevancia": 0.79
+          },
+          {
+            "titulo": "Negotiating scientific knowledge and heritage values with the history of archaeology",
+            "autores": "varios autores",
+            "año": 2023,
+            "url": "https://www.cambridge.org/core/journals/antiquity/article/negotiating-scientific-knowledge-and-heritage-values-with-the-history-of-archaeology/7D74EB7DAC08FE09CC6951DD6346A927",
+            "sintesis": "Analiza la tensión entre el cierre científico y la interpretación patrimonial en arqueología, argumentando que la disciplina opera entre el rigor internalista y la contextualización externalista, definiendo un cierre parcial e históricamente situado.",
+            "relevancia": 0.72
+          },
+          {
+            "titulo": "Historiography of Science: History and the History of Science",
+            "autores": "Schickore, J.",
+            "año": 2023,
+            "url": "https://link.springer.com/rwe/10.1007/978-3-031-27510-4_31",
+            "sintesis": "Examina cómo la historiografía logra cierre parcial a través de protocolos metodológicos, mientras permanece abierta a reinterpretación — un modo de cierre diacrónico distintivo frente a las ciencias sincrónicas.",
+            "relevancia": 0.7
+          },
+          {
+            "titulo": "Understanding Scientific Methodology in Historical and Experimental Sciences",
+            "autores": "Turner, D.",
+            "año": 2009,
+            "url": "https://link.springer.com/article/10.1007/s11191-008-9146-6",
+            "sintesis": "Distingue metodología histórica de metodología experimental, argumentando que las ciencias históricas tienen un tipo particular de cierre: el cierre por reconstrucción de trazas —singular, no repetible, pero verificable por convergencia.",
+            "relevancia": 0.74
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    },
+    "TEC": {
+      "meta": {
+        "nombre": "Ingeniería y Tecnología",
+        "icono": "⚙",
+        "color": "#b39ddb",
+        "descripcion": "Informática, Cibernética, IA — cierran sobre sistemas diseñados",
+        "subcampos": [
+          "Informática",
+          "Cibernética",
+          "Inteligencia Artificial",
+          "Ingeniería"
+        ],
+        "bueno_ref": "Técnica — cierre operatorio-instrumental"
+      },
+      "lum_pe": {
+        "n_campos": 6,
+        "p_media": 0.7394,
+        "ipu_media": 0.7279,
+        "state_lum": "AMBER",
+        "state_dist": {
+          "AMBER": 5,
+          "GREEN": 1
+        }
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 3,
+        "titulos": [
+          "CIBERESPACIO_Y_SEMIVIDA_Ensayo_Cyberpunk",
+          "Filosofía de los videojuegos",
+          "Filosofía_Videojuegos_Materialismo_Filosófico"
+        ],
+        "carpeta": "Tecnologia_y_Cibernetica"
+      },
+      "resultado": {
+        "p_sintetico": 0.7394,
+        "semaforo": "AMBER",
+        "tiene_ensayos": true,
+        "hallazgo": "La tecnología e IA muestran proto-cierre operatorio: la cibernética y la verificación formal son los subcampos con mayor evidencia de cierre (bucle cerrado, especificación-implementación). Sin embargo, la IA general y los sistemas complejos permanecen sin cierre categorial pleno — la demarcación es funcional, no axiomática.",
+        "tendencia": "EXPANSIÓN ACTIVA — crecimiento en IA formal y verificación (NeurIPS 2024, Springer 2025)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "The Cybernetic Artificial Intelligence (CAI): A new scientific field for modelling Complex Dynamical Systems",
+            "autores": "Alexiadis, D.S.",
+            "año": 2024,
+            "url": "https://www.sciencedirect.com/science/article/pii/S2405896324002246",
+            "sintesis": "Propone reunificar cibernética e IA bajo el campo CAI, argumentando que el bucle cerrado de control-retroalimentación constituye el cierre operatorio definitorio de los sistemas tecnológicos, análogo al cierre categorial de las ciencias formales.",
+            "relevancia": 0.84
+          },
+          {
+            "titulo": "Toward Verified Artificial Intelligence",
+            "autores": "Seshia, S.A. et al.",
+            "año": 2022,
+            "url": "https://cacm.acm.org/research/toward-verified-artificial-intelligence/",
+            "sintesis": "Argumenta que la verificación formal provee un camino hacia el cierre categorial en sistemas de IA, donde especificaciones e implementaciones logran correspondencia operatoria verificable.",
+            "relevancia": 0.79
+          },
+          {
+            "titulo": "Application of AI to Formal Methods: an Analysis of Current Trends",
+            "autores": "Ferrari, A. et al.",
+            "año": 2025,
+            "url": "https://link.springer.com/article/10.1007/s10664-025-10729-8",
+            "sintesis": "Mapea 189 publicaciones (2019-2023) que aplican IA a métodos formales, identificando la demostración de teoremas como el dominio más próximo al cierre categorial en sistemas computacionales.",
+            "relevancia": 0.73
+          },
+          {
+            "titulo": "FVEL: Interactive Formal Verification Environment with Language Models",
+            "autores": "NeurIPS 2024 Team",
+            "año": 2024,
+            "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/62c6d7893b13a13c659cb815852dd00d-Paper-Datasets_and_Benchmarks_Track.pdf",
+            "sintesis": "Introduce entornos de verificación formal que conectan lenguaje natural y pruebas formales, contribuyendo al cierre operatorio en verificación de software asistida por IA.",
+            "relevancia": 0.71
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    },
+    "ARTE": {
+      "meta": {
+        "nombre": "Arte y Estética",
+        "icono": "🎨",
+        "color": "#f48fb1",
+        "descripcion": "Pintura, Música, Literatura — cierre simbólico-operatorio",
+        "subcampos": [
+          "Pintura",
+          "Música",
+          "Literatura",
+          "Arquitectura"
+        ],
+        "bueno_ref": "Campo simbólico-operatorio — cierre en construcción"
+      },
+      "lum_pe": {
+        "n_campos": 0,
+        "p_media": 0,
+        "ipu_media": 0,
+        "state_lum": "N/A",
+        "state_dist": {}
+      },
+      "semanticscholar": {
+        "n_papers": 0,
+        "score_cierre": 0,
+        "papers_top": []
+      },
+      "corpus_interno": {
+        "n_ensayos": 27,
+        "titulos": [
+          "Análisis del tratado De pictura desde el Materialismo Filosófico",
+          "Atlas_doble_en_espejo_Julio (1)",
+          "De pictura como programa de cierre, Alberti y la codificación operatoria de la pintura renacentista",
+          "Dialectica de la pintura ensayo",
+          "Ensayo, hacia una crítica de la razón pictórica",
+          "Ion y Poética como máquinas teóricas rivales, Ensayo",
+          "Los Borrachos, o El triunfo de Baco de Velázquez",
+          "Materialismo Pictórico Ensayo Fundacional",
+          "Materialismo pictórico, método comparado en cinco obras",
+          "MPictorico"
+        ],
+        "carpeta": "Arte_y_Pintura"
+      },
+      "resultado": {
+        "p_sintetico": 0,
+        "semaforo": "RED",
+        "tiene_ensayos": true,
+        "hallazgo": "Las artes exhiben el cierre categorial menos consolidado de las disciplinas analizadas: no hay un sistema axiomático (FORM), ni leyes causales (NAT), ni operaciones intersubjetivas formalizadas (SOC_IV). Sin embargo, el marco de Bueno (materialismo filosófico) sí ofrece una estructura de cierre simbólico-operatorio: la obra como objeto material que cierra sobre las operaciones estéticas del sujeto contemplante. El score bajo refleja la ausencia de formalización operatoria, no la ausencia de rigor filosófico.",
+        "tendencia": "ACTIVO — renovación desde materialismo filosófico y ciencias cognitivas (2021-2024)",
+        "n_papers": 4
+      },
+      "datos_bibliograficos": {
+        "papers": [
+          {
+            "titulo": "Revista de Materialismo Filosófico Nº 60: El cierre categorial en el centenario de Bueno",
+            "autores": "VV.AA. (Fundación Gustavo Bueno)",
+            "año": 2024,
+            "url": "https://www.fgbueno.es/bas/pdf3/bas60d.pdf",
+            "sintesis": "Contribución reciente a la tradición del materialismo filosófico con ocasión del centenario de Bueno, examinando el estado actual de la teoría del cierre categorial en todas las disciplinas incluyendo las artes y humanidades.",
+            "relevancia": 0.92
+          },
+          {
+            "titulo": "El cierre operatorio de las ciencias y sus diversos tipos",
+            "autores": "Muñoz Delgado, M.",
+            "año": 2021,
+            "url": "http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S0124-61272021000200075",
+            "sintesis": "Clasifica los tipos de cierre operatorio según Bueno aplicándolo a todas las ciencias, incluyendo las artes dentro de la taxonomía — concluyendo que las disciplinas estéticas tienen un modo simbólico-operatorio de cierre distinto del natural o formal.",
+            "relevancia": 0.88
+          },
+          {
+            "titulo": "What Is New Materialist Aesthetics?",
+            "autores": "varios autores",
+            "año": 2023,
+            "url": "https://www.academia.edu/105390790/What_Is_New_Materialist_Aesthetics",
+            "sintesis": "Argumenta que los enfoques materialistas del arte revelan cómo la experiencia estética implica cierre operatorio entre forma, material y respuesta subjetiva — validando parcialmente una teoría materialista del cierre estético.",
+            "relevancia": 0.72
+          },
+          {
+            "titulo": "Toward a Multidimensional Definition of Art from the Perspective of Cognitive Sciences",
+            "autores": "varios autores",
+            "año": 2024,
+            "url": "https://www.mdpi.com/3042-8084/2/1/1",
+            "sintesis": "Propone criterios cognitivo-operacionales para definir el arte, sugiriendo que el cierre artístico opera a través de circuitos afectivo-simbólicos antes que puramente formales o empíricos — un proto-cierre de tipo γ-simbólico.",
+            "relevancia": 0.68
+          }
+        ],
+        "n_papers": 4,
+        "ultima_actualizacion": "2026-03-25"
+      }
+    }
+  }
+}

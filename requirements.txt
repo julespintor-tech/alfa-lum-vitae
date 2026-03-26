@@ -1,0 +1,6 @@
+# ALFA LUM-vitae vΩ.4 — Dependencias
+# Python 3.10+ requerido
+# Todas las demás dependencias son de la biblioteca estándar de Python
+
+# Opcional: solo requerido para lum_vitae_dashboard.py (modo servidor Flask)
+flask>=2.0

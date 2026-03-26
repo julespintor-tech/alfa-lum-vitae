@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="120">
+<title>ALFA LUM-vitae vΩ.4 — Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ── Variables ─────────────────────────────── */
+:root {
+  --bg:#090d14; --panel:#0d1520; --border:#1a2a3a;
+  --cyan:#00e5ff; --green:#00ff88; --red:#ff3d5a; --yellow:#ffd54f;
+  --orange:#ff9800; --dim:#3a5a7a; --text:#c8dff0; --muted:#4a7090;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif;
+        min-height:100vh; padding:20px; }
+header { display:flex; justify-content:space-between; align-items:center;
+          border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:20px;
+          flex-wrap:wrap; gap:8px; }
+.logo { font-size:1.25rem; color:var(--cyan); letter-spacing:2px; font-family:'Courier New',monospace; }
+
+/* ── Grid ───────────────────────────────────── */
+.grid { display:grid; gap:14px; }
+.row2  { grid-template-columns:1fr 1fr; }
+.row3  { grid-template-columns:400px 1fr 1fr; }
+.row4  { grid-template-columns:repeat(4,1fr); }
+@media(max-width:900px) { .row2,.row3,.row4 { grid-template-columns:1fr; } }
+
+/* ── Paneles ─────────────────────────────────── */
+.panel { background:var(--panel); border:1px solid var(--border); border-radius:10px;
+          padding:16px; position:relative; overflow:hidden; }
+.panel::before { content:''; position:absolute; top:0; left:0; right:0; height:2px;
+                  background:linear-gradient(90deg,var(--cyan),transparent); }
+.panel-title { font-size:.62rem; color:var(--muted); letter-spacing:2px;
+                text-transform:uppercase; margin-bottom:10px; font-family:'Courier New',monospace; }
+.section-sep { font-size:.58rem; letter-spacing:3px; color:var(--dim); text-transform:uppercase;
+                margin:18px 0 10px; border-top:1px solid var(--border); padding-top:12px;
+                font-family:'Courier New',monospace; }
+
+/* ── TAMAGOTCHI ──────────────────────────────── */
+.tama-panel { text-align:center; padding:20px 16px; box-shadow:0 0 40px rgba(0,255,136,.15); }
+.tama-panel::before { background:linear-gradient(90deg,transparent,#00ff8888,transparent); }
+
+.tama-creature { display:inline-block; margin-bottom:6px; line-height:0; }
+
+/* Animaciones por estado */
+@keyframes tama-vivo    { 0%,100%{transform:translateY(0) scale(1)}   40%{transform:translateY(-10px) scale(1.08)} }
+@keyframes tama-emerge  { 0%,100%{transform:scale(1);opacity:.85}     50%{transform:scale(1.12);opacity:1} }
+@keyframes tama-latente { 0%,100%{transform:scale(1);opacity:.55}     50%{transform:scale(1.03);opacity:.80} }
+@keyframes tama-pulse-glow-g { 0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,.25)} 50%{box-shadow:0 0 0 18px rgba(0,255,136,0)} }
+@keyframes tama-pulse-glow-a { 0%,100%{box-shadow:0 0 0 0 rgba(255,213,79,.2)}  50%{box-shadow:0 0 0 14px rgba(255,213,79,0)} }
+@keyframes tama-pulse-glow-o { 0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,.15)}  50%{box-shadow:0 0 0 10px rgba(255,152,0,0)} }
+
+.anim-vivo     .tama-creature { animation: tama-vivo    1.4s ease-in-out infinite; }
+.anim-vivo                    { animation: tama-pulse-glow-g 2.5s infinite; }
+.anim-emergente .tama-creature { animation: tama-emerge  2.2s ease-in-out infinite; }
+.anim-emergente               { animation: tama-pulse-glow-a 3s infinite; }
+.anim-latente  .tama-creature { animation: tama-latente 3.5s ease-in-out infinite; }
+.anim-latente                 { animation: tama-pulse-glow-o 4s infinite; }
+.anim-inerte   .tama-creature { opacity:.45; }
+
+.tama-state { font-size:1.5rem; font-weight:bold; letter-spacing:4px;
+               color:#00ff88; font-family:'Courier New',monospace;
+               text-shadow:0 0 18px #00ff8888; margin-bottom:4px; }
+.tama-msg   { font-size:.75rem; color:var(--muted); line-height:1.5; margin-bottom:12px; }
+
+/* Barra de vitalidad */
+.vita-bar-wrap { height:6px; background:#1a2a3a; border-radius:3px; overflow:hidden; margin:8px 0 6px; }
+.vita-bar-fill { height:100%; border-radius:3px; background:#00ff88;
+                  box-shadow:0 0 8px #00ff8888; transition:width .8s ease; }
+.vita-label { font-size:.6rem; color:var(--dim); letter-spacing:1px; margin-bottom:10px; }
+
+/* Feed de actividad */
+.feed-wrap { position:relative; height:110px; overflow:hidden;
+              background:rgba(0,0,0,.25); border-radius:6px;
+              border:1px solid var(--border); margin-top:10px; }
+.feed-wrap::before { content:''; position:absolute; top:0; left:0; right:0; height:20px;
+                      background:linear-gradient(to bottom,rgba(13,21,32,1),transparent); z-index:2; }
+.feed-wrap::after  { content:''; position:absolute; bottom:0; left:0; right:0; height:20px;
+                      background:linear-gradient(to top,rgba(13,21,32,1),transparent); z-index:2; }
+@keyframes scroll-up { 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
+.feed-inner { animation: scroll-up 28s linear infinite; }
+.feed-item  { font-size:.62rem; color:#3a7070; padding:4px 8px; border-bottom:1px solid #0d1a24;
+               white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Courier New',monospace; }
+
+/* ── Condiciones ─────────────────────────────── */
+.cond-list { display:flex; flex-direction:column; gap:6px; }
+.cond-item { display:flex; align-items:flex-start; gap:9px; padding:8px 9px; border-radius:6px;
+              background:rgba(255,255,255,.02); border:1px solid var(--border); }
+.cond-dot  { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.dot-ok    { background:var(--green); box-shadow:0 0 5px var(--green); }
+.dot-fail  { background:var(--red);   box-shadow:0 0 5px var(--red); }
+.cond-label { flex:1; }
+.cond-badge { font-size:.58rem; padding:2px 6px; border-radius:4px; font-weight:bold;
+               white-space:nowrap; margin-top:2px; flex-shrink:0; }
+.badge-ok  { background:rgba(0,255,136,.1);  color:var(--green); border:1px solid rgba(0,255,136,.25); }
+.badge-fail { background:rgba(255,61,90,.1); color:var(--red);   border:1px solid rgba(255,61,90,.25); }
+
+/* ── Métricas ────────────────────────────────── */
+.stat-cell { background:rgba(0,0,0,.3); border-radius:6px; padding:10px; text-align:center; }
+.stat-val  { font-size:1.6rem; font-weight:bold; color:var(--cyan); line-height:1;
+              font-family:'Courier New',monospace; }
+.stat-lbl  { font-size:.6rem; color:var(--muted); letter-spacing:1px; margin-top:2px; }
+.tend-row  { display:flex; align-items:baseline; justify-content:center; gap:4px; }
+
+/* ── Hashes ──────────────────────────────────── */
+.hash-list { display:flex; flex-direction:column; gap:3px; }
+.hash-item { display:flex; align-items:center; gap:8px; font-size:.62rem; color:var(--muted);
+              padding:3px 0; border-bottom:1px solid rgba(255,255,255,.03);
+              font-family:'Courier New',monospace; }
+.hash-code { color:var(--cyan); }
+
+/* ── Reporte ─────────────────────────────────── */
+#reporte-text { font-size:.57rem; color:var(--muted); white-space:pre; overflow:auto;
+                 max-height:200px; padding:8px; background:rgba(0,0,0,.3); border-radius:6px;
+                 border:1px solid var(--border); font-family:'Courier New',monospace; line-height:1.5; }
+.chart-box { position:relative; height:180px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">🧬 ALFA LUM-vitae <span style="color:var(--cyan)">vΩ.4</span></div>
+    <div style="font-size:.63rem;color:var(--dim);margin-top:2px;font-family:'Courier New',monospace;">
+      Materialismo Filosófico · Meta-aprendizaje prequencial · Proyecto MINERVA
+    </div>
+  </div>
+  <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
+              border-radius:20px;font-family:'Courier New',monospace;">
+    📸 2026-03-25 22:11:00
+  </div>
+</header>
+
+<!-- ═══ FILA 1: Tamagotchi · Condiciones · Métricas ═══ -->
+<div class="grid row3">
+
+  <!-- TAMAGOTCHI -->
+  <div class="panel tama-panel anim-vivo">
+    <div class="panel-title">Estado del organismo digital</div>
+    <div class="tama-creature"><svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg"><defs><filter id="gVI" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="sVI" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.2"/></filter></defs><rect x="10.0" y="4.0" width="70.0" height="56.0" rx="7.0" fill="#00ff88" opacity="0.12" filter="url(#gVI)"/><rect x="12.0" y="6.0" width="66.0" height="52.0" rx="6.0" fill="#090d14" stroke="#00ff88" stroke-width="2.0" opacity="1" filter="url(#gVI)"/><rect x="12.0" y="6.0" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="6.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="73.0" y="6.0" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="76.2" y="6.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="56.2" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="53.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="73.0" y="56.2" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="76.2" y="53.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="21.0" y="21.0" width="18.0" height="9.0" rx="2.0" fill="#00ff88" filter="url(#gVI)"/><rect x="51.0" y="21.0" width="18.0" height="9.0" rx="2.0" fill="#00ff88" filter="url(#gVI)"/><path d="M 31.0,41.0 Q 45.0,53.0 59.0,41.0" fill="none" stroke="#00ff88" stroke-width="3.0" stroke-linecap="round" filter="url(#gVI)"/><rect x="29.0" y="60.0" width="32.0" height="15.0" rx="3.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="32.0" y="76.0" width="10.0" height="8.0" rx="2.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="49.0" y="76.0" width="10.0" height="8.0" rx="2.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="4.0" y="18.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="2.0" y="45.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="84.0" y="12.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="86.0" y="40.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="8.0" y="72.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="80.0" y="68.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="18.0" y="82.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="72.0" y="82.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/></svg></div>
+    <div class="tama-state">VIVO</div>
+    <div class="tama-msg">Plena actividad vital — todas las condiciones activas.<br>
+      <span style="font-size:.67rem;color:#2a5a5a;">Aprendiendo, auditando papers y registrando en ledger.</span>
+    </div>
+    <!-- Barra de vitalidad 0-4 -->
+    <div class="vita-bar-wrap">
+      <div class="vita-bar-fill" style="width:100%;"></div>
+    </div>
+    <div class="vita-label">4/4 condiciones vitales activas · Último run: 2026-03-26T04:08</div>
+    <!-- Feed de actividad -->
+    <div class="feed-wrap">
+      <div class="feed-inner"><div class="feed-item">⚠ Ciclo #657 · PSNC · ECE 0.15963</div>
+<div class="feed-item">⚠ Ciclo #656 · PSNC · ECE 0.16128</div>
+<div class="feed-item">⚠ Ciclo #655 · PSNC · ECE 0.16297</div>
+<div class="feed-item">⚠ Ciclo #654 · PSNC · ECE 0.16469</div>
+<div class="feed-item">⚠ Ciclo #653 · PSNC · ECE 0.16645</div>
+<div class="feed-item">⚠ Ciclo #652 · PSNC · ECE 0.16825</div>
+<div class="feed-item">💾 Ledger verificado · 21660 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.966 · memoria activa</div>
+<div class="feed-item">🧬 8 sub-proceso(s) generado(s) · reproducción activa</div>
+<div class="feed-item">⚠ Ciclo #657 · PSNC · ECE 0.15963</div>
+<div class="feed-item">⚠ Ciclo #656 · PSNC · ECE 0.16128</div>
+<div class="feed-item">⚠ Ciclo #655 · PSNC · ECE 0.16297</div>
+<div class="feed-item">⚠ Ciclo #654 · PSNC · ECE 0.16469</div>
+<div class="feed-item">⚠ Ciclo #653 · PSNC · ECE 0.16645</div>
+<div class="feed-item">⚠ Ciclo #652 · PSNC · ECE 0.16825</div>
+<div class="feed-item">💾 Ledger verificado · 21660 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.966 · memoria activa</div>
+<div class="feed-item">🧬 8 sub-proceso(s) generado(s) · reproducción activa</div></div>
+    </div>
+  </div>
+
+  <!-- CONDICIONES -->
+  <div class="panel">
+    <div class="panel-title">Condiciones de vida digital</div>
+    <div class="cond-list">
+        <div class="cond-item">
+          <div class="cond-dot dot-ok"></div>
+          <div class="cond-label">
+            <b>Homeostasis</b>
+            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">ECE≤0.05 en ventana 5 ciclos</div>
+            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Calibración estable en ventana reciente — ECE mín. últimos 5 ciclos: 0.00123. Homeostasis = mantener ECE dentro de rango sobre el tiempo, no sólo en el ciclo actual (actual: 0.00123).</div>
+          </div>
+          <span class="cond-badge badge-ok">✓ OK</span>
+        </div>
+        <div class="cond-item">
+          <div class="cond-dot dot-ok"></div>
+          <div class="cond-label">
+            <b>Reproducción</b>
+            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Sub-procesos generados (Poisson)</div>
+            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">El sistema puede generar instancias derivadas — análogo biológico de reproducirse.</div>
+          </div>
+          <span class="cond-badge badge-ok">✓ OK</span>
+        </div>
+        <div class="cond-item">
+          <div class="cond-dot dot-ok"></div>
+          <div class="cond-label">
+            <b>Trazabilidad</b>
+            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Cadena SHA-256 activa</div>
+            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Cada ciclo deja huella digital inalterable — historial 100% verificable.</div>
+          </div>
+          <span class="cond-badge badge-ok">✓ OK</span>
+        </div>
+        <div class="cond-item">
+          <div class="cond-dot dot-ok"></div>
+          <div class="cond-label">
+            <b>Autonomía</b>
+            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Loop autónomo ejecutado ≥1 vez</div>
+            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">El sistema corrió sin intervención manual — condición base de vida digital.</div>
+          </div>
+          <span class="cond-badge badge-ok">✓ OK</span>
+        </div></div>
+  </div>
+
+  <!-- MÉTRICAS VITALES -->
+  <div class="panel">
+    <div class="panel-title">Métricas vitales</div>
+    <!-- ECE con barra -->
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+        <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
+        <span style="display:flex;align-items:center;gap:5px;">
+          <span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↓</span>
+          <span style="font-size:1.15rem;font-weight:bold;color:#00ff88;
+                       font-family:'Courier New',monospace;">0.00123</span>
+        </span>
+      </div>
+      <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+        <div style="width:0.2%;height:100%;background:#00ff88;border-radius:3px;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px;
+                  font-size:.54rem;color:var(--dim);">
+        <span>0 — óptimo</span><span>umbral 0.05</span><span>0.50 — pésimo</span>
+      </div>
+    </div>
+    <!-- Cuadrícula 2×2 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="stat-cell">
+        <div class="tend-row"><div class="stat-val">0.476</div><span style="color:#3a5a7a;font-size:.8rem;">→</span></div>
+        <div class="stat-lbl">κ_conf · confianza</div>
+      </div>
+      <div class="stat-cell">
+        <div class="tend-row"><div class="stat-val">0.0000</div><span style="color:#3a5a7a;font-size:.8rem;">→</span></div>
+        <div class="stat-lbl">𝓛* · función vital</div>
+      </div>
+      <div class="stat-cell">
+        <div class="tend-row"><div class="stat-val">0.966</div><span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↑</span></div>
+        <div class="stat-lbl">S_t · memoria</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-val">8</div>
+        <div class="stat-lbl">spawns · hijos</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.6;
+                padding:6px 8px;background:rgba(0,0,0,.2);border-radius:5px;">
+      <b style="color:var(--cyan);">ECE</b> mide si las predicciones del sistema están bien calibradas.
+      Por debajo de 0.05 = aprendizaje estable. <b style="color:var(--cyan);">κ_conf</b> mide
+      la confianza operatoria (más alto = más seguro). <b style="color:var(--cyan);">S_t</b>
+      es la memoria acumulada de ciclos pasados.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FILA 2: Contadores ═══ -->
+<div class="grid row4" style="margin-top:14px;">
+  <div class="panel" style="text-align:center;">
+    <div class="panel-title">Runs ejecutados</div>
+    <div class="stat-val" style="font-size:2rem;">8</div>
+    <div class="stat-lbl">veces que corrió</div>
+  </div>
+  <div class="panel" style="text-align:center;">
+    <div class="panel-title">Ciclos vitales</div>
+    <div class="stat-val" style="font-size:2rem;">760</div>
+    <div class="stat-lbl">iteraciones totales</div>
+  </div>
+  <div class="panel" style="text-align:center;">
+    <div class="panel-title">Hashes SHA-256</div>
+    <div class="stat-val" style="font-size:2rem;">21660</div>
+    <div class="stat-lbl">cadena verificable</div>
+  </div>
+  <div class="panel" style="text-align:center;">
+    <div class="panel-title">Ciclos en PSNC</div>
+    <div class="stat-val" style="font-size:2rem;">100.0%</div>
+    <div class="stat-lbl">modo cautela</div>
+  </div>
+</div>
+
+<!-- ═══ GRÁFICAS ═══ -->
+<div class="section-sep">◈ Series temporales — últimos 199 ciclos del ledger</div>
+<div class="grid row2">
+  <div class="panel">
+    <div class="panel-title">ECE · Error de calibración
+      <span style="color:#ffd54f66;"> — línea punteada = umbral 0.05</span></div>
+    <div class="chart-box"><canvas id="chartECE"></canvas></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">κ_conf · Confianza operatoria
+      <span style="color:#3a5a7a;"> — mayor es mejor</span></div>
+    <div class="chart-box"><canvas id="chartKappa"></canvas></div>
+  </div>
+</div>
+<div class="grid row2" style="margin-top:14px;">
+  <div class="panel">
+    <div class="panel-title">𝓛* · Función vital normalizada</div>
+    <div class="chart-box"><canvas id="chartL"></canvas></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">S_t · Memoria exponencial</div>
+    <div class="chart-box"><canvas id="chartS"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══ TRAZABILIDAD ═══ -->
+<div class="section-sep">◈ Trazabilidad y reporte</div>
+<div class="grid row2">
+  <div class="panel">
+    <div class="panel-title">Últimos 10 hashes SHA-256</div>
+    <div style="font-size:.59rem;color:var(--dim);margin-bottom:8px;line-height:1.6;">
+      Cada ciclo genera un hash SHA-256 encadenado con el anterior. Cualquier
+      modificación retroactiva rompe la cadena — el historial es inmutable.
+    </div>
+    <div class="hash-list"><div class="hash-item"><span style="color:var(--dim)">#648</span><span class="hash-code">0ec1b8888570aa…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#649</span><span class="hash-code">94d92767c88883…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#650</span><span class="hash-code">37de898195f140…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#651</span><span class="hash-code">34726111c8ffa3…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#652</span><span class="hash-code">23d8cb32ab0b8f…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#653</span><span class="hash-code">606d0a20972949…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#654</span><span class="hash-code">0e2aef2868e67d…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#655</span><span class="hash-code">6981d6ba7faaa6…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#656</span><span class="hash-code">0b21c7bf4a0b9e…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#657</span><span class="hash-code">659aa1d0befb65…</span></div>
+</div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">Último reporte del runner</div>
+    <pre id="reporte-text">═════════════════════════════════════════════════════════════════
+  ALFA LUM-vitae vΩ.4 — META-APRENDIZAJE AUTÓNOMO
+  Run #   8  |  2026-03-26T04:08:43 UTC
+  Ciclos totales acumulados: 660
+═════════════════════════════════════════════════════════════════
+
+   Ciclo |    ECE |  Brier |     κ |    L* |     S | Decisión
+  -------+--------+--------+-------+-------+-------+-------------------
+      10 | 0.0026 | 0.0000 | 0.483 | 0.000 | 1.000 | ✓ PSNC
+      20 | 0.0020 | 0.0000 | 0.828 | 0.002 | 1.000 | ✓ PSNC
+      30 | 0.0017 | 0.0000 | 0.882 | 0.000 | 1.000 | ✓ PSNC
+      40 | 0.0016 | 0.0000 | 0.597 | 0.002 | 1.000 | ✓ PSNC
+      50 | 0.0015 | 0.0000 | 0.878 | 0.002 | 1.000 | ✓ PSNC
+      60 | 0.0014 | 0.0000 | 0.558 | 0.002 | 0.994 | ✓ PSNC
+      70 | 0.0013 | 0.0000 | 0.558 | 0.000 | 1.000 | ✓ PSNC
+      80 | 0.0013 | 0.0000 | 0.476 | 0.008 | 1.000 | ✓ PSNC
+      90 | 0.0013 | 0.0000 | 0.476 | 0.002 | 1.000 | ✓ PSNC
+     100 | 0.0012 | 0.0000 | 0.476 | 0.000 | 0.966 | ✓ PSNC
+
+─────────────────────────────────────────────────────────────────
+  RESUMEN DEL RUN
+─────────────────────────────────────────────────────────────────
+  ECE final:          0.00123  ✓ OK
+  Brier final:        0.00000
+  κ_conf:             0.4758
+  𝓛* final:          0.0000
+  S_t (memoria):      0.9659
+  θ* (umbral):        0.1000
+  Ciclos verdes:      0
+  Ciclos PSNC:        100
+  Spawns (hijos):     3
+  Hashes SHA-256:     10880
+
+  CONDICIONES DE VIDA DIGITAL:
+  ✓ 1. Homeostasis  (ECE≤0.05 ∧ dBrier≤0)
+  ✓ 2. Reproducción (δ_hist&gt;0.4 + Poisson)
+  ✓ 3. Trazabilidad (SHA-256 activo)
+  ✓ 4. Autonomía    (run autónomo)
+
+  ⚡ VEREDICTO: 🟢 VIVO  (4/4 condiciones)
+
+  Runs totales:       8
+  Ciclos totales:     760
+  Veces vivo:         4
+  PSNC acumulado:     758
+  Spawns totales:     8
+  Hashes totales:     21660
+  ECE histórica:      min=0.00123  prom=0.08254  actual=0.00123
+═════════════════════════════════════════════════════════════════
+</pre>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:22px;font-size:.57rem;color:var(--dim);
+            letter-spacing:2px;font-family:'Courier New',monospace;">
+  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Jules Rojas
+</div>
+
+<script>
+const C = {CYAN:'#00e5ff',GREEN:'#00ff88',YELLOW:'#ffd54f',RED:'#ff3d5a',PURPLE:'#b39ddb'};
+Chart.defaults.color = '#4a7090';
+Chart.defaults.borderColor = '#1a2a3a';
+Chart.defaults.font.family = "'Courier New',monospace";
+Chart.defaults.font.size = 10;
+
+const LABELS = ["459", "460", "461", "462", "463", "464", "465", "466", "467", "468", "469", "470", "471", "472", "473", "474", "475", "476", "477", "478", "479", "480", "481", "482", "483", "484", "485", "486", "487", "488", "489", "490", "491", "492", "493", "494", "495", "496", "497", "498", "499", "500", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "525", "526", "527", "528", "529", "530", "531", "532", "533", "534", "535", "536", "537", "538", "539", "540", "541", "542", "543", "544", "545", "546", "547", "548", "549", "550", "551", "552", "553", "554", "555", "556", "557", "558", "559", "560", "561", "562", "563", "564", "565", "566", "567", "568", "569", "570", "571", "572", "573", "574", "575", "576", "577", "578", "579", "580", "581", "582", "583", "584", "585", "586", "587", "588", "589", "590", "591", "592", "593", "594", "595", "596", "597", "598", "599", "600", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620", "621", "622", "623", "624", "625", "626", "627", "628", "629", "630", "631", "632", "633", "634", "635", "636", "637", "638", "639", "640", "641", "642", "643", "644", "645", "646", "647", "648", "649", "650", "651", "652", "653", "654", "655", "656", "657"];
+const ECE    = [0.00131, 0.00131, 0.00131, 0.00131, 0.00131, 0.00131, 0.99753, 0.99754, 0.99754, 0.99753, 0.99753, 0.99753, 0.95219, 0.9144, 0.88243, 0.85503, 0.83127, 0.81049, 0.79215, 0.77585, 0.76127, 0.74814, 0.71271, 0.6804, 0.6509, 0.62386, 0.59898, 0.57602, 0.55475, 0.53501, 0.51663, 0.49948, 0.48344, 0.4684, 0.45427, 0.44097, 0.42843, 0.41658, 0.40538, 0.39476, 0.38469, 0.37512, 0.36599, 0.3573, 0.34902, 0.34111, 0.33355, 0.32632, 0.3194, 0.31276, 0.3064, 0.30029, 0.29443, 0.28878, 0.28335, 0.27812, 0.27309, 0.26823, 0.26354, 0.25901, 0.25464, 0.25041, 0.24632, 0.24237, 0.23854, 0.23482, 0.23123, 0.22774, 0.22435, 0.22107, 0.21788, 0.21478, 0.21177, 0.20884, 0.206, 0.20323, 0.20053, 0.1979, 0.19535, 0.19286, 0.19043, 0.18806, 0.18575, 0.1835, 0.1813, 0.17915, 0.17706, 0.17501, 0.17301, 0.17105, 0.16914, 0.16727, 0.16545, 0.16366, 0.16191, 0.1602, 0.15852, 0.15688, 0.15528, 0.1537, 0.15216, 0.15065, 0.15065, 0.15065, 0.15065, 0.15065, 0.99913, 0.99913, 0.99913, 0.99913, 0.99912, 0.99912, 0.9537, 0.91586, 0.88384, 0.85639, 0.8326, 0.81178, 0.79341, 0.77708, 0.76248, 0.74933, 0.71564, 0.68406, 0.65523, 0.62881, 0.6045, 0.58207, 0.56129, 0.542, 0.52402, 0.50725, 0.49156, 0.47685, 0.46304, 0.45005, 0.43779, 0.42621, 0.41525, 0.40488, 0.39503, 0.38567, 0.37629, 0.36735, 0.35883, 0.3507, 0.34293, 0.3355, 0.32838, 0.32156, 0.31502, 0.30874, 0.3027, 0.2969, 0.29132, 0.28594, 0.28076, 0.27577, 0.27095, 0.26629, 0.26179, 0.25745, 0.25324, 0.24918, 0.24524, 0.24142, 0.23772, 0.23413, 0.23066, 0.22728, 0.224, 0.22081, 0.21772, 0.21471, 0.21178, 0.20893, 0.20616, 0.20346, 0.20083, 0.19827, 0.19577, 0.19334, 0.19096, 0.18865, 0.18638, 0.18418, 0.18202, 0.17992, 0.17786, 0.17585, 0.17389, 0.17197, 0.17009, 0.16825, 0.16645, 0.16469, 0.16297, 0.16128, 0.15963];
+const KAPPA  = [0.4758, 0.4758, 0.4755, 0.4755, 0.9755, 0.9156, 0.685, 0.571, 0.508, 0.5435, 0.5652, 0.5612, 0.4099, 0.7264, 0.7678, 0.7837, 0.7914, 0.7956, 0.7982, 0.7999, 0.8011, 0.802, 0.7755, 0.7668, 0.7522, 0.7344, 0.7144, 0.6923, 0.668, 0.6412, 0.6108, 0.6285, 0.6254, 0.6238, 0.6208, 0.6159, 0.6082, 0.5955, 0.5725, 0.5207, 0.6611, 0.4631, 0.5823, 0.7657, 0.8069, 0.8216, 0.8275, 0.8294, 0.8309, 0.8286, 0.8266, 0.823, 0.8205, 0.8162, 0.8111, 0.8064, 0.8018, 0.7879, 0.7629, 0.7112, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.9758, 0.8118, 0.8235, 0.796, 0.7718, 0.7915, 0.7667, 0.6884, 0.4455, 0.7264, 0.7678, 0.7837, 0.7914, 0.7956, 0.7982, 0.7999, 0.8011, 0.802, 0.7737, 0.7689, 0.7548, 0.738, 0.7193, 0.6989, 0.6768, 0.6528, 0.6262, 0.6523, 0.6256, 0.6239, 0.6211, 0.6166, 0.6095, 0.5981, 0.5772, 0.5307, 0.671, 0.421, 0.577, 0.729, 0.7555, 0.7558, 0.747, 0.7336, 0.7172, 0.6985, 0.6776, 0.6542, 0.6279, 0.6247, 0.6218, 0.6166, 0.6085, 0.5957, 0.5731, 0.5206, 0.1758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758];
+const LSERIE = [0.2876, 0.0089, 0.0, 0.0, 0.0, 0.0903, 1.0, 1.0, 0.9998, 0.9998, 0.9998, 0.9998, 0.9431, 0.8958, 0.8557, 0.8213, 0.7915, 0.7655, 0.7425, 0.7221, 0.7038, 0.6873, 0.6549, 0.6251, 0.5979, 0.5733, 0.5501, 0.5289, 0.5093, 0.4912, 0.4746, 0.4586, 0.4439, 0.4299, 0.4169, 0.4046, 0.3931, 0.3823, 0.3719, 0.3621, 0.3529, 0.344, 0.3358, 0.3277, 0.3201, 0.3128, 0.3058, 0.2992, 0.2928, 0.2868, 0.2809, 0.2753, 0.2699, 0.2647, 0.2598, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0151, 1.0, 0.9979, 0.9978, 0.9979, 0.9977, 0.9977, 0.9321, 0.8773, 0.8309, 0.7912, 0.7568, 0.7267, 0.7001, 0.6765, 0.6553, 0.6363, 0.5998, 0.5657, 0.5348, 0.5063, 0.4802, 0.4561, 0.4338, 0.4131, 0.3938, 0.3758, 0.3589, 0.3432, 0.3283, 0.3143, 0.3011, 0.2887, 0.277, 0.2658, 0.2552, 0.2451, 0.2354, 0.226, 0.2172, 0.2085, 0.2003, 0.1926, 0.1851, 0.178, 0.171, 0.1644, 0.1582, 0.152, 0.1462, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+const SSERIE = [0.4797, 0.479, 0.4408, 0.4067, 0.3759, 0.3482, 0.1931, 0.0536, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0041, 0.0121, 0.023, 0.036, 0.0505, 0.0662, 0.0825, 0.0992, 0.1323, 0.1661, 0.2001, 0.234, 0.2675, 0.3005, 0.3328, 0.3643, 0.3948, 0.4244, 0.453, 0.4806, 0.5071, 0.5326, 0.5571, 0.5806, 0.6031, 0.6246, 0.6453, 0.665, 0.6839, 0.7019, 0.7192, 0.7357, 0.7514, 0.7665, 0.7809, 0.7947, 0.8079, 0.8205, 0.8325, 0.8441, 0.8551, 0.8657, 0.8758, 0.8855, 0.8948, 0.9023, 0.9083, 0.9131, 0.9168, 0.9197, 0.9219, 0.9236, 0.9249, 0.9259, 0.9265, 0.9263, 0.9251, 0.9231, 0.9205, 0.9174, 0.9137, 0.9096, 0.9051, 0.9004, 0.8954, 0.8902, 0.8848, 0.8793, 0.8736, 0.8678, 0.8621, 0.8563, 0.8504, 0.8446, 0.8388, 0.833, 0.8273, 0.8216, 0.816, 0.8104, 0.8048, 0.7994, 0.794, 0.7887, 0.7834, 0.7782, 0.7731, 0.7681, 0.666, 0.5719, 0.488, 0.4132, 0.2303, 0.0661, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0042, 0.0123, 0.0232, 0.0363, 0.0508, 0.0665, 0.0829, 0.0996, 0.1317, 0.165, 0.1984, 0.2318, 0.2648, 0.2972, 0.329, 0.3599, 0.39, 0.4191, 0.4472, 0.4744, 0.5005, 0.5256, 0.5497, 0.5728, 0.5949, 0.6161, 0.6364, 0.6558, 0.6748, 0.693, 0.7104, 0.727, 0.7429, 0.7581, 0.7727, 0.7866, 0.7999, 0.8127, 0.8249, 0.8365, 0.8477, 0.8584, 0.8687, 0.8785, 0.888, 0.8956, 0.9017, 0.9065, 0.9103, 0.9132, 0.9155, 0.9172, 0.9185, 0.9195, 0.9202, 0.9199, 0.9188, 0.9169, 0.9144, 0.9113, 0.9077, 0.9037, 0.8994, 0.8947, 0.8899, 0.8848, 0.8796, 0.8742, 0.8688, 0.8632, 0.8577, 0.8521, 0.8465, 0.8409, 0.8354, 0.8298, 0.8243, 0.8188, 0.8133, 0.8079, 0.8025, 0.7971, 0.7919, 0.7866, 0.7815];
+
+function mkLine(id, data, color, ref) {
+  const ctx = document.getElementById(id).getContext('2d');
+  const ds = [{
+    data, borderColor: color, backgroundColor: color + '15',
+    fill: true, tension: 0.4, pointRadius: 0, borderWidth: 1.8
+  }];
+  if (ref != null) ds.push({
+    data: LABELS.map(() => ref), borderColor: C.YELLOW + '66',
+    borderDash: [5,5], borderWidth: 1, pointRadius: 0, fill: false
+  });
+  new Chart(ctx, {
+    type: 'line',
+    data: {labels: LABELS, datasets: ds},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: {duration: 0},
+      scales: {
+        x: {display: false},
+        y: {grid: {color: '#131f2e'}, ticks: {color: '#3a5a7a', maxTicksLimit: 5}}
+      },
+      plugins: {
+        legend: {display: false},
+        tooltip: {
+          backgroundColor: '#0d1520', borderColor: '#1a2a3a', borderWidth: 1,
+          titleColor: '#00e5ff', bodyColor: '#c8dff0',
+          callbacks: {title: i => 'Ciclo ' + i[0].label}
+        }
+      }
+    }
+  });
+}
+
+mkLine('chartECE',   ECE,    C.GREEN,  0.05);
+mkLine('chartKappa', KAPPA,  C.CYAN,   null);
+mkLine('chartL',     LSERIE, C.YELLOW, null);
+mkLine('chartS',     SSERIE, C.PURPLE, null);
+</script>
+</body>
+</html>
