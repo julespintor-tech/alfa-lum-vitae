@@ -703,7 +703,7 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 
 <div style="text-align:center;margin-top:22px;font-size:.57rem;color:var(--dim);
             letter-spacing:2px;font-family:'Courier New',monospace;">
-  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Jules Rojas
+  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Proyecto MINERVA
 </div>
 
 <script>

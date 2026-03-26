@@ -3,7 +3,7 @@
 """
 ╔══════════════════════════════════════════════════════════════════════╗
 ║   LUM-vitae RUNNER — Bucle Autónomo con Meta-Aprendizaje           ║
-║   ALFA LUM-vitae vΩ.4  |  Proyecto MINERVA  |  Julio David Rojas   ║
+║   ALFA LUM-vitae vΩ.4  |  Proyecto MINERVA                         ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
 DATOS REALES — META-APRENDIZAJE:

@@ -189,7 +189,6 @@ def generar():
 
     ult_exp = resumen.get("ultima_exploracion","—")[:10]
     n_papers = resumen.get("total_papers", 0)
-    n_ens    = resumen.get("total_ensayos", 0)
     res_global = html_mod.escape(resumen.get("resumen_global","")[:300])
 
     page = f"""<!DOCTYPE html>
@@ -315,7 +314,7 @@ def generar():
         {res_global}
       </div>
       <div style="margin-top:8px;font-size:.58rem;color:#2a4a5a;">
-        {n_papers} papers · {n_ens} ensayos propios · Última exploración: {ult_exp}
+        {n_papers} papers indexados · Última exploración: {ult_exp}
       </div>
     </div>
 
@@ -344,7 +343,7 @@ def generar():
       <div class="card-desc">
         ¿Qué ciencias tienen cierre según Bueno? Ranking de 6 dominios
         con semáforo 🟢🟡🔴, veredictos en lenguaje llano, papers reales
-        con enlace, tendencias y corpus propio de Jules.
+        con enlace, tendencias y papers reales de Semantic Scholar.
       </div>
       <div class="card-action">→ Abrir lum_mapa_cierres.html</div>
     </a>
@@ -435,7 +434,7 @@ def generar():
 </div>
 
 <div class="footer">
-  ALFA LUM-vitae vΩ.4 · LUM-PE vΩ.2026-02 · Proyecto MINERVA · Julio David Rojas
+  ALFA LUM-vitae vΩ.4 · LUM-PE vΩ.2026-02 · Proyecto MINERVA
 </div>
 
 </body>

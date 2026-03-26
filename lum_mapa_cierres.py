@@ -2,14 +2,13 @@
 """
 MAPA DE CIERRES CATEGORIALES — ALFA LUM-vitae + LUM-PE
 =======================================================
-Busca evidencia real de cierre categorial en Google Scholar (Semantic Scholar)
+Busca evidencia real de cierre categorial en Semantic Scholar
 para cada familia de ciencias según la taxonomía del Materialismo Filosófico.
-Analiza el corpus de ensayos de Jules como fuente interna.
 Genera lum_mapa_cierres.json y lum_mapa_cierres.html.
 
 Uso:
-    python3 lum_mapa_cierres.py          # completo (busca en red)
-    python3 lum_mapa_cierres.py --local  # solo corpus interno, sin red
+    python3 lum_mapa_cierres.py           # completo (busca en red)
+    python3 lum_mapa_cierres.py --html-only  # regenera HTML sin tocar la red
 """
 
 import json, pathlib, datetime, time, re, math, html, sys, urllib.request, urllib.parse
@@ -19,11 +18,9 @@ import urllib.error
 BASE        = pathlib.Path(__file__).parent
 LUM_MARK2   = BASE.parent / "LUM MARK 2"
 BUNDLES_DIR = LUM_MARK2 / "PUBLICACION_LUM" / "lum-pe-REPO" / "dataset" / "dataset_public_v0.1.0" / "bundles_public"
-ENSAYOS_DIR = LUM_MARK2 / "Ensayos"
 OUT_JSON    = BASE / "lum_mapa_cierres.json"
 OUT_HTML    = BASE / "lum_mapa_cierres.html"
 
-MODO_LOCAL     = "--local"     in sys.argv
 MODO_HTML_ONLY = "--html-only" in sys.argv
 
 # ─── TAXONOMÍA DE DISCIPLINAS ─────────────────────────────────────────────────
@@ -47,7 +44,6 @@ DISCIPLINAS = {
             "axiom", "theorem", "proof", "completeness", "consistency",
             "formal system", "closure", "algebra", "deductive", "formaliz"
         ],
-        "ensayo_carpeta": "Filosofia_y_Ciencia",
         "bueno_ref": "Ciencias α (alpha) — cierre por axiomatización"
     },
     "NAT": {
@@ -67,7 +63,6 @@ DISCIPLINAS = {
             "replication", "empirical", "operationalization", "protocol",
             "natural law", "invariant", "conservation"
         ],
-        "ensayo_carpeta": "Filosofia_y_Ciencia",
         "bueno_ref": "Ciencias β (beta) — cierre por leyes causales"
     },
     "SOC_IV": {
@@ -87,7 +82,6 @@ DISCIPLINAS = {
             "demarcation", "measurement", "intersubjectivity", "protocol",
             "replication", "systematic", "operationally defined"
         ],
-        "ensayo_carpeta": "Psicologia",
         "bueno_ref": "Ciencias γ (gamma) interpretativas — cierre parcial"
     },
     "SOC_DID": {
@@ -107,7 +101,6 @@ DISCIPLINAS = {
             "chronology", "stratigraphy", "dating method",
             "ethnographic", "systematic fieldwork", "hypothesis testing"
         ],
-        "ensayo_carpeta": "Religiones_y_Oriente",
         "bueno_ref": "Ciencias γ (gamma) diacrónicas — proto-cierre"
     },
     "TEC": {
@@ -127,7 +120,6 @@ DISCIPLINAS = {
             "specification", "correctness", "system closure",
             "cybernetic", "control theory", "formal methods", "invariant"
         ],
-        "ensayo_carpeta": "Tecnologia_y_Cibernetica",
         "bueno_ref": "Técnica — cierre operatorio-instrumental"
     },
     "ARTE": {
@@ -147,7 +139,6 @@ DISCIPLINAS = {
             "formal analysis", "pictorial theory", "materialist",
             "operational", "symbolic closure", "compositional"
         ],
-        "ensayo_carpeta": "Arte_y_Pintura",
         "bueno_ref": "Campo simbólico-operatorio — cierre en construcción"
     },
 }
@@ -186,23 +177,6 @@ def score_cierre_texto(texto: str, señales: list) -> float:
     raw = min(1.0, hits / max(len(señales) * 0.3, 1))
     return round(raw, 4)
 
-# ─── CORPUS INTERNO (ensayos de Jules) ───────────────────────────────────────
-
-def analizar_corpus_interno() -> dict:
-    """Lee los títulos y nombres de archivos de cada subcarpeta de ensayos."""
-    if not ENSAYOS_DIR.exists():
-        return {}
-    resultado = {}
-    for carpeta in ENSAYOS_DIR.iterdir():
-        if not carpeta.is_dir():
-            continue
-        archivos = list(carpeta.glob("*.pdf")) + list(carpeta.glob("*.docx"))
-        nombres = [f.stem for f in archivos]
-        resultado[carpeta.name] = {
-            "n_ensayos": len(archivos),
-            "titulos": nombres[:10],
-        }
-    return resultado
 
 # ─── LEER BUNDLES LUM-PE ─────────────────────────────────────────────────────
 
@@ -246,13 +220,12 @@ def calcular_mapa() -> dict:
     print("=" * 60)
     print("  MAPA DE CIERRES CATEGORIALES — LUM MINERVA")
     print(f"  {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"  Modo: {'LOCAL (sin red)' if MODO_LOCAL else 'COMPLETO (red + corpus)'}")
+    print(f"  Modo: COMPLETO (búsqueda en red + LUM-PE)")
     print("=" * 60)
 
     bundles  = leer_bundles_por_tipo()
-    corpus   = analizar_corpus_interno()
     mapa     = {}
-    resumen  = {"total_papers": 0, "total_ensayos": 0, "timestamp": datetime.datetime.utcnow().isoformat()}
+    resumen  = {"total_papers": 0, "timestamp": datetime.datetime.utcnow().isoformat()}
 
     # Cargar JSON existente para preservar papers/hallazgos si la red falla
     _cache_anterior = {}
@@ -297,11 +270,7 @@ def calcular_mapa() -> dict:
         sc_papers = round(sum(scores_papers) / n_papers, 4) if n_papers else 0
         papers_top = sorted(papers_totales, key=lambda x: x["score_cierre"], reverse=True)[:5]
 
-        # 3. Corpus interno de Jules
-        carpeta = disc.get("ensayo_carpeta", "")
-        info_corpus = corpus.get(carpeta, {"n_ensayos": 0, "titulos": []})
-
-        # 4. Score LUM sintetizado
+        # 3. Score LUM sintetizado
         # Combina: p_lum (del modelo LUM-PE), sc_papers (evidencia externa)
         if p_lum > 0 and sc_papers > 0:
             p_sintetico = round(0.6 * p_lum + 0.4 * sc_papers, 4)
@@ -348,22 +317,15 @@ def calcular_mapa() -> dict:
             },
             # Preservar datos_bibliograficos si los añadió MINERVA
             "datos_bibliograficos": _cache_anterior.get(clave, {}).get("datos_bibliograficos", {}),
-            "corpus_interno": {
-                "n_ensayos":   info_corpus["n_ensayos"],
-                "titulos":     info_corpus["titulos"],
-                "carpeta":     carpeta,
-            },
             "resultado": {
                 "p_sintetico": p_sintetico,
                 "semaforo":    semaforo,
-                "tiene_ensayos": info_corpus["n_ensayos"] > 0,
                 # Preservar hallazgo/tendencia escritos por MINERVA
                 "hallazgo":  _cache_anterior.get(clave, {}).get("resultado", {}).get("hallazgo", ""),
                 "tendencia": _cache_anterior.get(clave, {}).get("resultado", {}).get("tendencia", ""),
             }
         }
         resumen["total_papers"]  += n_papers
-        resumen["total_ensayos"] += info_corpus["n_ensayos"]
 
     resultado_final = {"resumen": resumen, "mapa": mapa}
     OUT_JSON.write_text(json.dumps(resultado_final, ensure_ascii=False, indent=2))
@@ -405,13 +367,11 @@ def generar_html(data: dict):
         res    = disc["resultado"]
         lum    = disc["lum_pe"]
         ss     = disc.get("semanticscholar", {})
-        corp   = disc["corpus_interno"]
         p      = res["p_sintetico"]
         ss_sc  = ss.get("score_cierre", 0)
         lum_p  = lum.get("p_media", 0)
         nc     = lum.get("n_campos", 0)
         np_    = ss.get("n_papers", 0)
-        ne     = corp.get("n_ensayos", 0)
 
         parts = []
 
@@ -436,13 +396,6 @@ def generar_html(data: dict):
         else:
             parts.append("sin campos LUM-PE disponibles en este dominio")
 
-        # Corpus propio
-        if ne >= 15:
-            parts.append(f"corpus propio muy denso: {ne} ensayos de Jules")
-        elif ne >= 5:
-            parts.append(f"corpus propio sólido: {ne} ensayos")
-        elif ne > 0:
-            parts.append(f"{ne} ensayo(s) propio(s)")
 
         # Conclusión sobre el score
         if p >= 0.80:
@@ -466,7 +419,6 @@ def generar_html(data: dict):
         meta = disc["meta"]
         lum  = disc["lum_pe"]
         ss   = disc.get("semanticscholar", {})
-        corp = disc["corpus_interno"]
         sc   = C.get(res["semaforo"], "#3a5a7a")
         em   = E.get(res["semaforo"], "⬜")
         p    = res["p_sintetico"]
@@ -524,15 +476,6 @@ def generar_html(data: dict):
         visible_papers  = "".join(render_paper(p2, True)  for p2 in papers[:2])
         extra_papers    = "".join(render_paper(p2, False)  for p2 in papers[2:])
 
-        # ── Corpus interno ─────────────────────────────────────────────────────
-        ens_html = ""
-        for t in corp.get("titulos", [])[:6]:
-            ens_html += (
-                f'<div style="font-size:.63rem;color:#3a8080;padding:2px 0;'
-                f'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'
-                f'📄 {html.escape(t[:78])}</div>'
-            )
-
         # tendencia badge
         tend_col = (
             "#00e5ff" if any(k in tendencia for k in ["EXPANSIÓN","ACTIVO","ESTABLE"]) else
@@ -572,22 +515,7 @@ def generar_html(data: dict):
             )
 
         # ── Bloque corpus (precomputado) ────────────────────────────────────────
-        n_ens_c = corp.get('n_ensayos', 0)
-        if ens_html:
-            corpus_block = (
-                f'<details>'
-                f'<summary style="font-size:.6rem;color:#4a7090;cursor:pointer;padding:4px 0;'
-                f'list-style:none;display:flex;align-items:center;gap:6px;">'
-                f'<span style="color:{meta["color"]}88;font-weight:bold;">&#9656;</span>'
-                f'<span style="letter-spacing:1px;text-transform:uppercase;font-size:.58rem;">'
-                f'Corpus propio de Jules ({n_ens_c} ensayos)</span></summary>'
-                f'<div style="margin-top:5px;">{ens_html}</div></details>'
-            )
-        else:
-            corpus_block = (
-                f'<div style="font-size:.6rem;color:#2a4a5a;">'
-                f'Ensayos propios: {n_ens_c}</div>'
-            )
+        corpus_block = ""
 
         # ── LUM-PE mini-grid ───────────────────────────────────────────────────
         lum_grid = ""
@@ -903,7 +831,6 @@ details > summary::-webkit-details-marker {{ display:none; }}
         <div><div class="stat-big">{n_amber}</div><div class="stat-lbl">🟡 proto-cierre</div></div>
         <div><div class="stat-big">{n_red}</div><div class="stat-lbl">🔴 sin cierre</div></div>
         <div><div class="stat-big">{resumen.get('total_papers',0)}</div><div class="stat-lbl">papers</div></div>
-        <div><div class="stat-big">{resumen.get('total_ensayos',0)}</div><div class="stat-lbl">ensayos propios</div></div>
         <div><div class="stat-big">45</div><div class="stat-lbl">campos LUM-PE</div></div>
       </div>
       <div style="font-size:.62rem;color:var(--dim);font-style:italic;line-height:1.6;">
@@ -988,7 +915,7 @@ details > summary::-webkit-details-marker {{ display:none; }}
 
   <div style="text-align:center;margin-top:32px;font-size:.57rem;color:var(--dim);letter-spacing:2px;">
     ALFA LUM-vitae vΩ.4 · LUM-PE vΩ.2026-02 · Materialismo Filosófico · Gustavo Bueno + Luminomática<br>
-    Julio David Rojas · ORCID 0009-0001-0800-5303 · DOI 10.5281/zenodo.19142481
+    Proyecto MINERVA · DOI 10.5281/zenodo.19142481
   </div>
 
 </div>
