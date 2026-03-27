@@ -149,7 +149,7 @@ header { display:flex; justify-content:space-between; align-items:center;
   </div>
   <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
               border-radius:20px;font-family:'Courier New',monospace;">
-    📸 2026-03-27 14:31:43
+    📸 2026-03-27 15:07:30
   </div>
 </header>
 
@@ -415,19 +415,23 @@ header { display:flex; justify-content:space-between; align-items:center;
 </div>
 
 <!-- ═══ MINERVA — MAPA DE CIERRES CATEGORIALES ═══ -->
-<div class="section-sep" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-  <span>◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</span>
-  <button id="btn-minerva" onclick="buscarMinerva()">🔍 Buscar ahora</button>
+<div class="section-sep">◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;
+            flex-wrap:wrap;margin-bottom:8px;">
+  <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
+    Audita 6 dominios de cierre categorial (Bueno α/β/γ). Barras = probabilidad LUM-PE.
+    El botón consulta Semantic Scholar en vivo — sin novedades lo indica solo.
+    Cooldown 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">2026-03-26 03:22</span>
+    &nbsp;·&nbsp;
+    <a href="lum_mapa_cierres.html" style="color:var(--cyan);" target="_blank">Ver mapa completo →</a>
+  </div>
+  <button id="btn-minerva" onclick="buscarMinerva()" style="
+    cursor:pointer;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.45);
+    color:#00e5ff;font-size:.72rem;font-weight:bold;padding:7px 16px;border-radius:6px;
+    font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
+    flex-shrink:0;transition:all .2s;">🔍 Buscar ahora</button>
 </div>
 <div id="minerva-status"></div>
-<div style="margin-bottom:6px;font-size:.58rem;color:var(--dim);line-height:1.7;">
-  MINERVA audita 6 dominios de cierre categorial (Materialismo Filosófico de Bueno α/β/γ).
-  Barras = probabilidad LUM-PE. El botón <b style="color:var(--cyan);">Buscar ahora</b> consulta
-  Semantic Scholar en vivo — si no hay novedades, te lo indica sin necesidad de abrir el navegador.
-  Cooldown automático de 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">2026-03-26 03:22</span>
-  &nbsp;·&nbsp;
-  <a href="lum_mapa_cierres.html" style="color:var(--cyan);font-size:.58rem;" target="_blank">Ver mapa completo →</a>
-</div>
 <div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
 <div id="mc-FORM" style="background:rgba(0,0,0,.3);border:1px solid #00e5ff22;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
@@ -848,6 +852,13 @@ function scoreTexto(txt, sigs) {
   return sigs.filter(s => t.includes(s)).length / Math.max(sigs.length * 0.3, 1);
 }
 
+// Fetch con timeout compatible con todos los browsers (sin AbortSignal.timeout)
+function fetchConTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, {signal: ctrl.signal}).finally(() => clearTimeout(tid));
+}
+
 async function buscarMinerva() {
   if (_mSearching) return;
   const now = Date.now();
@@ -871,7 +882,7 @@ async function buscarMinerva() {
   status.innerHTML = '<span style="color:var(--dim)">Consultando Semantic Scholar (6 dominios)…</span>';
 
   const newCache = {};
-  let totalNew = 0, domainsWithNew = [], netError = false;
+  let totalNew = 0, domainsWithNew = [], errCount = 0, successCount = 0;
   const keys = Object.keys(SS_QUERIES);
 
   for (let i = 0; i < keys.length; i++) {
@@ -881,14 +892,23 @@ async function buscarMinerva() {
       const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query='
                 + encodeURIComponent(SS_QUERIES[key])
                 + '&limit=8&fields=title,abstract,year,citationCount';
-      const r = await fetch(url, {signal: AbortSignal.timeout(9000)});
-      if (!r.ok) { newCache[key] = {n:0, titles: new Set()}; continue; }
+      const r = await fetchConTimeout(url, 12000);
+      if (!r.ok) {
+        // 429 rate-limit u otro error HTTP — no es fallo de red
+        newCache[key] = {n:0, titles: new Set()};
+        if (r.status === 429) {
+          // esperar 2s extra por rate-limit
+          await new Promise(rv => setTimeout(rv, 2000));
+        }
+        continue;
+      }
       const d = await r.json();
       const papers = (d.data || []).filter(p =>
         scoreTexto((p.title||'')+' '+(p.abstract||''), SIGNALS[key]) > 0
       );
       const titles = new Set(papers.map(p => (p.title||'').trim().toLowerCase()));
       newCache[key] = {n: papers.length, titles};
+      successCount++;
 
       // Detectar novedades vs caché anterior
       const prev       = _mCache[key];
@@ -905,10 +925,11 @@ async function buscarMinerva() {
         elS.style.color = papers.length >= 5 ? '#00ff88' : '#ffd54f';
       }
     } catch(e) {
-      netError = true;
+      errCount++;
       newCache[key] = {n:0, titles: new Set()};
+      // Continúa con el siguiente dominio — error parcial no es fatal
     }
-    if (i < keys.length - 1) await new Promise(rv => setTimeout(rv, 500));
+    if (i < keys.length - 1) await new Promise(rv => setTimeout(rv, 600));
   }
 
   _mCache   = newCache;
@@ -918,16 +939,31 @@ async function buscarMinerva() {
   btn.innerHTML = '🔍 Buscar ahora';
 
   const hora = new Date().toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
-  if (netError && totalNew === 0) {
+  const todosFallaron = errCount === keys.length;
+  const mayoriaFallo  = errCount > keys.length / 2;
+
+  if (todosFallaron) {
+    // Sin conexión o API caída — es un error real
     status.style.borderLeftColor = '#ff9800';
-    status.innerHTML = `<span style="color:#ff9800">⚠ Error de red en algún dominio · ${hora} — verifica conexión</span>`;
+    status.innerHTML = `<span style="color:#ff9800">⚠ No se pudo contactar Semantic Scholar · ${hora} — verifica conexión o intenta más tarde</span>`;
+  } else if (totalNew === 0 && successCount === 0 && errCount > 0) {
+    // Parcialmente fallido, sin resultados válidos
+    status.style.borderLeftColor = '#ff9800';
+    const txt = mayoriaFallo
+      ? `⚠ ${errCount}/6 dominios con error · ${hora} — API lenta, intenta en unos minutos`
+      : `⚠ ${errCount}/6 dominios sin respuesta · ${hora}`;
+    status.innerHTML = `<span style="color:#ff9800">${txt}</span>`;
+    setTimeout(() => { status.style.display = 'none'; }, 12000);
   } else if (totalNew === 0) {
+    // OK — sin novedades
+    const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${errCount} dominio${errCount>1?'s':''} sin respuesta)</span>` : '';
     status.style.borderLeftColor = 'var(--dim)';
-    status.innerHTML = `<span style="color:var(--dim)">✓ Sin novedades en los 6 dominios · ${hora}</span>`;
+    status.innerHTML = `<span style="color:var(--dim)">✓ Sin novedades · ${hora}</span>${extra}`;
     setTimeout(() => { status.style.display = 'none'; }, 9000);
   } else {
+    const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${errCount} dominio${errCount>1?'s':''} sin respuesta)</span>` : '';
     status.style.borderLeftColor = 'var(--green)';
-    status.innerHTML = `<span style="color:var(--green)">● ${totalNew} paper(s) nuevo(s) en: <b>${domainsWithNew.join(', ')}</b> · ${hora} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>`;
+    status.innerHTML = `<span style="color:var(--green)">● ${totalNew} paper(s) nuevo(s) en: <b>${domainsWithNew.join(', ')}</b> · ${hora} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>${extra}`;
   }
 }
 </script>

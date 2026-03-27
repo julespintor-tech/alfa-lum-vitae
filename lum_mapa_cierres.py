@@ -148,23 +148,36 @@ DISCIPLINAS = {
 SS_BASE = "https://api.semanticscholar.org/graph/v1"
 
 def buscar_papers(query: str, limit: int = 10) -> list:
-    """Busca papers en Semantic Scholar. Retorna lista de dicts."""
+    """Busca papers en Semantic Scholar con reintentos y backoff exponencial."""
     if MODO_LOCAL:
         return []
-    try:
-        params = urllib.parse.urlencode({
-            "query": query,
-            "limit": limit,
-            "fields": "title,abstract,year,citationCount,fieldsOfStudy"
-        })
-        url = f"{SS_BASE}/paper/search?{params}"
-        req = urllib.request.Request(url, headers={"User-Agent": "LUM-MINERVA/1.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read())
-            return data.get("data", [])
-    except Exception as e:
-        print(f"  [red] Error Semantic Scholar: {e}")
-        return []
+    params = urllib.parse.urlencode({
+        "query": query,
+        "limit": limit,
+        "fields": "title,abstract,year,citationCount,fieldsOfStudy"
+    })
+    url = f"{SS_BASE}/paper/search?{params}"
+    req = urllib.request.Request(url, headers={"User-Agent": "LUM-MINERVA/1.0"})
+    max_intentos = 4
+    espera = 1.0  # segundos iniciales
+    for intento in range(max_intentos):
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read())
+                return data.get("data", [])
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                print(f"  [warn] Semantic Scholar 429 — esperando {espera:.0f}s (intento {intento+1}/{max_intentos})")
+                time.sleep(espera)
+                espera *= 2  # backoff exponencial
+            else:
+                print(f"  [red] Error HTTP Semantic Scholar {e.code}: {e}")
+                return []
+        except Exception as e:
+            print(f"  [red] Error Semantic Scholar: {e}")
+            return []
+    print("  [red] Semantic Scholar: máximo de reintentos alcanzado, se omite.")
+    return []
 
 def score_cierre_texto(texto: str, señales: list) -> float:
     """Calcula score de cierre en un texto (0..1) buscando señales."""

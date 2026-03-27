@@ -63,7 +63,7 @@ def api_estado():
     brier_actual = hist_Brier[-1] if hist_Brier else 1.0
     brier_prev   = hist_Brier[-2] if len(hist_Brier) >= 2 else brier_actual
     spawns = e.get("n_spawns_total", 0)
-    n_hashes = e.get("n_hashes_total", len(ledger))
+    n_hashes = e.get("n_hashes", e.get("n_hashes_total", len(ledger)))
 
     cond1 = ece_actual <= 0.05 and brier_actual <= brier_prev
     cond2 = spawns > 0

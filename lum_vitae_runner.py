@@ -114,8 +114,15 @@ def cargar_estado() -> dict:
     return estado_inicial()
 
 def guardar_estado(estado: dict):
-    with open(ESTADO_FILE, "w", encoding="utf-8") as f:
+    """Escritura atómica: tmp → replace; copia .bak antes de sobrescribir."""
+    import shutil
+    tmp = ESTADO_FILE.with_suffix(".tmp")
+    bak = ESTADO_FILE.with_suffix(".bak")
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(estado, f, ensure_ascii=False, indent=2)
+    if ESTADO_FILE.exists():
+        shutil.copy2(ESTADO_FILE, bak)
+    os.replace(tmp, ESTADO_FILE)
 
 def tail_historial(lista: list, max_n: int = 500) -> list:
     """Mantiene el historial acotado."""
@@ -703,8 +710,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             mod  = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
             mod.generar()
-    except Exception:
-        pass
+    except Exception as _e:
+        print(f"[WARN] lum_vitae_generar_html falló: {_e}", flush=True)
 
     # Regenerar mapa de cierres (modo local, usa JSON cacheado con datos reales)
     try:
@@ -720,8 +727,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             _data = _json.loads(_mj.read_text())
             mod2.generar_html(_data)
             _sys.argv = _orig
-    except Exception:
-        pass
+    except Exception as _e:
+        print(f"[WARN] lum_mapa_cierres.generar_html falló: {_e}", flush=True)
 
     # Regenerar INICIO.html con datos actualizados embebidos
     try:
@@ -732,8 +739,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             mod3  = importlib.util.module_from_spec(spec3)
             spec3.loader.exec_module(mod3)
             mod3.generar()
-    except Exception:
-        pass
+    except Exception as _e:
+        print(f"[WARN] lum_generar_inicio.generar falló: {_e}", flush=True)
 
     return resumen
 
