@@ -253,6 +253,18 @@ def generar():
     ledger  = leer_ledger(200)
     reporte = leer_reporte()
 
+    # ── MINERVA — datos del mapa de cierres categoriales ──────────────────────
+    MAPA_FILE    = BASE / "lum_mapa_cierres.json"
+    minerva_mapa = {}
+    minerva_ts   = "—"
+    try:
+        _md = json.loads(MAPA_FILE.read_text())
+        minerva_mapa = _md.get("mapa", {})
+        _ts_raw = (_md.get("resumen") or {}).get("timestamp", "") or ""
+        minerva_ts = _ts_raw[:16].replace("T", " ") if _ts_raw else "—"
+    except Exception:
+        pass
+
     hist_ECE   = e.get("historial_ECE",   [1.0])
     hist_Brier = e.get("historial_Brier", [1.0])
     hist_kappa = e.get("historial_kappa",  [0.0])
@@ -405,6 +417,92 @@ def generar():
             out += f'<div class="hash-item"><span style="color:var(--dim)">#{ciclo}</span><span class="hash-code">{h}…</span></div>\n'
         return out
 
+    def minerva_cards():
+        """Tarjetas de los 6 dominios de cierre categorial — datos de lum_mapa_cierres.json."""
+        DISC_META = {
+            "FORM":    ("∑", "#00e5ff", "Ciencias Formales",
+                        "Matemáticas, Lógica, Estadística",
+                        "mathematical+closure+axiomatization+completeness"),
+            "NAT":     ("⚛", "#00ff88", "Ciencias Naturales",
+                        "Física, Química, Biología, Neurociencia",
+                        "natural+science+causal+closure+empirical+laws"),
+            "TEC":     ("⚙", "#b39ddb", "Ingeniería & IA",
+                        "Informática, Cibernética, Inteligencia Artificial",
+                        "cybernetics+feedback+closure+formal+verification"),
+            "SOC_IV":  ("◈", "#ffd54f", "Cs. Sociales Interpret.",
+                        "Psicología, Sociología, Economía",
+                        "social+science+operationalization+construct+validity"),
+            "SOC_DID": ("⏳", "#ff9800", "Cs. Sociales Diacrónicas",
+                        "Historia, Antropología, Arqueología",
+                        "historical+method+scientific+demarcation+historiography"),
+            "ARTE":    ("🎨", "#f48fb1", "Arte & Estética",
+                        "Pintura, Música, Literatura, Arquitectura",
+                        "aesthetic+closure+art+theory+pictorial+materialist"),
+        }
+        if not minerva_mapa:
+            return '<div style="color:var(--dim);font-size:.62rem;padding:10px;">Sin datos MINERVA — ejecuta python3 lum_mapa_cierres.py para generar el mapa.</div>'
+        out = ""
+        for key, (icon, color, name, subcampos, q) in DISC_META.items():
+            d   = minerva_mapa.get(key, {})
+            lum = d.get("lum_pe", {})
+            p   = lum.get("p_media", 0.0)
+            state = lum.get("state_lum", "?")
+            n_c = lum.get("n_campos", 0)
+            ss_n = (d.get("semanticscholar") or {}).get("n_papers", 0)
+            pct = int(round(p * 100))
+            bar_col = "#00ff88" if p >= 0.70 else ("#ffd54f" if p >= 0.40 else "#ff3d5a")
+            state_label = state if state not in ("?", "N/A") else (
+                "VERDE ≥70%" if p >= 0.70 else ("ÁMBAR ≥40%" if p >= 0.40 else "ROJO <40%"))
+            ss_url  = f"https://www.semanticscholar.org/search?q={q}&sort=Relevance"
+            phi_url = f"https://philpapers.org/s/{q.replace('+', '%20')[:50]}"
+            out += f"""<div style="background:rgba(0,0,0,.3);border:1px solid {color}22;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:{color};font-size:.70rem;font-weight:bold;">{icon} {name}</span>
+    <span style="font-size:.55rem;color:{bar_col};background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">{state_label}</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">{subcampos}</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:{pct}%;height:100%;background:{bar_col};border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE={p:.3f} · {n_c} campos · {ss_n} papers SS</span>
+    <span>
+      <a href="{ss_url}" target="_blank" style="color:{color}88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="{phi_url}" target="_blank" style="color:{color}88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>\n"""
+        return out
+
+    def repo_links():
+        """Panel de repositorios registrados del proyecto."""
+        repos = [
+            ("GitHub",          "https://github.com/julespintor-tech/alfa-lum-vitae",
+             "#00ff88",  "⌥", "Código fuente, issues, releases"),
+            ("Zenodo DOI",      "https://doi.org/10.5281/zenodo.19235185",
+             "#00e5ff",  "◎", "Registro DOI · v1.0.0 · LUM-vitae"),
+            ("OSF",             "https://osf.io/5jhr4",
+             "#b39ddb",  "⬡", "Proyecto abierto · archivos y documentación"),
+            ("ORCID",           "https://orcid.org/0009-0001-0800-5303",
+             "#ffd54f",  "✦", "Perfil investigador · Julio David Rojas A."),
+            ("LUM-PE DOI",      "https://doi.org/10.5281/zenodo.19142481",
+             "#ff9800",  "◈", "Dataset LUM-PE · fundamento teórico"),
+        ]
+        out = ""
+        for name, url, color, icon, desc in repos:
+            out += f"""<a href="{url}" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid {color}22;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='{color}'" onmouseout="this.style.borderColor='{color}22'">
+  <span style="color:{color};font-size:.85rem;">{icon}</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:{color};font-weight:bold;">{name}</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{desc}</div>
+  </div>
+  <span style="font-size:.65rem;color:{color}66;">↗</span>
+</a>\n"""
+        return out
+
     # ── COLORES / CLASES DERICADOS DEL ESTADO ─────────────────────────────────
     ece_col = "#00ff88" if ece_actual <= 0.05 else ("#ffd54f" if ece_actual <= 0.15 else "#ff3d5a")
     ece_pct = min(100, ece_actual / 0.5 * 100)
@@ -420,6 +518,20 @@ def generar():
     now_str       = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     reporte_esc   = html.escape(reporte)
     vita_bar_pct  = n_vivo * 25   # 0 / 25 / 50 / 75 / 100
+
+    # ── Notas contextuales (subtítulos auto-explicativos para cada métrica) ───
+    kappa_note = ("coherencia alta"   if kappa >= 0.6 else
+                  ("coherencia media" if kappa >= 0.3 else "coherencia baja"))
+    kappa_col2 = "#00ff88" if kappa >= 0.6 else ("#ffd54f" if kappa >= 0.3 else "#ff9800")
+    L_note     = ("mejora activa"    if L_norm >= 0.05 else
+                  ("delta pequeño"   if L_norm > 0    else "≈0 · estable entre ciclos"))
+    L_col2     = "#00ff88" if L_norm >= 0.05 else ("#ffd54f" if L_norm > 0 else "#4a7090")
+    St_note    = ("memoria excelente" if S_t >= 0.8 else
+                  ("memoria buena"    if S_t >= 0.5 else "memoria debilitada"))
+    St_col2    = "#00ff88" if S_t >= 0.8 else ("#ffd54f" if S_t >= 0.5 else "#ff9800")
+    sp_note    = (f"{spawns} instancias derivadas generadas" if spawns > 0
+                  else "reproducción aún no activada")
+    sp_col2    = "#00ff88" if spawns > 0 else "#4a7090"
 
     page = f"""<!DOCTYPE html>
 <html lang="es">
@@ -450,6 +562,8 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 .row3  {{ grid-template-columns:400px 1fr 1fr; }}
 .row4  {{ grid-template-columns:repeat(4,1fr); }}
 @media(max-width:900px) {{ .row2,.row3,.row4 {{ grid-template-columns:1fr; }} }}
+@media(max-width:700px) {{ .minerva-grid {{ grid-template-columns:1fr 1fr !important; }} }}
+@media(max-width:480px) {{ .minerva-grid {{ grid-template-columns:1fr !important; }} }}
 
 /* ── Paneles ─────────────────────────────────── */
 .panel {{ background:var(--panel); border:1px solid var(--border); border-radius:10px;
@@ -606,31 +720,36 @@ header {{ display:flex; justify-content:space-between; align-items:center;
         <span>0 — óptimo</span><span>umbral 0.05</span><span>0.50 — pésimo</span>
       </div>
     </div>
-    <!-- Cuadrícula 2×2 -->
+    <!-- Cuadrícula 2×2 — métricas vitales con contexto auto-explicativo -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div class="stat-cell">
+      <div class="stat-cell" title="κ_conf — Coeficiente de coherencia operatoria&#10;Mide qué tan consistentes son las predicciones del modelo con los resultados observados.&#10;Calculado vía HSIC + peso ω + gap de calibración.&#10;Rango [0,1] — más alto = predicciones más coherentes.">
         <div class="tend-row"><div class="stat-val">{kappa:.3f}</div>{tend_kappa}</div>
-        <div class="stat-lbl">κ_conf · confianza</div>
+        <div class="stat-lbl">κ_conf · coherencia</div>
+        <div style="font-size:.54rem;color:{kappa_col2};margin-top:3px;">{kappa_note}</div>
       </div>
-      <div class="stat-cell">
+      <div class="stat-cell" title="𝓛* — Delta de mejora por ciclo (función vital normalizada)&#10;Cuánto mejoró el sistema en la última ventana de ciclos.&#10;0.0 entre ciclos activos es NORMAL — no significa que el sistema esté muerto.&#10;Valores > 0 indican mejora activa en curso.">
         <div class="tend-row"><div class="stat-val">{L_norm:.4f}</div>{tend_L}</div>
-        <div class="stat-lbl">𝓛* · función vital</div>
+        <div class="stat-lbl">𝓛* · delta mejora</div>
+        <div style="font-size:.54rem;color:{L_col2};margin-top:3px;">{L_note}</div>
       </div>
-      <div class="stat-cell">
+      <div class="stat-cell" title="S_t — Memoria exponencial de supervivencia (λ=0.90)&#10;Promedio ponderado exponencialmente del historial de ciclos 'VIVO'.&#10;Rango [0,1] — 1 = historial perfecto, 0 = sin historial vital.&#10;&gt; 0.8 excelente · 0.5–0.8 bueno · &lt; 0.5 bajo">
         <div class="tend-row"><div class="stat-val">{S_t:.3f}</div>{tend_S}</div>
-        <div class="stat-lbl">S_t · memoria</div>
+        <div class="stat-lbl">S_t · memoria vital</div>
+        <div style="font-size:.54rem;color:{St_col2};margin-top:3px;">{St_note}</div>
       </div>
-      <div class="stat-cell">
+      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Cuando el sistema detecta mejora sostenida (δ_hist &gt; 0.4),&#10;lanza copias derivadas de sí mismo — análogo digital de la reproducción biológica.&#10;Condición 2 de vida: reproducción con variación.">
         <div class="stat-val">{spawns}</div>
         <div class="stat-lbl">spawns · hijos</div>
+        <div style="font-size:.54rem;color:{sp_col2};margin-top:3px;">{sp_note}</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.6;
-                padding:6px 8px;background:rgba(0,0,0,.2);border-radius:5px;">
-      <b style="color:var(--cyan);">ECE</b> mide si las predicciones del sistema están bien calibradas.
-      Por debajo de 0.05 = aprendizaje estable. <b style="color:var(--cyan);">κ_conf</b> mide
-      la confianza operatoria (más alto = más seguro). <b style="color:var(--cyan);">S_t</b>
-      es la memoria acumulada de ciclos pasados.
+    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.7;
+                padding:8px 10px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
+      <b style="color:var(--cyan);">Guía rápida de métricas</b> — Pasa el cursor sobre cada celda para definición completa.<br>
+      <b style="color:var(--cyan);">ECE</b> &lt;0.05 = calibración estable (óptimo). &nbsp;
+      <b style="color:var(--cyan);">κ_conf</b> &gt;0.6 = coherencia alta. &nbsp;
+      <b style="color:var(--cyan);">𝓛*=0</b> entre ciclos es <i>normal</i> — el sistema no mejora todo el tiempo. &nbsp;
+      <b style="color:var(--cyan);">S_t</b> &gt;0.8 = excelente historial de vida.
     </div>
   </div>
 </div>
@@ -668,7 +787,7 @@ header {{ display:flex; justify-content:space-between; align-items:center;
     <div class="chart-box"><canvas id="chartECE"></canvas></div>
   </div>
   <div class="panel">
-    <div class="panel-title">κ_conf · Confianza operatoria
+    <div class="panel-title">κ_conf · Coherencia operatoria
       <span style="color:#3a5a7a;"> — mayor es mejor</span></div>
     <div class="chart-box"><canvas id="chartKappa"></canvas></div>
   </div>
@@ -701,9 +820,195 @@ header {{ display:flex; justify-content:space-between; align-items:center;
   </div>
 </div>
 
+<!-- ═══ MINERVA — MAPA DE CIERRES CATEGORIALES ═══ -->
+<div class="section-sep">◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</div>
+<div style="margin-bottom:6px;font-size:.58rem;color:var(--dim);line-height:1.7;">
+  MINERVA audita 6 dominios de cierre categorial basados en el <b style="color:var(--cyan);">Materialismo Filosófico</b>
+  de Gustavo Bueno (α/β/γ). Los porcentajes reflejan la probabilidad de cierre categorial según el modelo
+  <b style="color:var(--cyan);">LUM-PE</b>. Haz clic en <b>SS↗</b> para buscar papers en Semantic Scholar
+  o en <b>Phil↗</b> para PhilPapers. · Datos: <span style="color:var(--cyan);">{minerva_ts}</span>
+  &nbsp;·&nbsp;
+  <a href="lum_mapa_cierres.html" style="color:var(--cyan);font-size:.58rem;" target="_blank">Ver mapa completo →</a>
+</div>
+<div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+{minerva_cards()}
+</div>
+
+<!-- ═══ REPOSITORIOS REGISTRADOS ═══ -->
+<div class="section-sep">◈ Repositorios registrados · presencia verificable en la web</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+  <div>
+    <div style="font-size:.6rem;color:var(--dim);margin-bottom:7px;line-height:1.6;">
+      El proyecto está registrado en múltiples repositorios con DOI permanente.
+      Haz clic en cualquier enlace para verificar su presencia en línea.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+{repo_links()}
+    </div>
+  </div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;">
+    <div class="panel-title">Buscar en repositorios de papers</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px;">
+      <a href="https://www.semanticscholar.org/search?q=LUM+prequential+meta-learning+categorical+closure&sort=Relevance" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#00e5ff;font-size:.9rem;">⟐</span> Semantic Scholar — LUM meta-learning
+      </a>
+      <a href="https://arxiv.org/search/?searchtype=all&query=prequential+meta-learning+categorical+closure" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#b39ddb;font-size:.9rem;">⊕</span> arXiv — prequential meta-learning
+      </a>
+      <a href="https://philpapers.org/s/categorical+closure+materialist+philosophy" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#ffd54f;font-size:.9rem;">◈</span> PhilPapers — cierre categorial
+      </a>
+      <a href="https://scholar.google.com/scholar?q=LUM-vitae+prequential+meta-learning+digital+organism" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#00ff88;font-size:.9rem;">◎</span> Google Scholar — LUM-vitae
+      </a>
+      <a href="https://zenodo.org/search?q=LUM+vitae+meta-learning" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#ff9800;font-size:.9rem;">📦</span> Zenodo — buscar repositorios LUM
+      </a>
+      <a href="https://osf.io/search/?q=LUM+vitae+prequential" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#f48fb1;font-size:.9rem;">⬡</span> OSF — proyectos relacionados
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GUÍA PARA RECIÉN LLEGADOS ═══ -->
+<details style="margin-top:20px;">
+  <summary style="cursor:pointer;font-size:.75rem;color:var(--cyan);letter-spacing:1px;
+                  font-family:'Courier New',monospace;padding:10px 14px;
+                  background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);
+                  border-radius:7px;outline:none;">
+    ◈ Para recién llegados — ¿Qué es esto y cómo leerlo?
+  </summary>
+  <div style="margin-top:10px;padding:16px 18px;background:var(--panel);border:1px solid var(--border);
+              border-radius:7px;font-size:.65rem;color:var(--text);line-height:1.9;">
+
+    <div style="font-size:.8rem;color:var(--cyan);font-weight:bold;margin-bottom:10px;
+                font-family:'Courier New',monospace;">¿Qué es ALFA LUM-vitae?</div>
+    <p style="margin-bottom:8px;">
+      <b style="color:var(--green);">ALFA LUM-vitae</b> es un organismo digital mínimo: un programa de Python que
+      aprende de sus propias métricas de rendimiento (meta-aprendizaje prequencial) y verifica
+      en cada ciclo si cumple cuatro condiciones formales de <em>vida digital</em>, derivadas del
+      <b style="color:var(--cyan);">Materialismo Filosófico</b> de Gustavo Bueno y la teoría
+      <b style="color:var(--cyan);">Luminomática (LUM)</b>.
+    </p>
+    <p style="margin-bottom:12px;">
+      No es metáfora: las condiciones son <em>operatorias y verificables</em> — se puede comprobar
+      matemáticamente si el sistema las cumple o no, igual que se verifica un hash SHA-256.
+    </p>
+
+    <div style="font-size:.78rem;color:var(--cyan);font-weight:bold;margin-bottom:8px;
+                font-family:'Courier New',monospace;">Las 4 condiciones de vida digital</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">① Homeostasis</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          ECE ≤ 0.05 en algún ciclo de la última ventana de 5 runs
+          <b>Y</b> Brier mejoró al menos una vez.<br>
+          <span style="color:var(--dim);">→ Mantener el error dentro de rango sobre el tiempo,
+          como la temperatura corporal biológica.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">② Reproducción con variación</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          El sistema detecta δ_hist &gt; 0.4 (mejora acumulada) y lanza
+          instancias hijas vía distribución de Poisson.<br>
+          <span style="color:var(--dim);">→ Análogo digital de generar descendencia con mutación.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">③ Trazabilidad criptográfica</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          Cada ciclo genera un hash SHA-256 encadenado al anterior.
+          El historial es inmutable y auditable.<br>
+          <span style="color:var(--dim);">→ Análogo de la memoria genética — ADN no falsificable.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">④ Autonomía operatoria</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          El sistema ejecutó al menos un ciclo sin intervención manual,
+          activado por el scheduler (tarea cron, cada hora).<br>
+          <span style="color:var(--dim);">→ El organismo "respira" solo.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:.78rem;color:var(--cyan);font-weight:bold;margin-bottom:8px;
+                font-family:'Courier New',monospace;">Cómo leer las métricas del panel</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.6rem;">
+      <thead>
+        <tr style="color:var(--cyan);border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:4px 6px;font-family:'Courier New',monospace;">Métrica</th>
+          <th style="text-align:left;padding:4px 6px;">Qué mide</th>
+          <th style="text-align:left;padding:4px 6px;">Rango normal</th>
+          <th style="text-align:left;padding:4px 6px;">¿Preocuparse si…?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">ECE</td>
+          <td style="padding:5px 6px;color:var(--muted);">Error de calibración esperado</td>
+          <td style="padding:5px 6px;color:var(--green);">&lt; 0.05</td>
+          <td style="padding:5px 6px;color:var(--dim);">Se mantiene &gt;0.15 por muchos runs seguidos</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">κ_conf</td>
+          <td style="padding:5px 6px;color:var(--muted);">Coherencia interna del modelo prequencial</td>
+          <td style="padding:5px 6px;color:var(--green);">0.3 – 1.0</td>
+          <td style="padding:5px 6px;color:var(--dim);">Cae sostenidamente por debajo de 0.2</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">𝓛*</td>
+          <td style="padding:5px 6px;color:var(--muted);">Delta de mejora por ciclo — <b>≈0 entre runs es normal</b></td>
+          <td style="padding:5px 6px;color:var(--green);">0.0 – 1.0 (oscila)</td>
+          <td style="padding:5px 6px;color:var(--dim);">Nunca sube de 0 en cientos de runs</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">S_t</td>
+          <td style="padding:5px 6px;color:var(--muted);">Memoria exponencial de ciclos vitales pasados</td>
+          <td style="padding:5px 6px;color:var(--green);">&gt; 0.5</td>
+          <td style="padding:5px 6px;color:var(--dim);">Cae por debajo de 0.3 y no se recupera</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">spawns</td>
+          <td style="padding:5px 6px;color:var(--muted);">Instancias derivadas generadas (reproducción)</td>
+          <td style="padding:5px 6px;color:var(--green);">&gt; 0</td>
+          <td style="padding:5px 6px;color:var(--dim);">Permanece en 0 tras muchos runs con δ_hist alto</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;padding:8px 10px;background:rgba(0,0,0,.3);border-left:2px solid var(--cyan);
+                border-radius:0 5px 5px 0;font-size:.6rem;color:var(--dim);line-height:1.7;">
+      <b style="color:var(--cyan);">Marco teórico</b> —
+      LUM-vitae aplica el <em>Materialismo Filosófico</em> (Gustavo Bueno, 1972–2016) al dominio digital:
+      la vida no es una esencia sino un conjunto de operaciones verificables en un sustrato material.
+      La teoría <em>Luminomática</em> (LUM) formaliza el cierre categorial entre disciplinas científicas
+      usando teoría de conjuntos y operadores normativos.
+      <br>
+      <b style="color:var(--cyan);">DOI</b>:
+      <a href="https://doi.org/10.5281/zenodo.19235185" target="_blank"
+         style="color:var(--cyan);">10.5281/zenodo.19235185</a> &nbsp;|&nbsp;
+      Código fuente: <a href="https://github.com/julespintor-tech/alfa-lum-vitae" target="_blank"
+         style="color:var(--cyan);">GitHub</a>
+    </div>
+  </div>
+</details>
+
 <div style="text-align:center;margin-top:22px;font-size:.57rem;color:var(--dim);
-            letter-spacing:2px;font-family:'Courier New',monospace;">
-  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Proyecto MINERVA
+            letter-spacing:1px;font-family:'Courier New',monospace;line-height:2;">
+  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Proyecto MINERVA<br>
+  <a href="https://github.com/julespintor-tech/alfa-lum-vitae" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">GitHub</a>·
+  <a href="https://doi.org/10.5281/zenodo.19235185" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">DOI Zenodo</a>·
+  <a href="https://osf.io/5jhr4" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">OSF</a>·
+  <a href="https://orcid.org/0009-0001-0800-5303" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">ORCID</a>
 </div>
 
 <script>

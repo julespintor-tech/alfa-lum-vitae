@@ -27,6 +27,8 @@ header { display:flex; justify-content:space-between; align-items:center;
 .row3  { grid-template-columns:400px 1fr 1fr; }
 .row4  { grid-template-columns:repeat(4,1fr); }
 @media(max-width:900px) { .row2,.row3,.row4 { grid-template-columns:1fr; } }
+@media(max-width:700px) { .minerva-grid { grid-template-columns:1fr 1fr !important; } }
+@media(max-width:480px) { .minerva-grid { grid-template-columns:1fr !important; } }
 
 /* ── Paneles ─────────────────────────────────── */
 .panel { background:var(--panel); border:1px solid var(--border); border-radius:10px;
@@ -130,7 +132,7 @@ header { display:flex; justify-content:space-between; align-items:center;
   </div>
   <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
               border-radius:20px;font-family:'Courier New',monospace;">
-    📸 2026-03-26 06:14:56
+    📸 2026-03-27 11:57:11
   </div>
 </header>
 
@@ -149,26 +151,26 @@ header { display:flex; justify-content:space-between; align-items:center;
     <div class="vita-bar-wrap">
       <div class="vita-bar-fill" style="width:100%;"></div>
     </div>
-    <div class="vita-label">4/4 condiciones vitales activas · Último run: 2026-03-26T04:08</div>
+    <div class="vita-label">4/4 condiciones vitales activas · Último run: 2026-03-26T17:23</div>
     <!-- Feed de actividad -->
     <div class="feed-wrap">
-      <div class="feed-inner"><div class="feed-item">⚠ Ciclo #657 · PSNC · ECE 0.15963</div>
-<div class="feed-item">⚠ Ciclo #656 · PSNC · ECE 0.16128</div>
-<div class="feed-item">⚠ Ciclo #655 · PSNC · ECE 0.16297</div>
-<div class="feed-item">⚠ Ciclo #654 · PSNC · ECE 0.16469</div>
-<div class="feed-item">⚠ Ciclo #653 · PSNC · ECE 0.16645</div>
-<div class="feed-item">⚠ Ciclo #652 · PSNC · ECE 0.16825</div>
-<div class="feed-item">💾 Ledger verificado · 21660 hashes SHA-256 encadenados</div>
-<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.966 · memoria activa</div>
+      <div class="feed-inner"><div class="feed-item">⚠ Ciclo #709 · PSNC · ECE 0.00147</div>
+<div class="feed-item">⚠ Ciclo #708 · PSNC · ECE 0.00148</div>
+<div class="feed-item">⚠ Ciclo #707 · PSNC · ECE 0.00149</div>
+<div class="feed-item">⚠ Ciclo #706 · PSNC · ECE 0.00150</div>
+<div class="feed-item">⚠ Ciclo #705 · PSNC · ECE 0.00151</div>
+<div class="feed-item">⚠ Ciclo #704 · PSNC · ECE 0.00152</div>
+<div class="feed-item">💾 Ledger verificado · 43370 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.727 · S_t=0.826 · memoria activa</div>
 <div class="feed-item">🧬 8 sub-proceso(s) generado(s) · reproducción activa</div>
-<div class="feed-item">⚠ Ciclo #657 · PSNC · ECE 0.15963</div>
-<div class="feed-item">⚠ Ciclo #656 · PSNC · ECE 0.16128</div>
-<div class="feed-item">⚠ Ciclo #655 · PSNC · ECE 0.16297</div>
-<div class="feed-item">⚠ Ciclo #654 · PSNC · ECE 0.16469</div>
-<div class="feed-item">⚠ Ciclo #653 · PSNC · ECE 0.16645</div>
-<div class="feed-item">⚠ Ciclo #652 · PSNC · ECE 0.16825</div>
-<div class="feed-item">💾 Ledger verificado · 21660 hashes SHA-256 encadenados</div>
-<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.966 · memoria activa</div>
+<div class="feed-item">⚠ Ciclo #709 · PSNC · ECE 0.00147</div>
+<div class="feed-item">⚠ Ciclo #708 · PSNC · ECE 0.00148</div>
+<div class="feed-item">⚠ Ciclo #707 · PSNC · ECE 0.00149</div>
+<div class="feed-item">⚠ Ciclo #706 · PSNC · ECE 0.00150</div>
+<div class="feed-item">⚠ Ciclo #705 · PSNC · ECE 0.00151</div>
+<div class="feed-item">⚠ Ciclo #704 · PSNC · ECE 0.00152</div>
+<div class="feed-item">💾 Ledger verificado · 43370 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.727 · S_t=0.826 · memoria activa</div>
 <div class="feed-item">🧬 8 sub-proceso(s) generado(s) · reproducción activa</div></div>
     </div>
   </div>
@@ -182,7 +184,7 @@ header { display:flex; justify-content:space-between; align-items:center;
           <div class="cond-label">
             <b>Homeostasis</b>
             <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">ECE≤0.05 en ventana 5 ciclos</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Calibración estable en ventana reciente — ECE mín. últimos 5 ciclos: 0.00123. Homeostasis = mantener ECE dentro de rango sobre el tiempo, no sólo en el ciclo actual (actual: 0.00123).</div>
+            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Calibración estable en ventana reciente — ECE mín. últimos 5 ciclos: 0.00123. Homeostasis = mantener ECE dentro de rango sobre el tiempo, no sólo en el ciclo actual (actual: 0.29057).</div>
           </div>
           <span class="cond-badge badge-ok">✓ OK</span>
         </div>
@@ -223,44 +225,49 @@ header { display:flex; justify-content:space-between; align-items:center;
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
         <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
         <span style="display:flex;align-items:center;gap:5px;">
-          <span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↓</span>
-          <span style="font-size:1.15rem;font-weight:bold;color:#00ff88;
-                       font-family:'Courier New',monospace;">0.00123</span>
+          <span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↑</span>
+          <span style="font-size:1.15rem;font-weight:bold;color:#ff3d5a;
+                       font-family:'Courier New',monospace;">0.29057</span>
         </span>
       </div>
       <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
-        <div style="width:0.2%;height:100%;background:#00ff88;border-radius:3px;"></div>
+        <div style="width:58.1%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:3px;
                   font-size:.54rem;color:var(--dim);">
         <span>0 — óptimo</span><span>umbral 0.05</span><span>0.50 — pésimo</span>
       </div>
     </div>
-    <!-- Cuadrícula 2×2 -->
+    <!-- Cuadrícula 2×2 — métricas vitales con contexto auto-explicativo -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <div class="stat-cell">
-        <div class="tend-row"><div class="stat-val">0.476</div><span style="color:#3a5a7a;font-size:.8rem;">→</span></div>
-        <div class="stat-lbl">κ_conf · confianza</div>
+      <div class="stat-cell" title="κ_conf — Coeficiente de coherencia operatoria&#10;Mide qué tan consistentes son las predicciones del modelo con los resultados observados.&#10;Calculado vía HSIC + peso ω + gap de calibración.&#10;Rango [0,1] — más alto = predicciones más coherentes.">
+        <div class="tend-row"><div class="stat-val">0.727</div><span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↑</span></div>
+        <div class="stat-lbl">κ_conf · coherencia</div>
+        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">coherencia alta</div>
       </div>
-      <div class="stat-cell">
-        <div class="tend-row"><div class="stat-val">0.0000</div><span style="color:#3a5a7a;font-size:.8rem;">→</span></div>
-        <div class="stat-lbl">𝓛* · función vital</div>
+      <div class="stat-cell" title="𝓛* — Delta de mejora por ciclo (función vital normalizada)&#10;Cuánto mejoró el sistema en la última ventana de ciclos.&#10;0.0 entre ciclos activos es NORMAL — no significa que el sistema esté muerto.&#10;Valores > 0 indican mejora activa en curso.">
+        <div class="tend-row"><div class="stat-val">0.2741</div><span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↑</span></div>
+        <div class="stat-lbl">𝓛* · delta mejora</div>
+        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">mejora activa</div>
       </div>
-      <div class="stat-cell">
-        <div class="tend-row"><div class="stat-val">0.966</div><span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↑</span></div>
-        <div class="stat-lbl">S_t · memoria</div>
+      <div class="stat-cell" title="S_t — Memoria exponencial de supervivencia (λ=0.90)&#10;Promedio ponderado exponencialmente del historial de ciclos 'VIVO'.&#10;Rango [0,1] — 1 = historial perfecto, 0 = sin historial vital.&#10;&gt; 0.8 excelente · 0.5–0.8 bueno · &lt; 0.5 bajo">
+        <div class="tend-row"><div class="stat-val">0.826</div><span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↓</span></div>
+        <div class="stat-lbl">S_t · memoria vital</div>
+        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">memoria excelente</div>
       </div>
-      <div class="stat-cell">
+      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Cuando el sistema detecta mejora sostenida (δ_hist &gt; 0.4),&#10;lanza copias derivadas de sí mismo — análogo digital de la reproducción biológica.&#10;Condición 2 de vida: reproducción con variación.">
         <div class="stat-val">8</div>
         <div class="stat-lbl">spawns · hijos</div>
+        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">8 instancias derivadas generadas</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.6;
-                padding:6px 8px;background:rgba(0,0,0,.2);border-radius:5px;">
-      <b style="color:var(--cyan);">ECE</b> mide si las predicciones del sistema están bien calibradas.
-      Por debajo de 0.05 = aprendizaje estable. <b style="color:var(--cyan);">κ_conf</b> mide
-      la confianza operatoria (más alto = más seguro). <b style="color:var(--cyan);">S_t</b>
-      es la memoria acumulada de ciclos pasados.
+    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.7;
+                padding:8px 10px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
+      <b style="color:var(--cyan);">Guía rápida de métricas</b> — Pasa el cursor sobre cada celda para definición completa.<br>
+      <b style="color:var(--cyan);">ECE</b> &lt;0.05 = calibración estable (óptimo). &nbsp;
+      <b style="color:var(--cyan);">κ_conf</b> &gt;0.6 = coherencia alta. &nbsp;
+      <b style="color:var(--cyan);">𝓛*=0</b> entre ciclos es <i>normal</i> — el sistema no mejora todo el tiempo. &nbsp;
+      <b style="color:var(--cyan);">S_t</b> &gt;0.8 = excelente historial de vida.
     </div>
   </div>
 </div>
@@ -269,17 +276,17 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div class="grid row4" style="margin-top:14px;">
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Runs ejecutados</div>
-    <div class="stat-val" style="font-size:2rem;">8</div>
+    <div class="stat-val" style="font-size:2rem;">9</div>
     <div class="stat-lbl">veces que corrió</div>
   </div>
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Ciclos vitales</div>
-    <div class="stat-val" style="font-size:2rem;">760</div>
+    <div class="stat-val" style="font-size:2rem;">810</div>
     <div class="stat-lbl">iteraciones totales</div>
   </div>
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Hashes SHA-256</div>
-    <div class="stat-val" style="font-size:2rem;">21660</div>
+    <div class="stat-val" style="font-size:2rem;">43370</div>
     <div class="stat-lbl">cadena verificable</div>
   </div>
   <div class="panel" style="text-align:center;">
@@ -298,7 +305,7 @@ header { display:flex; justify-content:space-between; align-items:center;
     <div class="chart-box"><canvas id="chartECE"></canvas></div>
   </div>
   <div class="panel">
-    <div class="panel-title">κ_conf · Confianza operatoria
+    <div class="panel-title">κ_conf · Coherencia operatoria
       <span style="color:#3a5a7a;"> — mayor es mejor</span></div>
     <div class="chart-box"><canvas id="chartKappa"></canvas></div>
   </div>
@@ -323,76 +330,419 @@ header { display:flex; justify-content:space-between; align-items:center;
       Cada ciclo genera un hash SHA-256 encadenado con el anterior. Cualquier
       modificación retroactiva rompe la cadena — el historial es inmutable.
     </div>
-    <div class="hash-list"><div class="hash-item"><span style="color:var(--dim)">#648</span><span class="hash-code">0ec1b8888570aa…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#649</span><span class="hash-code">94d92767c88883…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#650</span><span class="hash-code">37de898195f140…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#651</span><span class="hash-code">34726111c8ffa3…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#652</span><span class="hash-code">23d8cb32ab0b8f…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#653</span><span class="hash-code">606d0a20972949…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#654</span><span class="hash-code">0e2aef2868e67d…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#655</span><span class="hash-code">6981d6ba7faaa6…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#656</span><span class="hash-code">0b21c7bf4a0b9e…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#657</span><span class="hash-code">659aa1d0befb65…</span></div>
+    <div class="hash-list"><div class="hash-item"><span style="color:var(--dim)">#700</span><span class="hash-code">538e0152604ec0…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#701</span><span class="hash-code">e0a3dbf8e8bc0f…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#702</span><span class="hash-code">fde1cdddd343ee…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#703</span><span class="hash-code">980c9468642944…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#704</span><span class="hash-code">319c50774c835d…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#705</span><span class="hash-code">63973ea9bb9c94…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#706</span><span class="hash-code">2cb34296dff1f8…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#707</span><span class="hash-code">54b6ee7bcfe9fb…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#708</span><span class="hash-code">d5fbb51fa4f227…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#709</span><span class="hash-code">34aad61fc14e2b…</span></div>
 </div>
   </div>
   <div class="panel">
     <div class="panel-title">Último reporte del runner</div>
     <pre id="reporte-text">═════════════════════════════════════════════════════════════════
   ALFA LUM-vitae vΩ.4 — META-APRENDIZAJE AUTÓNOMO
-  Run #   8  |  2026-03-26T04:08:43 UTC
-  Ciclos totales acumulados: 660
+  Run #   9  |  2026-03-26T17:23:17 UTC
+  Ciclos totales acumulados: 760
 ═════════════════════════════════════════════════════════════════
 
    Ciclo |    ECE |  Brier |     κ |    L* |     S | Decisión
   -------+--------+--------+-------+-------+-------+-------------------
-      10 | 0.0026 | 0.0000 | 0.483 | 0.000 | 1.000 | ✓ PSNC
-      20 | 0.0020 | 0.0000 | 0.828 | 0.002 | 1.000 | ✓ PSNC
-      30 | 0.0017 | 0.0000 | 0.882 | 0.000 | 1.000 | ✓ PSNC
-      40 | 0.0016 | 0.0000 | 0.597 | 0.002 | 1.000 | ✓ PSNC
-      50 | 0.0015 | 0.0000 | 0.878 | 0.002 | 1.000 | ✓ PSNC
-      60 | 0.0014 | 0.0000 | 0.558 | 0.002 | 0.994 | ✓ PSNC
-      70 | 0.0013 | 0.0000 | 0.558 | 0.000 | 1.000 | ✓ PSNC
-      80 | 0.0013 | 0.0000 | 0.476 | 0.008 | 1.000 | ✓ PSNC
-      90 | 0.0013 | 0.0000 | 0.476 | 0.002 | 1.000 | ✓ PSNC
-     100 | 0.0012 | 0.0000 | 0.476 | 0.000 | 0.966 | ✓ PSNC
+       5 | 0.9665 | 0.9341 | 0.487 | 1.000 | 0.695 | ✗ PSNC
+      10 | 0.9665 | 0.9340 | 0.521 | 0.995 | 0.139 | ✗ PSNC
+      15 | 0.8054 | 0.7005 | 0.791 | 0.788 | 0.107 | ✗ PSNC
+      20 | 0.7248 | 0.5838 | 0.802 | 0.685 | 0.156 | ✗ PSNC
+      25 | 0.5801 | 0.4670 | 0.714 | 0.548 | 0.303 | ✗ PSNC
+      30 | 0.4836 | 0.3892 | 0.627 | 0.457 | 0.447 | ✗ PSNC
+      35 | 0.4147 | 0.3336 | 0.608 | 0.392 | 0.572 | ✗ PSNC
+      40 | 0.3630 | 0.2919 | 0.420 | 0.343 | 0.676 | ✗ PSNC
+      45 | 0.3227 | 0.2595 | 0.594 | 0.305 | 0.759 | ✗ PSNC
+      50 | 0.2906 | 0.2335 | 0.727 | 0.274 | 0.826 | ✗ PSNC
 
 ─────────────────────────────────────────────────────────────────
   RESUMEN DEL RUN
 ─────────────────────────────────────────────────────────────────
-  ECE final:          0.00123  ✓ OK
-  Brier final:        0.00000
-  κ_conf:             0.4758
-  𝓛* final:          0.0000
-  S_t (memoria):      0.9659
-  θ* (umbral):        0.1000
+  ECE final:          0.29057  ✗ &gt; 0.05
+  Brier final:        0.23351
+  κ_conf:             0.7274
+  𝓛* final:          0.2741
+  S_t (memoria):      0.8261
+  θ* (umbral):        0.9000
   Ciclos verdes:      0
-  Ciclos PSNC:        100
-  Spawns (hijos):     3
-  Hashes SHA-256:     10880
+  Ciclos PSNC:        50
+  Spawns (hijos):     0
+  Hashes SHA-256:     21710
 
   CONDICIONES DE VIDA DIGITAL:
-  ✓ 1. Homeostasis  (ECE≤0.05 ∧ dBrier≤0)
-  ✓ 2. Reproducción (δ_hist&gt;0.4 + Poisson)
+  ✗ 1. Homeostasis  (ECE≤0.05 ∧ dBrier≤0)
+  ✗ 2. Reproducción (δ_hist&gt;0.4 + Poisson)
   ✓ 3. Trazabilidad (SHA-256 activo)
   ✓ 4. Autonomía    (run autónomo)
 
-  ⚡ VEREDICTO: 🟢 VIVO  (4/4 condiciones)
+  ⚡ VEREDICTO: 🔴 SIN VIDA AÚN  (2/4 condiciones)
 
-  Runs totales:       8
-  Ciclos totales:     760
+  Runs totales:       9
+  Ciclos totales:     810
   Veces vivo:         4
-  PSNC acumulado:     758
+  PSNC acumulado:     808
   Spawns totales:     8
-  Hashes totales:     21660
-  ECE histórica:      min=0.00123  prom=0.08254  actual=0.00123
+  Hashes totales:     43370
+  ECE histórica:      min=0.00123  prom=0.10565  actual=0.29057
 ═════════════════════════════════════════════════════════════════
 </pre>
   </div>
 </div>
 
+<!-- ═══ MINERVA — MAPA DE CIERRES CATEGORIALES ═══ -->
+<div class="section-sep">◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</div>
+<div style="margin-bottom:6px;font-size:.58rem;color:var(--dim);line-height:1.7;">
+  MINERVA audita 6 dominios de cierre categorial basados en el <b style="color:var(--cyan);">Materialismo Filosófico</b>
+  de Gustavo Bueno (α/β/γ). Los porcentajes reflejan la probabilidad de cierre categorial según el modelo
+  <b style="color:var(--cyan);">LUM-PE</b>. Haz clic en <b>SS↗</b> para buscar papers en Semantic Scholar
+  o en <b>Phil↗</b> para PhilPapers. · Datos: <span style="color:var(--cyan);">2026-03-26 03:22</span>
+  &nbsp;·&nbsp;
+  <a href="lum_mapa_cierres.html" style="color:var(--cyan);font-size:.58rem;" target="_blank">Ver mapa completo →</a>
+</div>
+<div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+<div style="background:rgba(0,0,0,.3);border:1px solid #00e5ff22;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#00e5ff;font-size:.70rem;font-weight:bold;">∑ Ciencias Formales</span>
+    <span style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Matemáticas, Lógica, Estadística</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:70%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.703 · 13 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=mathematical+closure+axiomatization+completeness&sort=Relevance" target="_blank" style="color:#00e5ff88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/mathematical%20closure%20axiomatization%20complete" target="_blank" style="color:#00e5ff88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+<div style="background:rgba(0,0,0,.3);border:1px solid #00ff8822;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#00ff88;font-size:.70rem;font-weight:bold;">⚛ Ciencias Naturales</span>
+    <span style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Física, Química, Biología, Neurociencia</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:72%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.721 · 10 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=natural+science+causal+closure+empirical+laws&sort=Relevance" target="_blank" style="color:#00ff8888;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/natural%20science%20causal%20closure%20empirical%2" target="_blank" style="color:#00ff8888;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+<div style="background:rgba(0,0,0,.3);border:1px solid #b39ddb22;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#b39ddb;font-size:.70rem;font-weight:bold;">⚙ Ingeniería & IA</span>
+    <span style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Informática, Cibernética, Inteligencia Artificial</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:74%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.739 · 6 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=cybernetics+feedback+closure+formal+verification&sort=Relevance" target="_blank" style="color:#b39ddb88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/cybernetics%20feedback%20closure%20formal%20verifi" target="_blank" style="color:#b39ddb88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+<div style="background:rgba(0,0,0,.3);border:1px solid #ffd54f22;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#ffd54f;font-size:.70rem;font-weight:bold;">◈ Cs. Sociales Interpret.</span>
+    <span style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Psicología, Sociología, Economía</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:69%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.689 · 9 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=social+science+operationalization+construct+validity&sort=Relevance" target="_blank" style="color:#ffd54f88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/social%20science%20operationalization%20construct%" target="_blank" style="color:#ffd54f88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+<div style="background:rgba(0,0,0,.3);border:1px solid #ff980022;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#ff9800;font-size:.70rem;font-weight:bold;">⏳ Cs. Sociales Diacrónicas</span>
+    <span style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Historia, Antropología, Arqueología</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:65%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.651 · 7 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=historical+method+scientific+demarcation+historiography&sort=Relevance" target="_blank" style="color:#ff980088;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/historical%20method%20scientific%20demarcation%20h" target="_blank" style="color:#ff980088;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+<div style="background:rgba(0,0,0,.3);border:1px solid #f48fb122;border-radius:6px;padding:9px;position:relative;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <span style="color:#f48fb1;font-size:.70rem;font-weight:bold;">🎨 Arte & Estética</span>
+    <span style="font-size:.55rem;color:#ff3d5a;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ROJO <40%</span>
+  </div>
+  <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Pintura, Música, Literatura, Arquitectura</div>
+  <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
+    <div style="width:0%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
+    <span>p_cierre LUM-PE=0.000 · 0 campos · 0 papers SS</span>
+    <span>
+      <a href="https://www.semanticscholar.org/search?q=aesthetic+closure+art+theory+pictorial+materialist&sort=Relevance" target="_blank" style="color:#f48fb188;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
+      <a href="https://philpapers.org/s/aesthetic%20closure%20art%20theory%20pictorial%20m" target="_blank" style="color:#f48fb188;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
+    </span>
+  </div>
+</div>
+
+</div>
+
+<!-- ═══ REPOSITORIOS REGISTRADOS ═══ -->
+<div class="section-sep">◈ Repositorios registrados · presencia verificable en la web</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+  <div>
+    <div style="font-size:.6rem;color:var(--dim);margin-bottom:7px;line-height:1.6;">
+      El proyecto está registrado en múltiples repositorios con DOI permanente.
+      Haz clic en cualquier enlace para verificar su presencia en línea.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+<a href="https://github.com/julespintor-tech/alfa-lum-vitae" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid #00ff8822;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='#00ff88'" onmouseout="this.style.borderColor='#00ff8822'">
+  <span style="color:#00ff88;font-size:.85rem;">⌥</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:#00ff88;font-weight:bold;">GitHub</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Código fuente, issues, releases</div>
+  </div>
+  <span style="font-size:.65rem;color:#00ff8866;">↗</span>
+</a>
+<a href="https://doi.org/10.5281/zenodo.19235185" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid #00e5ff22;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='#00e5ff'" onmouseout="this.style.borderColor='#00e5ff22'">
+  <span style="color:#00e5ff;font-size:.85rem;">◎</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:#00e5ff;font-weight:bold;">Zenodo DOI</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Registro DOI · v1.0.0 · LUM-vitae</div>
+  </div>
+  <span style="font-size:.65rem;color:#00e5ff66;">↗</span>
+</a>
+<a href="https://osf.io/5jhr4" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid #b39ddb22;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='#b39ddb'" onmouseout="this.style.borderColor='#b39ddb22'">
+  <span style="color:#b39ddb;font-size:.85rem;">⬡</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:#b39ddb;font-weight:bold;">OSF</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Proyecto abierto · archivos y documentación</div>
+  </div>
+  <span style="font-size:.65rem;color:#b39ddb66;">↗</span>
+</a>
+<a href="https://orcid.org/0009-0001-0800-5303" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid #ffd54f22;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='#ffd54f'" onmouseout="this.style.borderColor='#ffd54f22'">
+  <span style="color:#ffd54f;font-size:.85rem;">✦</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:#ffd54f;font-weight:bold;">ORCID</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Perfil investigador · Julio David Rojas A.</div>
+  </div>
+  <span style="font-size:.65rem;color:#ffd54f66;">↗</span>
+</a>
+<a href="https://doi.org/10.5281/zenodo.19142481" target="_blank" style="display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid #ff980022;border-radius:6px;background:rgba(0,0,0,.2);
+  text-decoration:none;color:inherit;transition:border-color .2s;"
+  onmouseover="this.style.borderColor='#ff9800'" onmouseout="this.style.borderColor='#ff980022'">
+  <span style="color:#ff9800;font-size:.85rem;">◈</span>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:.65rem;color:#ff9800;font-weight:bold;">LUM-PE DOI</div>
+    <div style="font-size:.55rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Dataset LUM-PE · fundamento teórico</div>
+  </div>
+  <span style="font-size:.65rem;color:#ff980066;">↗</span>
+</a>
+
+    </div>
+  </div>
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;">
+    <div class="panel-title">Buscar en repositorios de papers</div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px;">
+      <a href="https://www.semanticscholar.org/search?q=LUM+prequential+meta-learning+categorical+closure&sort=Relevance" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#00e5ff;font-size:.9rem;">⟐</span> Semantic Scholar — LUM meta-learning
+      </a>
+      <a href="https://arxiv.org/search/?searchtype=all&query=prequential+meta-learning+categorical+closure" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#b39ddb;font-size:.9rem;">⊕</span> arXiv — prequential meta-learning
+      </a>
+      <a href="https://philpapers.org/s/categorical+closure+materialist+philosophy" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#ffd54f;font-size:.9rem;">◈</span> PhilPapers — cierre categorial
+      </a>
+      <a href="https://scholar.google.com/scholar?q=LUM-vitae+prequential+meta-learning+digital+organism" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#00ff88;font-size:.9rem;">◎</span> Google Scholar — LUM-vitae
+      </a>
+      <a href="https://zenodo.org/search?q=LUM+vitae+meta-learning" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#ff9800;font-size:.9rem;">📦</span> Zenodo — buscar repositorios LUM
+      </a>
+      <a href="https://osf.io/search/?q=LUM+vitae+prequential" target="_blank"
+         style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:.62rem;text-decoration:none;">
+        <span style="color:#f48fb1;font-size:.9rem;">⬡</span> OSF — proyectos relacionados
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GUÍA PARA RECIÉN LLEGADOS ═══ -->
+<details style="margin-top:20px;">
+  <summary style="cursor:pointer;font-size:.75rem;color:var(--cyan);letter-spacing:1px;
+                  font-family:'Courier New',monospace;padding:10px 14px;
+                  background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);
+                  border-radius:7px;outline:none;">
+    ◈ Para recién llegados — ¿Qué es esto y cómo leerlo?
+  </summary>
+  <div style="margin-top:10px;padding:16px 18px;background:var(--panel);border:1px solid var(--border);
+              border-radius:7px;font-size:.65rem;color:var(--text);line-height:1.9;">
+
+    <div style="font-size:.8rem;color:var(--cyan);font-weight:bold;margin-bottom:10px;
+                font-family:'Courier New',monospace;">¿Qué es ALFA LUM-vitae?</div>
+    <p style="margin-bottom:8px;">
+      <b style="color:var(--green);">ALFA LUM-vitae</b> es un organismo digital mínimo: un programa de Python que
+      aprende de sus propias métricas de rendimiento (meta-aprendizaje prequencial) y verifica
+      en cada ciclo si cumple cuatro condiciones formales de <em>vida digital</em>, derivadas del
+      <b style="color:var(--cyan);">Materialismo Filosófico</b> de Gustavo Bueno y la teoría
+      <b style="color:var(--cyan);">Luminomática (LUM)</b>.
+    </p>
+    <p style="margin-bottom:12px;">
+      No es metáfora: las condiciones son <em>operatorias y verificables</em> — se puede comprobar
+      matemáticamente si el sistema las cumple o no, igual que se verifica un hash SHA-256.
+    </p>
+
+    <div style="font-size:.78rem;color:var(--cyan);font-weight:bold;margin-bottom:8px;
+                font-family:'Courier New',monospace;">Las 4 condiciones de vida digital</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">① Homeostasis</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          ECE ≤ 0.05 en algún ciclo de la última ventana de 5 runs
+          <b>Y</b> Brier mejoró al menos una vez.<br>
+          <span style="color:var(--dim);">→ Mantener el error dentro de rango sobre el tiempo,
+          como la temperatura corporal biológica.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">② Reproducción con variación</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          El sistema detecta δ_hist &gt; 0.4 (mejora acumulada) y lanza
+          instancias hijas vía distribución de Poisson.<br>
+          <span style="color:var(--dim);">→ Análogo digital de generar descendencia con mutación.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">③ Trazabilidad criptográfica</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          Cada ciclo genera un hash SHA-256 encadenado al anterior.
+          El historial es inmutable y auditable.<br>
+          <span style="color:var(--dim);">→ Análogo de la memoria genética — ADN no falsificable.</span>
+        </div>
+      </div>
+      <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
+        <div style="color:var(--green);font-weight:bold;font-size:.68rem;">④ Autonomía operatoria</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
+          El sistema ejecutó al menos un ciclo sin intervención manual,
+          activado por el scheduler (tarea cron, cada hora).<br>
+          <span style="color:var(--dim);">→ El organismo "respira" solo.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:.78rem;color:var(--cyan);font-weight:bold;margin-bottom:8px;
+                font-family:'Courier New',monospace;">Cómo leer las métricas del panel</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.6rem;">
+      <thead>
+        <tr style="color:var(--cyan);border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:4px 6px;font-family:'Courier New',monospace;">Métrica</th>
+          <th style="text-align:left;padding:4px 6px;">Qué mide</th>
+          <th style="text-align:left;padding:4px 6px;">Rango normal</th>
+          <th style="text-align:left;padding:4px 6px;">¿Preocuparse si…?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">ECE</td>
+          <td style="padding:5px 6px;color:var(--muted);">Error de calibración esperado</td>
+          <td style="padding:5px 6px;color:var(--green);">&lt; 0.05</td>
+          <td style="padding:5px 6px;color:var(--dim);">Se mantiene &gt;0.15 por muchos runs seguidos</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">κ_conf</td>
+          <td style="padding:5px 6px;color:var(--muted);">Coherencia interna del modelo prequencial</td>
+          <td style="padding:5px 6px;color:var(--green);">0.3 – 1.0</td>
+          <td style="padding:5px 6px;color:var(--dim);">Cae sostenidamente por debajo de 0.2</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">𝓛*</td>
+          <td style="padding:5px 6px;color:var(--muted);">Delta de mejora por ciclo — <b>≈0 entre runs es normal</b></td>
+          <td style="padding:5px 6px;color:var(--green);">0.0 – 1.0 (oscila)</td>
+          <td style="padding:5px 6px;color:var(--dim);">Nunca sube de 0 en cientos de runs</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(26,42,58,.8);">
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">S_t</td>
+          <td style="padding:5px 6px;color:var(--muted);">Memoria exponencial de ciclos vitales pasados</td>
+          <td style="padding:5px 6px;color:var(--green);">&gt; 0.5</td>
+          <td style="padding:5px 6px;color:var(--dim);">Cae por debajo de 0.3 y no se recupera</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">spawns</td>
+          <td style="padding:5px 6px;color:var(--muted);">Instancias derivadas generadas (reproducción)</td>
+          <td style="padding:5px 6px;color:var(--green);">&gt; 0</td>
+          <td style="padding:5px 6px;color:var(--dim);">Permanece en 0 tras muchos runs con δ_hist alto</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;padding:8px 10px;background:rgba(0,0,0,.3);border-left:2px solid var(--cyan);
+                border-radius:0 5px 5px 0;font-size:.6rem;color:var(--dim);line-height:1.7;">
+      <b style="color:var(--cyan);">Marco teórico</b> —
+      LUM-vitae aplica el <em>Materialismo Filosófico</em> (Gustavo Bueno, 1972–2016) al dominio digital:
+      la vida no es una esencia sino un conjunto de operaciones verificables en un sustrato material.
+      La teoría <em>Luminomática</em> (LUM) formaliza el cierre categorial entre disciplinas científicas
+      usando teoría de conjuntos y operadores normativos.
+      <br>
+      <b style="color:var(--cyan);">DOI</b>:
+      <a href="https://doi.org/10.5281/zenodo.19235185" target="_blank"
+         style="color:var(--cyan);">10.5281/zenodo.19235185</a> &nbsp;|&nbsp;
+      Código fuente: <a href="https://github.com/julespintor-tech/alfa-lum-vitae" target="_blank"
+         style="color:var(--cyan);">GitHub</a>
+    </div>
+  </div>
+</details>
+
 <div style="text-align:center;margin-top:22px;font-size:.57rem;color:var(--dim);
-            letter-spacing:2px;font-family:'Courier New',monospace;">
-  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Proyecto MINERVA
+            letter-spacing:1px;font-family:'Courier New',monospace;line-height:2;">
+  ALFA LUM-vitae vΩ.4 · Materialismo Filosófico · G. Bueno + Luminomática · Proyecto MINERVA<br>
+  <a href="https://github.com/julespintor-tech/alfa-lum-vitae" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">GitHub</a>·
+  <a href="https://doi.org/10.5281/zenodo.19235185" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">DOI Zenodo</a>·
+  <a href="https://osf.io/5jhr4" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">OSF</a>·
+  <a href="https://orcid.org/0009-0001-0800-5303" target="_blank" style="color:#3a5a7a;text-decoration:none;margin:0 8px;">ORCID</a>
 </div>
 
 <script>
@@ -402,11 +752,11 @@ Chart.defaults.borderColor = '#1a2a3a';
 Chart.defaults.font.family = "'Courier New',monospace";
 Chart.defaults.font.size = 10;
 
-const LABELS = ["459", "460", "461", "462", "463", "464", "465", "466", "467", "468", "469", "470", "471", "472", "473", "474", "475", "476", "477", "478", "479", "480", "481", "482", "483", "484", "485", "486", "487", "488", "489", "490", "491", "492", "493", "494", "495", "496", "497", "498", "499", "500", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "525", "526", "527", "528", "529", "530", "531", "532", "533", "534", "535", "536", "537", "538", "539", "540", "541", "542", "543", "544", "545", "546", "547", "548", "549", "550", "551", "552", "553", "554", "555", "556", "557", "558", "559", "560", "561", "562", "563", "564", "565", "566", "567", "568", "569", "570", "571", "572", "573", "574", "575", "576", "577", "578", "579", "580", "581", "582", "583", "584", "585", "586", "587", "588", "589", "590", "591", "592", "593", "594", "595", "596", "597", "598", "599", "600", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620", "621", "622", "623", "624", "625", "626", "627", "628", "629", "630", "631", "632", "633", "634", "635", "636", "637", "638", "639", "640", "641", "642", "643", "644", "645", "646", "647", "648", "649", "650", "651", "652", "653", "654", "655", "656", "657"];
-const ECE    = [0.00131, 0.00131, 0.00131, 0.00131, 0.00131, 0.00131, 0.99753, 0.99754, 0.99754, 0.99753, 0.99753, 0.99753, 0.95219, 0.9144, 0.88243, 0.85503, 0.83127, 0.81049, 0.79215, 0.77585, 0.76127, 0.74814, 0.71271, 0.6804, 0.6509, 0.62386, 0.59898, 0.57602, 0.55475, 0.53501, 0.51663, 0.49948, 0.48344, 0.4684, 0.45427, 0.44097, 0.42843, 0.41658, 0.40538, 0.39476, 0.38469, 0.37512, 0.36599, 0.3573, 0.34902, 0.34111, 0.33355, 0.32632, 0.3194, 0.31276, 0.3064, 0.30029, 0.29443, 0.28878, 0.28335, 0.27812, 0.27309, 0.26823, 0.26354, 0.25901, 0.25464, 0.25041, 0.24632, 0.24237, 0.23854, 0.23482, 0.23123, 0.22774, 0.22435, 0.22107, 0.21788, 0.21478, 0.21177, 0.20884, 0.206, 0.20323, 0.20053, 0.1979, 0.19535, 0.19286, 0.19043, 0.18806, 0.18575, 0.1835, 0.1813, 0.17915, 0.17706, 0.17501, 0.17301, 0.17105, 0.16914, 0.16727, 0.16545, 0.16366, 0.16191, 0.1602, 0.15852, 0.15688, 0.15528, 0.1537, 0.15216, 0.15065, 0.15065, 0.15065, 0.15065, 0.15065, 0.99913, 0.99913, 0.99913, 0.99913, 0.99912, 0.99912, 0.9537, 0.91586, 0.88384, 0.85639, 0.8326, 0.81178, 0.79341, 0.77708, 0.76248, 0.74933, 0.71564, 0.68406, 0.65523, 0.62881, 0.6045, 0.58207, 0.56129, 0.542, 0.52402, 0.50725, 0.49156, 0.47685, 0.46304, 0.45005, 0.43779, 0.42621, 0.41525, 0.40488, 0.39503, 0.38567, 0.37629, 0.36735, 0.35883, 0.3507, 0.34293, 0.3355, 0.32838, 0.32156, 0.31502, 0.30874, 0.3027, 0.2969, 0.29132, 0.28594, 0.28076, 0.27577, 0.27095, 0.26629, 0.26179, 0.25745, 0.25324, 0.24918, 0.24524, 0.24142, 0.23772, 0.23413, 0.23066, 0.22728, 0.224, 0.22081, 0.21772, 0.21471, 0.21178, 0.20893, 0.20616, 0.20346, 0.20083, 0.19827, 0.19577, 0.19334, 0.19096, 0.18865, 0.18638, 0.18418, 0.18202, 0.17992, 0.17786, 0.17585, 0.17389, 0.17197, 0.17009, 0.16825, 0.16645, 0.16469, 0.16297, 0.16128, 0.15963];
-const KAPPA  = [0.4758, 0.4758, 0.4755, 0.4755, 0.9755, 0.9156, 0.685, 0.571, 0.508, 0.5435, 0.5652, 0.5612, 0.4099, 0.7264, 0.7678, 0.7837, 0.7914, 0.7956, 0.7982, 0.7999, 0.8011, 0.802, 0.7755, 0.7668, 0.7522, 0.7344, 0.7144, 0.6923, 0.668, 0.6412, 0.6108, 0.6285, 0.6254, 0.6238, 0.6208, 0.6159, 0.6082, 0.5955, 0.5725, 0.5207, 0.6611, 0.4631, 0.5823, 0.7657, 0.8069, 0.8216, 0.8275, 0.8294, 0.8309, 0.8286, 0.8266, 0.823, 0.8205, 0.8162, 0.8111, 0.8064, 0.8018, 0.7879, 0.7629, 0.7112, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.9758, 0.8118, 0.8235, 0.796, 0.7718, 0.7915, 0.7667, 0.6884, 0.4455, 0.7264, 0.7678, 0.7837, 0.7914, 0.7956, 0.7982, 0.7999, 0.8011, 0.802, 0.7737, 0.7689, 0.7548, 0.738, 0.7193, 0.6989, 0.6768, 0.6528, 0.6262, 0.6523, 0.6256, 0.6239, 0.6211, 0.6166, 0.6095, 0.5981, 0.5772, 0.5307, 0.671, 0.421, 0.577, 0.729, 0.7555, 0.7558, 0.747, 0.7336, 0.7172, 0.6985, 0.6776, 0.6542, 0.6279, 0.6247, 0.6218, 0.6166, 0.6085, 0.5957, 0.5731, 0.5206, 0.1758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758];
-const LSERIE = [0.2876, 0.0089, 0.0, 0.0, 0.0, 0.0903, 1.0, 1.0, 0.9998, 0.9998, 0.9998, 0.9998, 0.9431, 0.8958, 0.8557, 0.8213, 0.7915, 0.7655, 0.7425, 0.7221, 0.7038, 0.6873, 0.6549, 0.6251, 0.5979, 0.5733, 0.5501, 0.5289, 0.5093, 0.4912, 0.4746, 0.4586, 0.4439, 0.4299, 0.4169, 0.4046, 0.3931, 0.3823, 0.3719, 0.3621, 0.3529, 0.344, 0.3358, 0.3277, 0.3201, 0.3128, 0.3058, 0.2992, 0.2928, 0.2868, 0.2809, 0.2753, 0.2699, 0.2647, 0.2598, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0151, 1.0, 0.9979, 0.9978, 0.9979, 0.9977, 0.9977, 0.9321, 0.8773, 0.8309, 0.7912, 0.7568, 0.7267, 0.7001, 0.6765, 0.6553, 0.6363, 0.5998, 0.5657, 0.5348, 0.5063, 0.4802, 0.4561, 0.4338, 0.4131, 0.3938, 0.3758, 0.3589, 0.3432, 0.3283, 0.3143, 0.3011, 0.2887, 0.277, 0.2658, 0.2552, 0.2451, 0.2354, 0.226, 0.2172, 0.2085, 0.2003, 0.1926, 0.1851, 0.178, 0.171, 0.1644, 0.1582, 0.152, 0.1462, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-const SSERIE = [0.4797, 0.479, 0.4408, 0.4067, 0.3759, 0.3482, 0.1931, 0.0536, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0041, 0.0121, 0.023, 0.036, 0.0505, 0.0662, 0.0825, 0.0992, 0.1323, 0.1661, 0.2001, 0.234, 0.2675, 0.3005, 0.3328, 0.3643, 0.3948, 0.4244, 0.453, 0.4806, 0.5071, 0.5326, 0.5571, 0.5806, 0.6031, 0.6246, 0.6453, 0.665, 0.6839, 0.7019, 0.7192, 0.7357, 0.7514, 0.7665, 0.7809, 0.7947, 0.8079, 0.8205, 0.8325, 0.8441, 0.8551, 0.8657, 0.8758, 0.8855, 0.8948, 0.9023, 0.9083, 0.9131, 0.9168, 0.9197, 0.9219, 0.9236, 0.9249, 0.9259, 0.9265, 0.9263, 0.9251, 0.9231, 0.9205, 0.9174, 0.9137, 0.9096, 0.9051, 0.9004, 0.8954, 0.8902, 0.8848, 0.8793, 0.8736, 0.8678, 0.8621, 0.8563, 0.8504, 0.8446, 0.8388, 0.833, 0.8273, 0.8216, 0.816, 0.8104, 0.8048, 0.7994, 0.794, 0.7887, 0.7834, 0.7782, 0.7731, 0.7681, 0.666, 0.5719, 0.488, 0.4132, 0.2303, 0.0661, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0042, 0.0123, 0.0232, 0.0363, 0.0508, 0.0665, 0.0829, 0.0996, 0.1317, 0.165, 0.1984, 0.2318, 0.2648, 0.2972, 0.329, 0.3599, 0.39, 0.4191, 0.4472, 0.4744, 0.5005, 0.5256, 0.5497, 0.5728, 0.5949, 0.6161, 0.6364, 0.6558, 0.6748, 0.693, 0.7104, 0.727, 0.7429, 0.7581, 0.7727, 0.7866, 0.7999, 0.8127, 0.8249, 0.8365, 0.8477, 0.8584, 0.8687, 0.8785, 0.888, 0.8956, 0.9017, 0.9065, 0.9103, 0.9132, 0.9155, 0.9172, 0.9185, 0.9195, 0.9202, 0.9199, 0.9188, 0.9169, 0.9144, 0.9113, 0.9077, 0.9037, 0.8994, 0.8947, 0.8899, 0.8848, 0.8796, 0.8742, 0.8688, 0.8632, 0.8577, 0.8521, 0.8465, 0.8409, 0.8354, 0.8298, 0.8243, 0.8188, 0.8133, 0.8079, 0.8025, 0.7971, 0.7919, 0.7866, 0.7815];
+const LABELS = ["511", "512", "513", "514", "515", "516", "517", "518", "519", "520", "521", "522", "523", "524", "525", "526", "527", "528", "529", "530", "531", "532", "533", "534", "535", "536", "537", "538", "539", "540", "541", "542", "543", "544", "545", "546", "547", "548", "549", "550", "551", "552", "553", "554", "555", "556", "557", "558", "559", "560", "561", "562", "563", "564", "565", "566", "567", "568", "569", "570", "571", "572", "573", "574", "575", "576", "577", "578", "579", "580", "581", "582", "583", "584", "585", "586", "587", "588", "589", "590", "591", "592", "593", "594", "595", "596", "597", "598", "599", "600", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620", "621", "622", "623", "624", "625", "626", "627", "628", "629", "630", "631", "632", "633", "634", "635", "636", "637", "638", "639", "640", "641", "642", "643", "644", "645", "646", "647", "648", "649", "650", "651", "652", "653", "654", "655", "656", "657", "658", "659", "660", "661", "662", "663", "664", "665", "666", "667", "668", "669", "670", "671", "672", "673", "674", "675", "676", "677", "678", "679", "680", "681", "682", "683", "684", "685", "686", "687", "688", "689", "690", "691", "692", "693", "694", "695", "696", "697", "698", "699", "700", "701", "702", "703", "704", "705", "706", "707", "708", "709"];
+const ECE    = [0.29443, 0.28878, 0.28335, 0.27812, 0.27309, 0.26823, 0.26354, 0.25901, 0.25464, 0.25041, 0.24632, 0.24237, 0.23854, 0.23482, 0.23123, 0.22774, 0.22435, 0.22107, 0.21788, 0.21478, 0.21177, 0.20884, 0.206, 0.20323, 0.20053, 0.1979, 0.19535, 0.19286, 0.19043, 0.18806, 0.18575, 0.1835, 0.1813, 0.17915, 0.17706, 0.17501, 0.17301, 0.17105, 0.16914, 0.16727, 0.16545, 0.16366, 0.16191, 0.1602, 0.15852, 0.15688, 0.15528, 0.1537, 0.15216, 0.15065, 0.15065, 0.15065, 0.15065, 0.15065, 0.99913, 0.99913, 0.99913, 0.99913, 0.99912, 0.99912, 0.9537, 0.91586, 0.88384, 0.85639, 0.8326, 0.81178, 0.79341, 0.77708, 0.76248, 0.74933, 0.71564, 0.68406, 0.65523, 0.62881, 0.6045, 0.58207, 0.56129, 0.542, 0.52402, 0.50725, 0.49156, 0.47685, 0.46304, 0.45005, 0.43779, 0.42621, 0.41525, 0.40488, 0.39503, 0.38567, 0.37629, 0.36735, 0.35883, 0.3507, 0.34293, 0.3355, 0.32838, 0.32156, 0.31502, 0.30874, 0.3027, 0.2969, 0.29132, 0.28594, 0.28076, 0.27577, 0.27095, 0.26629, 0.26179, 0.25745, 0.25324, 0.24918, 0.24524, 0.24142, 0.23772, 0.23413, 0.23066, 0.22728, 0.224, 0.22081, 0.21772, 0.21471, 0.21178, 0.20893, 0.20616, 0.20346, 0.20083, 0.19827, 0.19577, 0.19334, 0.19096, 0.18865, 0.18638, 0.18418, 0.18202, 0.17992, 0.17786, 0.17585, 0.17389, 0.17197, 0.17009, 0.16825, 0.16645, 0.16469, 0.16297, 0.16128, 0.15963, 0.15801, 0.15642, 0.15487, 0.15487, 0.15487, 0.15487, 0.15487, 0.00263, 0.00263, 0.00263, 0.00263, 0.00263, 0.00263, 0.00251, 0.00241, 0.00232, 0.00225, 0.00218, 0.00213, 0.00208, 0.00204, 0.002, 0.00196, 0.00193, 0.00189, 0.00186, 0.00183, 0.00181, 0.00178, 0.00176, 0.00174, 0.00172, 0.0017, 0.00169, 0.00167, 0.00166, 0.00164, 0.00163, 0.00162, 0.00161, 0.0016, 0.00159, 0.00158, 0.00156, 0.00155, 0.00154, 0.00152, 0.00151, 0.0015, 0.00149, 0.00148, 0.00147];
+const KAPPA  = [0.8205, 0.8162, 0.8111, 0.8064, 0.8018, 0.7879, 0.7629, 0.7112, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.9758, 0.8118, 0.8235, 0.796, 0.7718, 0.7915, 0.7667, 0.6884, 0.4455, 0.7264, 0.7678, 0.7837, 0.7914, 0.7956, 0.7982, 0.7999, 0.8011, 0.802, 0.7737, 0.7689, 0.7548, 0.738, 0.7193, 0.6989, 0.6768, 0.6528, 0.6262, 0.6523, 0.6256, 0.6239, 0.6211, 0.6166, 0.6095, 0.5981, 0.5772, 0.5307, 0.671, 0.421, 0.577, 0.729, 0.7555, 0.7558, 0.747, 0.7336, 0.7172, 0.6985, 0.6776, 0.6542, 0.6279, 0.6247, 0.6218, 0.6166, 0.6085, 0.5957, 0.5731, 0.5206, 0.1758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4755, 0.4746, 0.9726, 0.5157, 0.5295, 0.5239, 0.5204, 0.5179, 0.5122, 0.4834, 0.6809, 0.7641, 0.8005, 0.8136, 0.8198, 0.8231, 0.825, 0.8263, 0.8271, 0.8278, 0.8235, 0.8193, 0.8149, 0.8103, 0.8051, 0.7977, 0.785, 0.7544, 0.6176, 0.8819, 0.8787, 0.8747, 0.8632, 0.8558, 0.8426, 0.8183, 0.7928, 0.7611, 0.5978, 0.5972, 0.502, 0.7057, 0.7895, 0.8246, 0.8441, 0.8572, 0.8652, 0.8721, 0.8773];
+const LSERIE = [0.2699, 0.2647, 0.2598, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0151, 1.0, 0.9979, 0.9978, 0.9979, 0.9977, 0.9977, 0.9321, 0.8773, 0.8309, 0.7912, 0.7568, 0.7267, 0.7001, 0.6765, 0.6553, 0.6363, 0.5998, 0.5657, 0.5348, 0.5063, 0.4802, 0.4561, 0.4338, 0.4131, 0.3938, 0.3758, 0.3589, 0.3432, 0.3283, 0.3143, 0.3011, 0.2887, 0.277, 0.2658, 0.2552, 0.2451, 0.2354, 0.226, 0.2172, 0.2085, 0.2003, 0.1926, 0.1851, 0.178, 0.171, 0.1644, 0.1582, 0.152, 0.1462, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0744, 0.0, 0.0, 0.0, 0.0, 0.0008, 0.0003, 0.0001, 0.0, 0.0, 0.0, 0.0, 0.0003, 0.0009, 0.0, 0.0, 0.0023, 0.0089, 0.0011, 0.0228, 0.0, 0.0, 0.0001, 0.0001, 0.0004, 0.0, 0.0, 0.0007, 0.0018, 0.001, 0.001, 0.0011, 0.0, 0.0002, 0.0031, 0.0018, 0.0017, 0.0132, 0.0043, 0.0079, 0.005, 0.0026, 0.0035, 0.0631, 0.0, 0.0799];
+const SSERIE = [0.8325, 0.8441, 0.8551, 0.8657, 0.8758, 0.8855, 0.8948, 0.9023, 0.9083, 0.9131, 0.9168, 0.9197, 0.9219, 0.9236, 0.9249, 0.9259, 0.9265, 0.9263, 0.9251, 0.9231, 0.9205, 0.9174, 0.9137, 0.9096, 0.9051, 0.9004, 0.8954, 0.8902, 0.8848, 0.8793, 0.8736, 0.8678, 0.8621, 0.8563, 0.8504, 0.8446, 0.8388, 0.833, 0.8273, 0.8216, 0.816, 0.8104, 0.8048, 0.7994, 0.794, 0.7887, 0.7834, 0.7782, 0.7731, 0.7681, 0.666, 0.5719, 0.488, 0.4132, 0.2303, 0.0661, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0042, 0.0123, 0.0232, 0.0363, 0.0508, 0.0665, 0.0829, 0.0996, 0.1317, 0.165, 0.1984, 0.2318, 0.2648, 0.2972, 0.329, 0.3599, 0.39, 0.4191, 0.4472, 0.4744, 0.5005, 0.5256, 0.5497, 0.5728, 0.5949, 0.6161, 0.6364, 0.6558, 0.6748, 0.693, 0.7104, 0.727, 0.7429, 0.7581, 0.7727, 0.7866, 0.7999, 0.8127, 0.8249, 0.8365, 0.8477, 0.8584, 0.8687, 0.8785, 0.888, 0.8956, 0.9017, 0.9065, 0.9103, 0.9132, 0.9155, 0.9172, 0.9185, 0.9195, 0.9202, 0.9199, 0.9188, 0.9169, 0.9144, 0.9113, 0.9077, 0.9037, 0.8994, 0.8947, 0.8899, 0.8848, 0.8796, 0.8742, 0.8688, 0.8632, 0.8577, 0.8521, 0.8465, 0.8409, 0.8354, 0.8298, 0.8243, 0.8188, 0.8133, 0.8079, 0.8025, 0.7971, 0.7919, 0.7866, 0.7815, 0.7764, 0.7713, 0.7664, 0.8038, 0.8375, 0.8679, 0.8952, 0.933, 0.9684, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
 
 function mkLine(id, data, color, ref) {
   const ctx = document.getElementById(id).getContext('2d');
