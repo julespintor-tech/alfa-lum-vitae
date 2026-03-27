@@ -455,17 +455,17 @@ def generar():
                 "VERDE ≥70%" if p >= 0.70 else ("ÁMBAR ≥40%" if p >= 0.40 else "ROJO <40%"))
             ss_url  = f"https://www.semanticscholar.org/search?q={q}&sort=Relevance"
             phi_url = f"https://philpapers.org/s/{q.replace('+', '%20')[:50]}"
-            out += f"""<div style="background:rgba(0,0,0,.3);border:1px solid {color}22;border-radius:6px;padding:9px;position:relative;">
+            out += f"""<div id="mc-{key}" style="background:rgba(0,0,0,.3);border:1px solid {color}22;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:{color};font-size:.70rem;font-weight:bold;">{icon} {name}</span>
-    <span style="font-size:.55rem;color:{bar_col};background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">{state_label}</span>
+    <span id="mc-state-{key}" style="font-size:.55rem;color:{bar_col};background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">{state_label}</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">{subcampos}</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:{pct}%;height:100%;background:{bar_col};border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE={p:.3f} · {n_c} campos · {ss_n} papers SS</span>
+    <span>p_cierre LUM-PE={p:.3f} · {n_c} campos · <span id="mc-n-{key}">{ss_n} papers SS</span></span>
     <span>
       <a href="{ss_url}" target="_blank" style="color:{color}88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="{phi_url}" target="_blank" style="color:{color}88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -654,6 +654,23 @@ header {{ display:flex; justify-content:space-between; align-items:center;
                  max-height:200px; padding:8px; background:rgba(0,0,0,.3); border-radius:6px;
                  border:1px solid var(--border); font-family:'Courier New',monospace; line-height:1.5; }}
 .chart-box {{ position:relative; height:180px; }}
+
+/* ── Botón MINERVA live search ───────────────── */
+@keyframes spin {{ to {{ transform:rotate(360deg); }} }}
+#btn-minerva {{
+  cursor:pointer; background:rgba(0,229,255,.08);
+  border:1px solid rgba(0,229,255,.30); color:var(--cyan);
+  font-size:.57rem; padding:5px 13px; border-radius:4px;
+  font-family:'Courier New',monospace; letter-spacing:1px;
+  transition:all .2s; white-space:nowrap; flex-shrink:0; }}
+#btn-minerva:hover:not(:disabled) {{
+  background:rgba(0,229,255,.20); border-color:var(--cyan);
+  box-shadow:0 0 8px rgba(0,229,255,.2); }}
+#btn-minerva:disabled {{ opacity:.45; cursor:not-allowed; }}
+#minerva-status {{
+  display:none; font-size:.58rem; color:var(--dim); padding:5px 10px;
+  background:rgba(0,0,0,.3); border-radius:4px;
+  border-left:2px solid rgba(0,229,255,.3); margin-bottom:8px; line-height:1.5; }}
 </style>
 </head>
 <body>
@@ -821,12 +838,16 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 </div>
 
 <!-- ═══ MINERVA — MAPA DE CIERRES CATEGORIALES ═══ -->
-<div class="section-sep">◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</div>
+<div class="section-sep" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+  <span>◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</span>
+  <button id="btn-minerva" onclick="buscarMinerva()">🔍 Buscar ahora</button>
+</div>
+<div id="minerva-status"></div>
 <div style="margin-bottom:6px;font-size:.58rem;color:var(--dim);line-height:1.7;">
-  MINERVA audita 6 dominios de cierre categorial basados en el <b style="color:var(--cyan);">Materialismo Filosófico</b>
-  de Gustavo Bueno (α/β/γ). Los porcentajes reflejan la probabilidad de cierre categorial según el modelo
-  <b style="color:var(--cyan);">LUM-PE</b>. Haz clic en <b>SS↗</b> para buscar papers en Semantic Scholar
-  o en <b>Phil↗</b> para PhilPapers. · Datos: <span style="color:var(--cyan);">{minerva_ts}</span>
+  MINERVA audita 6 dominios de cierre categorial (Materialismo Filosófico de Bueno α/β/γ).
+  Barras = probabilidad LUM-PE. El botón <b style="color:var(--cyan);">Buscar ahora</b> consulta
+  Semantic Scholar en vivo — si no hay novedades, te lo indica sin necesidad de abrir el navegador.
+  Cooldown automático de 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">{minerva_ts}</span>
   &nbsp;·&nbsp;
   <a href="lum_mapa_cierres.html" style="color:var(--cyan);font-size:.58rem;" target="_blank">Ver mapa completo →</a>
 </div>
@@ -1059,6 +1080,122 @@ mkLine('chartECE',   ECE,    C.GREEN,  0.05);
 mkLine('chartKappa', KAPPA,  C.CYAN,   null);
 mkLine('chartL',     LSERIE, C.YELLOW, null);
 mkLine('chartS',     SSERIE, C.PURPLE, null);
+
+// ── MINERVA LIVE SEARCH ──────────────────────────────────────────────
+const SS_QUERIES = {{
+  FORM:    'mathematical closure axiomatization completeness theorem formal system',
+  NAT:     'natural science causal closure physical laws empirical measurement',
+  TEC:     'cybernetics feedback closure formal verification control systems AI',
+  SOC_IV:  'social science operationalization construct validity measurement',
+  SOC_DID: 'historical method scientific demarcation historiography archaeology',
+  ARTE:    'aesthetic closure art theory pictorial formalization materialist'
+}};
+const DOMAIN_COLORS = {{
+  FORM:'#00e5ff', NAT:'#00ff88', TEC:'#b39ddb',
+  SOC_IV:'#ffd54f', SOC_DID:'#ff9800', ARTE:'#f48fb1'
+}};
+const SIGNALS = {{
+  FORM:    ['axiom','theorem','proof','completeness','formal system','closure','deductive'],
+  NAT:     ['causal closure','physical law','experimental','measurement','replication','empirical'],
+  TEC:     ['feedback loop','formal verification','closure property','specification','cybernetic'],
+  SOC_IV:  ['operationalization','construct validity','reliability','demarcation','measurement'],
+  SOC_DID: ['historical method','demarcation','chronology','dating method','systematic fieldwork'],
+  ARTE:    ['pictorial','aesthetic closure','artistic operation','formal analysis','materialist']
+}};
+
+let _mSearching = false;
+let _mLastAt    = 0;
+let _mCache     = {{}};        // domain → {{n, titles: Set}}
+const COOLDOWN  = 60000;   // ms
+
+function scoreTexto(txt, sigs) {{
+  if (!txt) return 0;
+  const t = txt.toLowerCase();
+  return sigs.filter(s => t.includes(s)).length / Math.max(sigs.length * 0.3, 1);
+}}
+
+async function buscarMinerva() {{
+  if (_mSearching) return;
+  const now = Date.now();
+  const btn    = document.getElementById('btn-minerva');
+  const status = document.getElementById('minerva-status');
+
+  // Cooldown
+  if (_mLastAt > 0 && (now - _mLastAt) < COOLDOWN) {{
+    const seg = Math.ceil((COOLDOWN - (now - _mLastAt)) / 1000);
+    status.style.display = 'block';
+    status.style.borderLeftColor = 'var(--dim)';
+    status.innerHTML = `<span style="color:var(--dim)">⏱ Búsqueda reciente — espera <b style="color:var(--cyan)">${{seg}}s</b> para volver a consultar</span>`;
+    return;
+  }}
+
+  _mSearching = true;
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;animation:spin .7s linear infinite">⟳</span> Buscando…';
+  status.style.display = 'block';
+  status.style.borderLeftColor = 'rgba(0,229,255,.3)';
+  status.innerHTML = '<span style="color:var(--dim)">Consultando Semantic Scholar (6 dominios)…</span>';
+
+  const newCache = {{}};
+  let totalNew = 0, domainsWithNew = [], netError = false;
+  const keys = Object.keys(SS_QUERIES);
+
+  for (let i = 0; i < keys.length; i++) {{
+    const key = keys[i];
+    status.innerHTML = `<span style="color:var(--dim)">Dominio ${{i+1}}/6: <b style="color:${{DOMAIN_COLORS[key]}}">${{key}}</b>…</span>`;
+    try {{
+      const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query='
+                + encodeURIComponent(SS_QUERIES[key])
+                + '&limit=8&fields=title,abstract,year,citationCount';
+      const r = await fetch(url, {{signal: AbortSignal.timeout(9000)}});
+      if (!r.ok) {{ newCache[key] = {{n:0, titles: new Set()}}; continue; }}
+      const d = await r.json();
+      const papers = (d.data || []).filter(p =>
+        scoreTexto((p.title||'')+' '+(p.abstract||''), SIGNALS[key]) > 0
+      );
+      const titles = new Set(papers.map(p => (p.title||'').trim().toLowerCase()));
+      newCache[key] = {{n: papers.length, titles}};
+
+      // Detectar novedades vs caché anterior
+      const prev       = _mCache[key];
+      const prevTitles = prev ? prev.titles : new Set();
+      const genuNew    = [...titles].filter(t => !prevTitles.has(t));
+      if (genuNew.length > 0) {{ totalNew += genuNew.length; domainsWithNew.push(key); }}
+
+      // Actualizar tarjeta
+      const elN = document.getElementById('mc-n-' + key);
+      if (elN) elN.textContent = papers.length + (papers.length !== 1 ? ' papers live' : ' paper live');
+      const elS = document.getElementById('mc-state-' + key);
+      if (elS && papers.length > 0) {{
+        elS.textContent = papers.length >= 5 ? 'VERDE live' : 'ÁMBAR live';
+        elS.style.color = papers.length >= 5 ? '#00ff88' : '#ffd54f';
+      }}
+    }} catch(e) {{
+      netError = true;
+      newCache[key] = {{n:0, titles: new Set()}};
+    }}
+    if (i < keys.length - 1) await new Promise(rv => setTimeout(rv, 500));
+  }}
+
+  _mCache   = newCache;
+  _mLastAt  = Date.now();
+  _mSearching = false;
+  btn.disabled = false;
+  btn.innerHTML = '🔍 Buscar ahora';
+
+  const hora = new Date().toLocaleTimeString('es', {{hour:'2-digit',minute:'2-digit'}});
+  if (netError && totalNew === 0) {{
+    status.style.borderLeftColor = '#ff9800';
+    status.innerHTML = `<span style="color:#ff9800">⚠ Error de red en algún dominio · ${{hora}} — verifica conexión</span>`;
+  }} else if (totalNew === 0) {{
+    status.style.borderLeftColor = 'var(--dim)';
+    status.innerHTML = `<span style="color:var(--dim)">✓ Sin novedades en los 6 dominios · ${{hora}}</span>`;
+    setTimeout(() => {{ status.style.display = 'none'; }}, 9000);
+  }} else {{
+    status.style.borderLeftColor = 'var(--green)';
+    status.innerHTML = `<span style="color:var(--green)">● ${{totalNew}} paper(s) nuevo(s) en: <b>${{domainsWithNew.join(', ')}}</b> · ${{hora}} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>`;
+  }}
+}}
 </script>
 </body>
 </html>"""
