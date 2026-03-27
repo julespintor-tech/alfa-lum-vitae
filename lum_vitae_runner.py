@@ -526,8 +526,8 @@ class MotorCompacto:
             with open(LEDGER_FILE, "a", encoding="utf-8") as f:
                 for entrada in ledger_buffer:
                     f.write(json.dumps(entrada, ensure_ascii=False) + "\n")
-        except IOError:
-            pass
+        except IOError as _e:
+            print(f"[WARN] escritura ledger/reporte falló: {_e}", flush=True)
 
         # ── Calcular condiciones de vida ──────────────────────────────────
         ece_final   = buf_L[-1] if buf_L else 0.5  # reuse L como proxy
@@ -698,8 +698,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
     try:
         with open(REPORTE_FILE, "w", encoding="utf-8") as f:
             f.write("\n".join(_log_lines))
-    except IOError:
-        pass
+    except IOError as _e:
+        print(f"[WARN] No se pudo escribir reporte: {_e}", flush=True)
 
     # Regenerar dashboard HTML automáticamente
     try:
@@ -845,8 +845,8 @@ def _run_con_lvm(estado: dict, n_ciclos: int) -> dict:
         with open(LEDGER_FILE, "a", encoding="utf-8") as f:
             for entrada in ledger_buf:
                 f.write(json.dumps(entrada, ensure_ascii=False) + "\n")
-    except IOError:
-        pass
+    except IOError as _e:
+        print(f"[WARN] No se pudo escribir ledger: {_e}", flush=True)
 
     # Extraer estado final
     estado_final = bucle.estado_vida()

@@ -149,7 +149,7 @@ header { display:flex; justify-content:space-between; align-items:center;
   </div>
   <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
               border-radius:20px;font-family:'Courier New',monospace;">
-    📸 2026-03-27 15:07:30
+    📸 2026-03-27 16:08:45
   </div>
 </header>
 
@@ -537,6 +537,17 @@ header { display:flex; justify-content:space-between; align-items:center;
 </div>
 
 </div>
+
+<!-- ═══ HISTORIAL DE BÚSQUEDAS MINERVA ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+  <div style="font-size:.6rem;color:var(--cyan);font-weight:bold;letter-spacing:.5px;">
+    ◈ HISTORIAL · Búsquedas anteriores
+  </div>
+  <div style="font-size:.55rem;color:var(--dim);">
+    Se actualiza al ejecutar <code>lum_mapa_cierres.py</code> o al buscar desde aquí
+  </div>
+</div>
+<div id="minerva-historial-panel"><div style="color:var(--dim);font-size:.6rem;padding:8px 0;">Sin búsquedas registradas — ejecuta <code>python3 lum_mapa_cierres.py</code> o usa el botón Buscar para registrar la primera.</div></div>
 
 <!-- ═══ REPOSITORIOS REGISTRADOS ═══ -->
 <div class="section-sep">◈ Repositorios registrados · presencia verificable en la web</div>
@@ -964,6 +975,67 @@ async function buscarMinerva() {
     const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${errCount} dominio${errCount>1?'s':''} sin respuesta)</span>` : '';
     status.style.borderLeftColor = 'var(--green)';
     status.innerHTML = `<span style="color:var(--green)">● ${totalNew} paper(s) nuevo(s) en: <b>${domainsWithNew.join(', ')}</b> · ${hora} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>${extra}`;
+  }
+
+  // ── Guardar en historial ─────────────────────────────────────────────────
+  if (!todosFallaron && successCount > 0) {
+    const tsISO = new Date().toISOString();
+    const domData = {};
+    keys.forEach(k => {
+      const c = newCache[k] || {};
+      domData[k] = {
+        n_papers_ss: c.n || 0,
+        semaforo: c.n >= 5 ? 'GREEN' : (c.n > 0 ? 'AMBER' : 'RED'),
+        p_sintetico: null,
+        score_ss: null
+      };
+    });
+    const entrada = {
+      timestamp: tsISO,
+      source: 'live_search',
+      total_papers: keys.reduce((s,k) => s + (newCache[k]||{}).n||0, 0),
+      dominios: domData
+    };
+
+    // Intentar persistir en Flask (si está corriendo)
+    try {
+      fetch('http://localhost:5050/api/minerva_historial', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(entrada)
+      }).catch(() => {});  // silencioso si Flask no está corriendo
+    } catch(e) {}
+
+    // Agregar al panel de historial en la página actual (in-memory)
+    const panel = document.getElementById('minerva-historial-panel');
+    if (panel) {
+      const DCOL = {FORM:'#00e5ff',NAT:'#00ff88',TEC:'#b39ddb',SOC_IV:'#ffd54f',SOC_DID:'#ff9800',ARTE:'#f48fb1'};
+      const SCOL = {GREEN:'#00ff88',AMBER:'#ffd54f',RED:'#ff3d5a'};
+      const SDOT = {GREEN:'●',AMBER:'◑',RED:'○'};
+      let domHtml = '';
+      keys.forEach(k => {
+        const dc = DCOL[k] || '#9e9e9e';
+        const dd = domData[k] || {};
+        const sc = SCOL[dd.semaforo] || '#9e9e9e';
+        domHtml += `<span title="${k} · ${dd.n_papers_ss} papers"
+          style="display:inline-block;padding:2px 6px;border-radius:3px;
+          border:1px solid ${dc}44;background:${dc}11;color:${dc};
+          font-size:.55rem;margin:2px;">
+          ${k} <span style="color:${sc}">${SDOT[dd.semaforo]||'○'}</span></span>`;
+      });
+      const ts16 = tsISO.slice(0,16).replace('T',' ') + ' UTC';
+      const total = entrada.total_papers;
+      const newEntry = document.createElement('div');
+      newEntry.className = 'hist-entry';
+      newEntry.style.cssText = 'padding:8px 10px;margin-bottom:6px;border:1px solid #00e5ff33;border-radius:6px;background:rgba(0,229,255,.04);';
+      newEntry.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-size:.58rem;color:var(--dim);">${ts16} <span style="color:#00e5ff;font-size:.85em">● nuevo</span></span>
+          <span style="font-size:.55rem;color:var(--muted);">⚡ búsqueda live · ${total} papers</span>
+        </div>
+        <div>${domHtml}</div>`;
+      panel.insertBefore(newEntry, panel.firstChild);
+    }
   }
 }
 </script>

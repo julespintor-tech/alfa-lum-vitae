@@ -4,13 +4,14 @@ ALFA LUM-vitae vΩ.4 — Dashboard Visual
 Servidor local: http://localhost:5050
 Ejecuta: python3 lum_vitae_dashboard.py
 """
-import json, pathlib, threading, webbrowser, time
-from flask import Flask, jsonify, render_template_string
+import json, pathlib, threading, webbrowser, time, os, shutil
+from flask import Flask, jsonify, render_template_string, request
 
 BASE = pathlib.Path(__file__).parent
-ESTADO_FILE  = BASE / "lum_vitae_estado.json"
-LEDGER_FILE  = BASE / "lum_vitae_ledger_meta.ndjson"
-REPORTE_FILE = BASE / "lum_vitae_reporte.txt"
+ESTADO_FILE     = BASE / "lum_vitae_estado.json"
+LEDGER_FILE     = BASE / "lum_vitae_ledger_meta.ndjson"
+REPORTE_FILE    = BASE / "lum_vitae_reporte.txt"
+HISTORIAL_FILE  = BASE / "lum_minerva_historial.json"
 
 app = Flask(__name__)
 
@@ -100,6 +101,42 @@ def api_estado():
 @app.route("/api/reporte")
 def api_reporte():
     return jsonify({"texto": leer_reporte()})
+
+@app.route("/api/minerva_historial", methods=["GET"])
+def api_minerva_historial_get():
+    """Devuelve el historial de búsquedas MINERVA."""
+    try:
+        data = json.loads(HISTORIAL_FILE.read_text()) if HISTORIAL_FILE.exists() else {"version": 1, "historial": []}
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"version": 1, "historial": [], "error": str(e)})
+
+@app.route("/api/minerva_historial", methods=["POST"])
+def api_minerva_historial_post():
+    """Añade una entrada al historial de búsquedas MINERVA (desde JS live search)."""
+    try:
+        entrada = request.get_json(force=True)
+        if not entrada:
+            return jsonify({"ok": False, "error": "payload vacío"}), 400
+        data = {"version": 1, "historial": []}
+        if HISTORIAL_FILE.exists():
+            try:
+                data = json.loads(HISTORIAL_FILE.read_text())
+            except Exception:
+                pass
+        lista = data.get("historial", [])
+        lista.append(entrada)
+        if len(lista) > 50:
+            lista = lista[-50:]
+        data["historial"] = lista
+        tmp = HISTORIAL_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        if HISTORIAL_FILE.exists():
+            shutil.copy2(HISTORIAL_FILE, HISTORIAL_FILE.with_suffix(".bak"))
+        os.replace(tmp, HISTORIAL_FILE)
+        return jsonify({"ok": True, "n": len(lista)})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 # ─── DASHBOARD HTML ──────────────────────────────────────────────────────────
 

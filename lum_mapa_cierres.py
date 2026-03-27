@@ -18,8 +18,9 @@ import urllib.error
 BASE        = pathlib.Path(__file__).parent
 LUM_MARK2   = BASE.parent / "LUM MARK 2"
 BUNDLES_DIR = LUM_MARK2 / "PUBLICACION_LUM" / "lum-pe-REPO" / "dataset" / "dataset_public_v0.1.0" / "bundles_public"
-OUT_JSON    = BASE / "lum_mapa_cierres.json"
-OUT_HTML    = BASE / "lum_mapa_cierres.html"
+OUT_JSON     = BASE / "lum_mapa_cierres.json"
+OUT_HTML     = BASE / "lum_mapa_cierres.html"
+HISTORIAL_JSON = BASE / "lum_minerva_historial.json"  # historial persistente de búsquedas
 
 MODO_HTML_ONLY = "--html-only" in sys.argv
 
@@ -193,8 +194,13 @@ def score_cierre_texto(texto: str, señales: list) -> float:
 
 # ─── LEER BUNDLES LUM-PE ─────────────────────────────────────────────────────
 
+_bundles_cache: dict = {}  # caché en memoria para evitar leer 45 ficheros cada vez
+
 def leer_bundles_por_tipo() -> dict:
-    """Agrupa los 45 bundles LUM-PE por tipo y calcula estadísticas."""
+    """Agrupa los 45 bundles LUM-PE por tipo y calcula estadísticas (cacheado)."""
+    global _bundles_cache
+    if _bundles_cache:
+        return _bundles_cache
     if not BUNDLES_DIR.exists():
         return {}
     por_tipo = {}
@@ -225,6 +231,7 @@ def leer_bundles_por_tipo() -> dict:
         # Estado agregado por mayoría
         cnt = Counter(data["states"])
         data["state_agregado"] = cnt.most_common(1)[0][0] if cnt else "?"
+    _bundles_cache = por_tipo
     return por_tipo
 
 # ─── FUNCIÓN PRINCIPAL ────────────────────────────────────────────────────────
@@ -243,8 +250,10 @@ def calcular_mapa() -> dict:
     # Cargar JSON existente para preservar papers/hallazgos si la red falla
     _cache_anterior = {}
     if OUT_JSON.exists():
-        try: _cache_anterior = json.loads(OUT_JSON.read_text()).get("mapa", {})
-        except: pass
+        try:
+            _cache_anterior = json.loads(OUT_JSON.read_text()).get("mapa", {})
+        except Exception as _e:
+            print(f"  [warn] No se pudo leer caché anterior: {_e}")
 
     for clave, disc in DISCIPLINAS.items():
         print(f"\n▶ {disc['nombre']} ({clave})")
@@ -343,7 +352,52 @@ def calcular_mapa() -> dict:
     resultado_final = {"resumen": resumen, "mapa": mapa}
     OUT_JSON.write_text(json.dumps(resultado_final, ensure_ascii=False, indent=2))
     print(f"\n[OK] Mapa guardado → {OUT_JSON}")
+
+    # ── Agregar entrada al historial persistente ──────────────────────────────
+    _append_historial(mapa, resumen, source="full_run")
+
     return resultado_final
+
+
+def _append_historial(mapa: dict, resumen: dict, source: str = "full_run"):
+    """Añade una entrada al historial persistente de búsquedas MINERVA.
+    Mantiene máximo 50 entradas (FIFO). Escritura atómica."""
+    import os, shutil
+    entrada = {
+        "timestamp": datetime.datetime.utcnow().isoformat(),
+        "source": source,
+        "total_papers": resumen.get("total_papers", 0),
+        "dominios": {
+            k: {
+                "p_sintetico": v.get("resultado", {}).get("p_sintetico", 0),
+                "semaforo":    v.get("resultado", {}).get("semaforo", "N/A"),
+                "n_papers_ss": v.get("semanticscholar", {}).get("n_papers", 0),
+                "score_ss":    v.get("semanticscholar", {}).get("score_cierre", 0),
+            }
+            for k, v in mapa.items()
+        }
+    }
+    try:
+        historial_data: dict = {"version": 1, "historial": []}
+        if HISTORIAL_JSON.exists():
+            try:
+                historial_data = json.loads(HISTORIAL_JSON.read_text())
+            except Exception:
+                pass
+        lista = historial_data.get("historial", [])
+        lista.append(entrada)
+        # Mantener solo las últimas 50 entradas
+        if len(lista) > 50:
+            lista = lista[-50:]
+        historial_data["historial"] = lista
+        tmp = HISTORIAL_JSON.with_suffix(".tmp")
+        tmp.write_text(json.dumps(historial_data, ensure_ascii=False, indent=2))
+        if HISTORIAL_JSON.exists():
+            shutil.copy2(HISTORIAL_JSON, HISTORIAL_JSON.with_suffix(".bak"))
+        os.replace(tmp, HISTORIAL_JSON)
+        print(f"  [OK] Historial actualizado → {HISTORIAL_JSON} ({len(lista)} entradas)")
+    except Exception as e:
+        print(f"  [warn] No se pudo guardar historial: {e}")
 
 # ─── GENERADOR HTML ──────────────────────────────────────────────────────────
 

@@ -6,11 +6,12 @@ Se puede abrir directamente en cualquier navegador (doble clic).
 """
 import json, pathlib, datetime, html
 
-BASE         = pathlib.Path(__file__).parent
-ESTADO_FILE  = BASE / "lum_vitae_estado.json"
-LEDGER_FILE  = BASE / "lum_vitae_ledger_meta.ndjson"
-REPORTE_FILE = BASE / "lum_vitae_reporte.txt"
-OUT_FILE     = BASE / "lum_vitae_dashboard.html"
+BASE            = pathlib.Path(__file__).parent
+ESTADO_FILE     = BASE / "lum_vitae_estado.json"
+LEDGER_FILE     = BASE / "lum_vitae_ledger_meta.ndjson"
+REPORTE_FILE    = BASE / "lum_vitae_reporte.txt"
+OUT_FILE        = BASE / "lum_vitae_dashboard.html"
+HISTORIAL_FILE  = BASE / "lum_minerva_historial.json"
 
 def tama_face(estado, color, size=90):
     """
@@ -265,6 +266,15 @@ def generar():
     except Exception:
         pass
 
+    # ── MINERVA — historial persistente de búsquedas ───────────────────────────
+    minerva_historial = []
+    try:
+        if HISTORIAL_FILE.exists():
+            _hd = json.loads(HISTORIAL_FILE.read_text())
+            minerva_historial = _hd.get("historial", [])
+    except Exception:
+        pass
+
     hist_ECE   = e.get("historial_ECE",   [1.0])
     hist_Brier = e.get("historial_Brier", [1.0])
     hist_kappa = e.get("historial_kappa",  [0.0])
@@ -502,6 +512,96 @@ def generar():
   <span style="font-size:.65rem;color:{color}66;">↗</span>
 </a>\n"""
         return out
+
+    def historial_panel():
+        """Panel de historial persistente de búsquedas MINERVA — embebido en HTML."""
+        sem_color = {"GREEN":"#00ff88","AMBER":"#ffd54f","RED":"#ff3d5a","BLACK":"#9e9e9e","N/A":"#3a5a7a"}
+        dom_color = {"FORM":"#00e5ff","NAT":"#00ff88","TEC":"#b39ddb",
+                     "SOC_IV":"#ffd54f","SOC_DID":"#ff9800","ARTE":"#f48fb1"}
+
+        if not minerva_historial:
+            return ('<div id="minerva-historial-panel">'
+                    '<div style="color:var(--dim);font-size:.6rem;padding:8px 0;">'
+                    'Sin búsquedas registradas — ejecuta <code>python3 lum_mapa_cierres.py</code> '
+                    'o usa el botón Buscar para registrar la primera.</div>'
+                    '</div>')
+
+        # Más reciente primero
+        entradas = list(reversed(minerva_historial))
+        VISIBLE = 3  # cuántas mostrar por defecto
+
+        def entrada_html(idx, en, hidden=False):
+            ts = (en.get("timestamp","")[:16].replace("T"," ") + " UTC")
+            total = en.get("total_papers", 0)
+            src   = en.get("source","?")
+            src_label = "🔬 búsqueda completa" if src == "full_run" else "⚡ búsqueda live"
+            dominios  = en.get("dominios", {})
+            dom_html  = ""
+            for dk, dv in dominios.items():
+                c = dom_color.get(dk, "#9e9e9e")
+                sc = sem_color.get(dv.get("semaforo","N/A"), "#9e9e9e")
+                p  = dv.get("p_sintetico", 0)
+                n  = dv.get("n_papers_ss", 0)
+                sem = dv.get("semaforo","N/A")
+                dot = "\u25cf" if sem == "GREEN" else ("\u25d1" if sem == "AMBER" else "\u25cb")
+                dom_html += (
+                    f'<span title="{dk} · p={p} · {n} papers" '
+                    f'style="display:inline-block;padding:2px 6px;border-radius:3px;'
+                    f'border:1px solid {c}44;background:{c}11;color:{c};'
+                    f'font-size:.55rem;margin:2px;">'
+                    f'{dk} <span style="color:{sc}">{dot}</span>'
+                    f'</span>'
+                )
+            vis = 'style="display:none;"' if hidden else ''
+            return (
+                f'<div class="hist-entry" {vis} style="padding:8px 10px;margin-bottom:6px;'
+                f'border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);">'
+                f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
+                f'<span style="font-size:.58rem;color:var(--dim);">{ts}</span>'
+                f'<span style="font-size:.55rem;color:var(--muted);">{src_label} · {total} papers</span>'
+                f'</div>'
+                f'<div>{dom_html}</div>'
+                f'</div>'
+            )
+
+        items_html = ""
+        for i, en in enumerate(entradas):
+            items_html += entrada_html(i, en, hidden=(i >= VISIBLE))
+
+        n_hidden = max(0, len(entradas) - VISIBLE)
+        ver_mas_btn = ""
+        if n_hidden > 0:
+            ver_mas_btn = (
+                f'<button id="btn-historial-mas" onclick="toggleHistorial()" '
+                f'style="background:none;border:1px solid var(--border);color:var(--dim);'
+                f'font-size:.6rem;padding:4px 12px;border-radius:4px;cursor:pointer;'
+                f'font-family:\'Courier New\',monospace;margin-top:4px;">'
+                f'▼ Ver {n_hidden} más ({len(entradas)} total)</button>'
+            )
+
+        return f'''<div id="minerva-historial-panel">
+{items_html}{ver_mas_btn}
+</div>
+<script>
+function toggleHistorial() {{
+  const entries = document.querySelectorAll('.hist-entry');
+  const btn = document.getElementById('btn-historial-mas');
+  let anyHidden = false;
+  entries.forEach(function(el, i) {{
+    if (i >= {VISIBLE}) {{
+      if (el.style.display === 'none') {{ el.style.display = ''; anyHidden = true; }}
+    }}
+  }});
+  if (!anyHidden) {{
+    entries.forEach(function(el, i) {{
+      if (i >= {VISIBLE}) el.style.display = 'none';
+    }});
+    btn.textContent = '▼ Ver {n_hidden} más ({len(entradas)} total)';
+  }} else {{
+    btn.textContent = '▲ Mostrar menos';
+  }}
+}}
+</script>'''
 
     # ── COLORES / CLASES DERICADOS DEL ESTADO ─────────────────────────────────
     ece_col = "#00ff88" if ece_actual <= 0.05 else ("#ffd54f" if ece_actual <= 0.15 else "#ff3d5a")
@@ -858,6 +958,17 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 <div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
 {minerva_cards()}
 </div>
+
+<!-- ═══ HISTORIAL DE BÚSQUEDAS MINERVA ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+  <div style="font-size:.6rem;color:var(--cyan);font-weight:bold;letter-spacing:.5px;">
+    ◈ HISTORIAL · Búsquedas anteriores
+  </div>
+  <div style="font-size:.55rem;color:var(--dim);">
+    Se actualiza al ejecutar <code>lum_mapa_cierres.py</code> o al buscar desde aquí
+  </div>
+</div>
+{historial_panel()}
 
 <!-- ═══ REPOSITORIOS REGISTRADOS ═══ -->
 <div class="section-sep">◈ Repositorios registrados · presencia verificable en la web</div>
@@ -1230,6 +1341,67 @@ async function buscarMinerva() {{
     const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${{errCount}} dominio${{errCount>1?'s':''}} sin respuesta)</span>` : '';
     status.style.borderLeftColor = 'var(--green)';
     status.innerHTML = `<span style="color:var(--green)">● ${{totalNew}} paper(s) nuevo(s) en: <b>${{domainsWithNew.join(', ')}}</b> · ${{hora}} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>${{extra}}`;
+  }}
+
+  // ── Guardar en historial ─────────────────────────────────────────────────
+  if (!todosFallaron && successCount > 0) {{
+    const tsISO = new Date().toISOString();
+    const domData = {{}};
+    keys.forEach(k => {{
+      const c = newCache[k] || {{}};
+      domData[k] = {{
+        n_papers_ss: c.n || 0,
+        semaforo: c.n >= 5 ? 'GREEN' : (c.n > 0 ? 'AMBER' : 'RED'),
+        p_sintetico: null,
+        score_ss: null
+      }};
+    }});
+    const entrada = {{
+      timestamp: tsISO,
+      source: 'live_search',
+      total_papers: keys.reduce((s,k) => s + (newCache[k]||{{}}).n||0, 0),
+      dominios: domData
+    }};
+
+    // Intentar persistir en Flask (si está corriendo)
+    try {{
+      fetch('http://localhost:5050/api/minerva_historial', {{
+        method: 'POST',
+        headers: {{'Content-Type': 'application/json'}},
+        body: JSON.stringify(entrada)
+      }}).catch(() => {{}});  // silencioso si Flask no está corriendo
+    }} catch(e) {{}}
+
+    // Agregar al panel de historial en la página actual (in-memory)
+    const panel = document.getElementById('minerva-historial-panel');
+    if (panel) {{
+      const DCOL = {{FORM:'#00e5ff',NAT:'#00ff88',TEC:'#b39ddb',SOC_IV:'#ffd54f',SOC_DID:'#ff9800',ARTE:'#f48fb1'}};
+      const SCOL = {{GREEN:'#00ff88',AMBER:'#ffd54f',RED:'#ff3d5a'}};
+      const SDOT = {{GREEN:'●',AMBER:'◑',RED:'○'}};
+      let domHtml = '';
+      keys.forEach(k => {{
+        const dc = DCOL[k] || '#9e9e9e';
+        const dd = domData[k] || {{}};
+        const sc = SCOL[dd.semaforo] || '#9e9e9e';
+        domHtml += `<span title="${{k}} · ${{dd.n_papers_ss}} papers"
+          style="display:inline-block;padding:2px 6px;border-radius:3px;
+          border:1px solid ${{dc}}44;background:${{dc}}11;color:${{dc}};
+          font-size:.55rem;margin:2px;">
+          ${{k}} <span style="color:${{sc}}">${{SDOT[dd.semaforo]||'○'}}</span></span>`;
+      }});
+      const ts16 = tsISO.slice(0,16).replace('T',' ') + ' UTC';
+      const total = entrada.total_papers;
+      const newEntry = document.createElement('div');
+      newEntry.className = 'hist-entry';
+      newEntry.style.cssText = 'padding:8px 10px;margin-bottom:6px;border:1px solid #00e5ff33;border-radius:6px;background:rgba(0,229,255,.04);';
+      newEntry.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-size:.58rem;color:var(--dim);">${{ts16}} <span style="color:#00e5ff;font-size:.85em">● nuevo</span></span>
+          <span style="font-size:.55rem;color:var(--muted);">⚡ búsqueda live · ${{total}} papers</span>
+        </div>
+        <div>${{domHtml}}</div>`;
+      panel.insertBefore(newEntry, panel.firstChild);
+    }}
   }}
 }}
 </script>
