@@ -53,7 +53,7 @@ details > summary::-webkit-details-marker { display:none; }
     <div class="logo">◈ MAPA DE CIERRES CATEGORIALES</div>
     <div class="subtitle">Materialismo Filosófico de Gustavo Bueno · ALFA LUM-vitae + LUM-PE · Proyecto MINERVA</div>
   </div>
-  <div class="ts-badge">📸 2026-03-26 03:22:17 UTC</div>
+  <div class="ts-badge">📸 2026-03-28 17:04:45 UTC</div>
 </header>
 
 <div class="layout">
@@ -67,14 +67,14 @@ details > summary::-webkit-details-marker { display:none; }
         <div><div class="stat-big">0</div><div class="stat-lbl">🟢 cierre real</div></div>
         <div><div class="stat-big">5</div><div class="stat-lbl">🟡 proto-cierre</div></div>
         <div><div class="stat-big">1</div><div class="stat-lbl">🔴 sin cierre</div></div>
-        <div><div class="stat-big">24</div><div class="stat-lbl">papers</div></div>
+        <div><div class="stat-big">0</div><div class="stat-lbl">papers</div></div>
         <div><div class="stat-big">45</div><div class="stat-lbl">campos LUM-PE</div></div>
       </div>
       <div style="font-size:.62rem;color:var(--dim);font-style:italic;line-height:1.6;">
-        FORM y NAT muestran cierre operatorio consolidado. TEC exhibe proto-cierre en verificación formal e IA. SOC_IV y SOC_DID tienen cierre intersubjetivo parcial bajo tensión metodológica. ARTE presenta el cierre más débil — proto-cierre simbólico-operatorio según Bueno.
+        
       </div>
       <div style="margin-top:8px;font-size:.58rem;color:#2a4a5a;">
-        Última exploración: 2026-03-25
+        Última exploración: 2026-03-28
       </div>
     </div>
 
@@ -215,14 +215,49 @@ details > summary::-webkit-details-marker { display:none; }
 
   </div>
 
-  <!-- CARDS ────────────────────────────────── -->
+  <!-- CARDS + TAB SELECTOR ──────────────────── -->
   <div>
-    <div style="font-size:.58rem;color:var(--dim);letter-spacing:2px;margin-bottom:14px;
-                 font-family:'Courier New',monospace;">
-      ◈ ANÁLISIS POR DOMINIO — ordenado por p · Las síntesis de papers son siempre visibles
+    <!-- Tab bar -->
+    <div id="mc-tab-bar" style="display:flex;gap:0;margin-bottom:14px;
+         border-bottom:1px solid rgba(0,229,255,.15);">
+      <button id="mctab-btn-dominios" onclick="mcSwitchTab('dominios')"
+        style="cursor:pointer;background:rgba(0,229,255,.14);
+               border:1px solid rgba(0,229,255,.35);border-bottom:none;
+               color:#00e5ff;font-size:.66rem;font-weight:bold;
+               padding:6px 16px;border-radius:6px 6px 0 0;
+               font-family:'Courier New',monospace;margin-right:3px;">
+        ◈ Dominios Científicos
+      </button>
+      <button id="mctab-btn-clasicos" onclick="mcSwitchTab('clasicos')"
+        style="cursor:pointer;background:rgba(0,0,0,.2);
+               border:1px solid rgba(255,213,79,.2);border-bottom:none;
+               color:#ffd54f88;font-size:.66rem;font-weight:bold;
+               padding:6px 16px;border-radius:6px 6px 0 0;
+               font-family:'Courier New',monospace;">
+        ★ Clásicos Fundacionales
+      </button>
     </div>
-    <div class="cards-grid">
-      
+
+    <!-- Panel: Dominios Científicos -->
+    <div id="mctab-dominios">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;
+                  flex-wrap:wrap;margin-bottom:8px;">
+        <div style="font-size:.58rem;color:var(--dim);letter-spacing:2px;
+                     font-family:'Courier New',monospace;flex:1;min-width:200px;">
+          ◈ ANÁLISIS POR DOMINIO — ordenado por p · Las síntesis de papers son siempre visibles.<br>
+          <span style="color:#2a4a6a;">El botón consulta Semantic Scholar en vivo. Cooldown 60 s.</span>
+        </div>
+        <button id="mc-btn-minerva" onclick="mcBuscarMinerva()" style="
+          cursor:pointer;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.45);
+          color:#00e5ff;font-size:.72rem;font-weight:bold;padding:7px 16px;border-radius:6px;
+          font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
+          flex-shrink:0;transition:all .2s;">🔍 Buscar en SS</button>
+      </div>
+      <div id="mc-minerva-status" style="display:none;margin-bottom:8px;padding:6px 10px;
+           background:rgba(0,0,0,.3);border-left:3px solid rgba(0,229,255,.4);border-radius:4px;
+           font-size:.6rem;"></div>
+      <div class="cards-grid">
+        
       <div class="card" style="border-color:#ffd54f55;border-top:2px solid #ffd54f;">
 
         <!-- CABECERA -->
@@ -1016,10 +1051,1056 @@ details > summary::-webkit-details-marker { display:none; }
         
 
       </div>
+      </div>
+      <!-- Historial Dominios -->
+      <div style="margin-top:14px;border-top:1px solid #131f2e;padding-top:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+          <div style="font-size:.6rem;color:var(--cyan);font-weight:bold;letter-spacing:.5px;">
+            ◈ HISTORIAL · Búsquedas anteriores
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="font-size:.55rem;color:var(--dim);">Se actualiza al buscar o al ejecutar lum_mapa_cierres.py</div>
+            <button onclick="_mcExportHistorial(_MC_LS_MINERVA,'Dominios','#00e5ff')"
+              style="background:none;border:1px solid #00e5ff44;color:#00e5ff99;font-size:.54rem;
+                     padding:3px 8px;border-radius:4px;cursor:pointer;font-family:monospace;"
+              title="Descargar historial completo como HTML">📥 Exportar</button>
+          </div>
+        </div>
+        <div id="mc-minerva-historial"><div id="mc-minerva-historial-list"><div style="font-size:.55rem;color:var(--dim);margin-bottom:4px;">Últimas 10 de 12 búsquedas</div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 17:04</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 16:31</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 08:30</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 08:20</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 08:10</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 08:06</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 07:57</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 07:55</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 07:41</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div><div style="border-bottom:1px solid #131f2e;padding:5px 0;font-size:.58rem;"><span style="color:#3a5a7a;">2026-03-28 07:37</span><span style="color:var(--cyan);margin-left:8px;">0 papers</span><span style="color:#2a4a6a;margin-left:6px;">(full_run)</span><div style="margin-top:2px;color:#3a5a7a;"><span style="color:#ffd54f">FORM:0.70</span> · <span style="color:#ffd54f">NAT:0.72</span> · <span style="color:#ffd54f">SOC_IV:0.69</span> · <span style="color:#ffd54f">SOC_DID:0.65</span> · <span style="color:#ffd54f">TEC:0.74</span> · <span style="color:#ff3d5a">ARTE:0.00</span></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- Panel: Clásicos Fundacionales -->
+    <div id="mctab-clasicos" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;
+                  flex-wrap:wrap;margin-bottom:10px;">
+        <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
+          ★ CORPUS FUNDACIONAL — Obras clásicas · identidades sintéticas · TCC (Bueno 1992–1993)<br>
+          p_sint = grado de cierre alcanzado · τ_verde ≥ 0.80 · τ_rojo &lt; 0.40 ·
+          <span style="color:#3a5a7a;">Verificar busca papers relacionados en Semantic Scholar.</span>
+        </div>
+        <button id="mc-btn-clasicos" onclick="mcBuscarClasicos()" style="
+          cursor:pointer;background:rgba(255,213,79,.10);border:1px solid rgba(255,213,79,.40);
+          color:#ffd54f;font-size:.68rem;font-weight:bold;padding:7px 16px;border-radius:6px;
+          font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
+          flex-shrink:0;transition:all .2s;">📚 Verificar en SS</button>
+      </div>
+      <div id="mc-cl-status" style="display:none;margin-bottom:8px;padding:6px 10px;
+           background:rgba(0,0,0,.3);border-left:3px solid rgba(255,213,79,.4);border-radius:4px;
+           font-size:.6rem;"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;"><div style="background:#0d1520;border:1px solid #00ff8830;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#00ff8866'"
+  onmouseout="this.style.transform='';this.style.borderColor='#00ff8830'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">△</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#00ff88;margin-bottom:1px;">Elementos</div>
+        <div style="font-size:.65rem;color:#4a7090;">Euclides de Alejandría · ~300 a.C.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#00ff8820;color:#00ff88;border:1px solid #00ff8844;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟢 GREEN</span>
+      <span style="font-size:.55rem;color:#00e5ff;background:#00e5ff15;border-radius:3px;
+                   padding:1px 6px;">α Formal</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:97%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#00ff88;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.97</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-EUCLID_ELEMENTOS" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">13 libros de geometría axiomática. Cierre categorial perfecto: 5 postulados → 465 teoremas sin contradicción detectada en 2 300 años.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#00ff8888;list-style:none;">
+      ⊢ Cierre α — axiomático-deductivo completo &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #00ff8844;
+                line-height:1.6;">◈ Prototipo de cierre α: la red operatoria de construcciones es la identidad sintética.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #00ff8830;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#00ff8866'"
+  onmouseout="this.style.transform='';this.style.borderColor='#00ff8830'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">⊕</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#00ff88;margin-bottom:1px;">Philosophiæ Naturalis Principia Mathematica</div>
+        <div style="font-size:.65rem;color:#4a7090;">Isaac Newton · 1687</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#00ff8820;color:#00ff88;border:1px solid #00ff8844;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟢 GREEN</span>
+      <span style="font-size:.55rem;color:#00ff88;background:#00ff8815;border-radius:3px;
+                   padding:1px 6px;">β Natural</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:94%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#00ff88;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.94</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-NEWTON_PRINCIPIA" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">3 leyes del movimiento + gravitación universal. Cierre β canónico: todos los fenómenos mecánicos quedan bajo las mismas ecuaciones.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#00ff8888;list-style:none;">
+      ⊢ Cierre β — leyes causales universales verificadas empíricamente &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #00ff8844;
+                line-height:1.6;">◈ Cierre β paradigmático: las leyes causales clausuran el campo de la mecánica clásica.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #00ff8830;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#00ff8866'"
+  onmouseout="this.style.transform='';this.style.borderColor='#00ff8830'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">◈</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#00ff88;margin-bottom:1px;">Teoría del Cierre Categorial (TCC)</div>
+        <div style="font-size:.65rem;color:#4a7090;">Gustavo Bueno · 1992–1993</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#00ff8820;color:#00ff88;border:1px solid #00ff8844;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟢 GREEN</span>
+      <span style="font-size:.55rem;color:#00e5ff;background:#00e5ff15;border-radius:3px;
+                   padding:1px 6px;">α Formal</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:91%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#00ff88;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.91</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-BUENO_TCC" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Obra fundacional del Materialismo Filosófico. Define las condiciones del cierre científico: identidades sintéticas, operaciones, términos y figuras.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#00ff8888;list-style:none;">
+      ⊢ Metacierre — establece las condiciones formales del cierre en cualquier campo &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #00ff8844;
+                line-height:1.6;">◈ La TCC es el instrumento analítico central del proyecto MINERVA.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #00ff8830;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#00ff8866'"
+  onmouseout="this.style.transform='';this.style.borderColor='#00ff8830'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">⊢</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#00ff88;margin-bottom:1px;">Begriffsschrift</div>
+        <div style="font-size:.65rem;color:#4a7090;">Gottlob Frege · 1879</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#00ff8820;color:#00ff88;border:1px solid #00ff8844;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟢 GREEN</span>
+      <span style="font-size:.55rem;color:#00e5ff;background:#00e5ff15;border-radius:3px;
+                   padding:1px 6px;">α Formal</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:88%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#00ff88;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.88</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-FREGE_BEGRIF" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Primera formalización completa de la lógica de predicados. Establece el cierre formal del razonamiento deductivo.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#00ff8888;list-style:none;">
+      ⊢ Cierre α — lógica de predicados como identidad sintética máxima &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #00ff8844;
+                line-height:1.6;">◈ Cierre α por excelencia: el lenguaje lógico-formal como identidad sintética.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #00ff8830;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#00ff8866'"
+  onmouseout="this.style.transform='';this.style.borderColor='#00ff8830'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">∿</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#00ff88;margin-bottom:1px;">Treatise on Electricity and Magnetism</div>
+        <div style="font-size:.65rem;color:#4a7090;">James Clerk Maxwell · 1873</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#00ff8820;color:#00ff88;border:1px solid #00ff8844;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟢 GREEN</span>
+      <span style="font-size:.55rem;color:#00ff88;background:#00ff8815;border-radius:3px;
+                   padding:1px 6px;">β Natural</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:85%;height:100%;background:#00ff88;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#00ff88;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.85</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-MAXWELL_ECUACIONES" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">4 ecuaciones que unifican electricidad, magnetismo y luz. Cierre β sobre todo el electromagnetismo clásico.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#00ff8888;list-style:none;">
+      ⊢ Cierre β — unificación de tres dominios físicos en un sistema formal &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #00ff8844;
+                line-height:1.6;">◈ Ejemplo de cierre β ampliado: reduce múltiples campos a una sola identidad sintética.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">🌿</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">El origen de las especies</div>
+        <div style="font-size:.65rem;color:#4a7090;">Charles Darwin · 1859</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#00ff88;background:#00ff8815;border-radius:3px;
+                   padding:1px 6px;">β Natural</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:74%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.74</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-DARWIN_ORIGEN" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Selección natural como mecanismo de la diversidad biológica. Cierre β parcial: el mecanismo es verificable pero la historia evolutiva es irrepetible.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Cierre β aproximado — mecanismo causal sobre historias singulares &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ Cierre β parcial: las leyes de la selección natural operan sobre materiales históricos no reproducibles.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">Α</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">Organon</div>
+        <div style="font-size:.65rem;color:#4a7090;">Aristóteles · ~350 a.C.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#00e5ff;background:#00e5ff15;border-radius:3px;
+                   padding:1px 6px;">α Formal</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:68%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.68</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-ARISTOTELES_ORGANON" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Tratados lógicos: Categorías, Analíticos, Tópicos. Primer sistema lógico-científico de Occidente. Cierre parcial.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Proto-cierre α — silogística como antecedente sin axiomatización plena &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ Antecedente histórico del cierre α: identifica términos y predicados pero sin formalización algebraica.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">⌘</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">El animal divino</div>
+        <div style="font-size:.65rem;color:#4a7090;">Gustavo Bueno · 1985</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#f48fb1;background:#f48fb115;border-radius:3px;
+                   padding:1px 6px;">Simbólico</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:64%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.64</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-BUENO_ANIMAL_DIVINO" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Análisis materialista de la religión como campo operatorio con cierre simbólico. Demuestra que la religión produce identidades sintéticas propias.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Cierre simbólico-operatorio — campo religioso/artístico analizado desde la TCC &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ Prueba que arte y religión pueden analizarse con criterios científicos sin reducirlos ni instrumentalizarlos.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">◻</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">Crítica de la razón pura</div>
+        <div style="font-size:.65rem;color:#4a7090;">Immanuel Kant · 1781</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#00e5ff;background:#00e5ff15;border-radius:3px;
+                   padding:1px 6px;">α Formal</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:61%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.61</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-KANT_KRV" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Deducción trascendental de las categorías del entendimiento. Intenta un cierre sobre las condiciones de posibilidad del conocimiento.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Cierre α subjetivo — anclado en la conciencia trascendental &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ Precursor del cierre categorial: identifica identidades sintéticas a priori pero las ancla en el sujeto en vez de en la materia.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">⚒</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">El Capital</div>
+        <div style="font-size:.65rem;color:#4a7090;">Karl Marx · 1867</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#ffd54f;background:#ffd54f15;border-radius:3px;
+                   padding:1px 6px;">γ Social-IV</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:55%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.55</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-MARX_CAPITAL" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Análisis del plusvalor y el modo de producción capitalista. Cierre γ interpretativo: potente pero dependiente de presupuestos normativos.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Cierre γ interpretativo — red de identidades sobre relaciones sociales &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ Cierre γ relevante: construye identidades (mercancía = trabajo abstracto) pero el campo permanece abierto a re-interpretación.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ffd54f30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ffd54f66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ffd54f30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">∑</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ffd54f;margin-bottom:1px;">Curso de lingüística general</div>
+        <div style="font-size:.65rem;color:#4a7090;">Ferdinand de Saussure · 1916</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ffd54f20;color:#ffd54f;border:1px solid #ffd54f44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🟡 AMBER</span>
+      <span style="font-size:.55rem;color:#ff9800;background:#ff980015;border-radius:3px;
+                   padding:1px 6px;">γ Social-Diacr.</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:47%;height:100%;background:#ffd54f;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ffd54f;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.47</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-SAUSSURE_CLG" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Fundación de la lingüística estructural: signo, significante, significado, sincronía/diacronía.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ffd54f88;list-style:none;">
+      ⊢ Cierre γ diacrónico parcial — identidades fonológicas sin cierre histórico &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ffd54f44;
+                line-height:1.6;">◈ La lingüística identifica identidades (el fonema como unidad operatoria) pero depende de comunidades hablantes cambiantes.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ff3d5a30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ff3d5a66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ff3d5a30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">◑</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ff3d5a;margin-bottom:1px;">La interpretación de los sueños</div>
+        <div style="font-size:.65rem;color:#4a7090;">Sigmund Freud · 1900</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ff3d5a20;color:#ff3d5a;border:1px solid #ff3d5a44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🔴 RED</span>
+      <span style="font-size:.55rem;color:#ffd54f;background:#ffd54f15;border-radius:3px;
+                   padding:1px 6px;">γ Social-IV</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:33%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ff3d5a;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.33</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-FREUD_SUENOS" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Propuesta de un método interpretativo del inconsciente. Proto-cierre: establece términos pero las operaciones no son reproducibles.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ff3d5a88;list-style:none;">
+      ⊢ Proto-cierre γ — red simbólica sin operaciones reproducibles &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ff3d5a44;
+                line-height:1.6;">◈ Ejemplo de pseudo-cierre: construye un vocabulario técnico pero sin identidades sintéticas verificables.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ff3d5a30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ff3d5a66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ff3d5a30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">∞</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ff3d5a;margin-bottom:1px;">Fenomenología del espíritu</div>
+        <div style="font-size:.65rem;color:#4a7090;">G.W.F. Hegel · 1807</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ff3d5a20;color:#ff3d5a;border:1px solid #ff3d5a44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🔴 RED</span>
+      <span style="font-size:.55rem;color:#ffd54f;background:#ffd54f15;border-radius:3px;
+                   padding:1px 6px;">γ Social-IV</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:20%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ff3d5a;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.20</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-HEGEL_FENOMENOLOGIA" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Dialéctica del espíritu absoluto. Sin cierre operatorio: el sistema se auto-absorbe en la especulación pura.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ff3d5a88;list-style:none;">
+      ⊢ Sin cierre — idealismo especulativo sin operaciones externas &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ff3d5a44;
+                line-height:1.6;">◈ Contra-ejemplo canónico: el idealismo absoluto disuelve el campo en el discurso — exactamente lo que la TCC critica.</div>
+  </details>
+</div><div style="background:#0d1520;border:1px solid #ff3d5a30;border-radius:10px;
+  padding:16px;position:relative;transition:transform .15s,border-color .2s;"
+  onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='#ff3d5a66'"
+  onmouseout="this.style.transform='';this.style.borderColor='#ff3d5a30'">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span style="font-size:1.4rem;flex-shrink:0;">⚡</span>
+      <div style="min-width:0;">
+        <div style="font-size:.8rem;font-weight:bold;color:#ff3d5a;margin-bottom:1px;">Así habló Zaratustra</div>
+        <div style="font-size:.65rem;color:#4a7090;">Friedrich Nietzsche · 1883–1885</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+      <span style="font-size:.6rem;background:#ff3d5a20;color:#ff3d5a;border:1px solid #ff3d5a44;
+                   border-radius:4px;padding:2px 8px;font-weight:bold;">🔴 RED</span>
+      <span style="font-size:.55rem;color:#f48fb1;background:#f48fb115;border-radius:3px;
+                   padding:1px 6px;">Simbólico</span>
+    </div>
+  </div>
+  <div style="height:5px;background:#131f2e;border-radius:3px;overflow:hidden;margin-bottom:8px;">
+    <div style="width:15%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+    <span style="font-size:.72rem;color:#ff3d5a;font-family:'Courier New',monospace;
+                 font-weight:bold;">p=0.15</span>
+    <span style="font-size:.6rem;color:#3a5a7a;">cierre sintético</span>
+    <span id="cl-badge-NIETZSCHE_ZARATHUSTRA" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <div style="font-size:.68rem;color:var(--text);line-height:1.6;margin-bottom:8px;">Obra filosófico-poética sobre el superhombre y la voluntad de poder. Campo simbólico sin cierre operatorio formal.</div>
+  <details style="margin-top:4px;">
+    <summary style="cursor:pointer;font-size:.6rem;color:#ff3d5a88;list-style:none;">
+      ⊢ Sin cierre — campo simbólico abierto sin operaciones determinadas &nbsp;▾
+    </summary>
+    <div style="font-size:.62rem;color:#3a7a5a;margin-top:6px;padding:8px;
+                background:rgba(0,0,0,.25);border-radius:5px;border-left:2px solid #ff3d5a44;
+                line-height:1.6;">◈ Ejemplo de campo artístico-filosófico sin identidades sintéticas: potente expresión pero sin cierre categorial.</div>
+  </details>
+</div></div>
+      <div style="margin-top:8px;font-size:.54rem;color:var(--dim);line-height:1.7;
+                  border-top:1px solid var(--border);padding-top:8px;">
+        <span style="color:var(--cyan);">◈ Nota metodológica:</span>
+        Los scores no provienen de Semantic Scholar sino de la aplicación directa de la TCC
+        (Bueno 1992–1993). Verde = cierre categorial completo. Ámbar = cierre parcial.
+        Rojo = proto-cierre sin identidades sintéticas estables.
+      </div>
+      <!-- Historial Clásicos -->
+      <div style="margin-top:12px;border-top:1px solid #131f2e;padding-top:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+          <div style="font-size:.6rem;color:#ffd54f;font-weight:bold;letter-spacing:.5px;">
+            📚 HISTORIAL · Verificaciones Semantic Scholar
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div style="font-size:.55rem;color:var(--dim);">Se actualiza al usar el botón Verificar en SS</div>
+            <button onclick="_mcExportHistorial(_MC_LS_CLASICOS,'Clásicos','#ffd54f')"
+              style="background:none;border:1px solid #ffd54f44;color:#ffd54f99;font-size:.54rem;
+                     padding:3px 8px;border-radius:4px;cursor:pointer;font-family:monospace;"
+              title="Descargar historial completo como HTML">📥 Exportar</button>
+          </div>
+        </div>
+        <div id="mc-cl-historial"><div style="color:var(--dim);font-size:.6rem;padding:6px 0;">Sin verificaciones registradas — usa el botón <b style="color:#ffd54f">📚 Verificar en SS</b> para registrar la primera.</div></div>
+      </div>
     </div>
   </div>
 
 </div>
+<script>
+// ── HISTORIAL localStorage — persiste entre recargas ─────────────────────────
+var _MC_LS_MINERVA = 'lum_minerva_historial';
+var _MC_LS_CLASICOS = 'lum_clasicos_historial';
+var _MC_LS_MAX  = 200;
+var _MC_LS_SHOW = 20;
+var _MC_LS_KEEP = 100;
+
+// ── Session ID persistente ────────────────────────────────────────────────
+function _mcGetSid() {
+  var sid = localStorage.getItem('lum_sid');
+  if (!sid) { sid = Date.now().toString(36) + Math.random().toString(36).slice(2,6); localStorage.setItem('lum_sid', sid); }
+  return sid;
+}
+var _MC_LUM_SID = _mcGetSid();
+
+function _mcExportHistorialArr(arr, titulo, color) {
+  if (!arr.length) { alert('Sin entradas en el historial aún.'); return; }
+  var _sid = _MC_LUM_SID || 'local';
+  var rows = '';
+  arr.forEach(function(e, i) {
+    var ts = (e.timestamp||'').slice(0,19).replace('T',' ');
+    var total = e.total_papers || e.total_papers_found || 0;
+    var src = e.source||'';
+    var esid = e.sid||'—';
+    var detail = '';
+    if (e.dominios) {
+      Object.keys(e.dominios).forEach(function(k) {
+        var dd = e.dominios[k]||{};
+        var col2 = dd.semaforo==='GREEN'?'#00ff88':(dd.semaforo==='AMBER'?'#ffd54f':'#ff3d5a');
+        detail += '<span style="display:inline-block;margin:2px 3px;padding:2px 7px;border-radius:3px;border:1px solid '+col2+'55;background:'+col2+'14;color:'+col2+';font-size:.78rem;">'+k+' '+(dd.n_papers_ss||0)+'p</span>';
+      });
+    } else if (e.obras) {
+      Object.keys(e.obras).forEach(function(k) {
+        var n = (e.obras[k]||{}).n_papers||0;
+        var col2 = n>=3?'#00ff88':(n>0?'#ffd54f':'#555');
+        detail += '<span style="display:inline-block;margin:2px 3px;padding:2px 7px;border-radius:3px;border:1px solid '+col2+'55;background:'+col2+'14;color:'+col2+';font-size:.75rem;">'+k.replace(/_/g,' ')+' '+n+'p</span>';
+      });
+    }
+    var bg = i%2===0?'#0a1520':'#0d1a28';
+    rows += '<tr style="background:'+bg+';">'
+      +'<td style="padding:8px 12px;color:#4a7090;font-size:.8rem;">'+(i+1)+'</td>'
+      +'<td style="padding:8px 12px;color:#5a8aaa;font-size:.8rem;font-family:monospace;white-space:nowrap;">'+ts+'</td>'
+      +'<td style="padding:8px 12px;color:#3a6080;font-size:.75rem;">'+src+'</td>'
+      +'<td style="padding:8px 12px;color:'+color+';font-weight:bold;font-size:.8rem;">'+total+'</td>'
+      +'<td style="padding:8px 12px;color:#2a4060;font-size:.7rem;font-family:monospace;">'+esid+'</td>'
+      +'<td style="padding:8px 12px;">'+detail+'</td>'
+      +'</tr>';
+  });
+  var now = new Date().toISOString().slice(0,19).replace('T',' ');
+  var tsFirst = arr.length ? (arr[arr.length-1].timestamp||'').slice(0,10) : '';
+  var tsLast  = arr.length ? (arr[0].timestamp||'').slice(0,10) : '';
+  var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'
+    +'<title>MINERVA — '+titulo+'</title>'
+    +'<style>body{background:#060d14;color:#8aacbe;font-family:"Courier New",monospace;margin:0;padding:24px;}'
+    +'h1{color:'+color+';font-size:1.1rem;letter-spacing:2px;border-bottom:1px solid '+color+'44;padding-bottom:10px;margin-bottom:6px;}'
+    +'.meta{font-size:.72rem;color:#3a5a7a;margin-bottom:6px;line-height:1.8;}'
+    +'.sid{display:inline-block;background:#0a1a2a;border:1px solid '+color+'44;color:'+color+'bb;padding:2px 10px;border-radius:4px;font-size:.72rem;letter-spacing:1px;margin-bottom:14px;}'
+    +'table{width:100%;border-collapse:collapse;} th{background:#0a1a2a;color:#3a6080;padding:8px 12px;text-align:left;border-bottom:1px solid #1a3a5a;font-size:.72rem;letter-spacing:1px;}'
+    +'tr:hover td{background:#0f2030!important;} .total{font-size:.78rem;color:#3a5a7a;margin-top:16px;}</style></head><body>'
+    +'<h1>◈ MINERVA ALFA LUM-vitae — '+titulo+'</h1>'
+    +'<div class="meta">Exportado: '+now+' UTC &nbsp;·&nbsp; '+arr.length+' registros &nbsp;·&nbsp; rango: '+tsFirst+' → '+tsLast+'<br>Generado por ALFA LUM-vitae vΩ.4</div>'
+    +'<div class="sid">SID: '+_sid+'</div>'
+    +'<table><thead><tr><th>#</th><th>TIMESTAMP</th><th>FUENTE</th><th>PAPERS</th><th>SID</th><th>DETALLE</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>'
+    +'<div class="total">Total: '+arr.length+' registros · SID sesión actual: '+_sid+'</div>'
+    +'</body></html>';
+  var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var tipo = (titulo.toLowerCase().indexOf('clas')>=0) ? 'clasicos' : 'dominios';
+  a.download = 'lum_hist_'+tipo+'_'+new Date().toISOString().slice(0,10)+'_'+_sid+'.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+// Wrapper para botones manuales
+function _mcExportHistorial(key, titulo, color) {
+  _mcExportHistorialArr(_mcLsLoad(key), titulo, color);
+}
+
+function _mcLsSave(key, entrada) {
+  try {
+    var arr = JSON.parse(localStorage.getItem(key) || '[]');
+
+    // ── Dedup híbrido: bloquear solo si contenido idéntico Y menos de 30 min ──
+    if (arr.length > 0) {
+      var last = arr[0];
+      var diffMs   = Date.now() - new Date(last.timestamp||0).getTime();
+      var within30 = diffMs < 30 * 60 * 1000;
+      if (within30) {
+        var sameTotal  = (last.total_papers||0) === (entrada.total_papers||0);
+        var sameSource = last.source === entrada.source;
+        if (sameTotal && sameSource) {
+          var mkMap = function(dom) {
+            var o = {};
+            Object.keys(dom||{}).forEach(function(k) { o[k] = (dom[k]||{}).n_papers_ss||0; });
+            return JSON.stringify(o);
+          };
+          if (mkMap(last.dominios) === mkMap(entrada.dominios)) return;
+        }
+      }
+    }
+
+    entrada.sid = _MC_LUM_SID;   // estampar huella de sesión
+    arr.unshift(entrada);
+
+    if (arr.length > _MC_LS_MAX) {
+      var label = key.indexOf('clasicos')>=0 ? 'Clásicos' : 'Dominios';
+      var col   = key.indexOf('clasicos')>=0 ? '#ffd54f' : '#00e5ff';
+      _mcExportHistorialArr(arr.slice(_MC_LS_KEEP), label + ' — Archivo ' + new Date().toISOString().slice(0,10), col);
+      arr.splice(_MC_LS_KEEP);
+      var n = document.createElement('div');
+      n.textContent = '📥 100 entradas antiguas exportadas — historial renovado (100 recientes conservadas)';
+      n.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0a1a2a;border:1px solid '+col+';color:'+col+';padding:10px 16px;border-radius:6px;font-size:.7rem;z-index:9999;font-family:monospace;max-width:380px;';
+      document.body.appendChild(n);
+      setTimeout(function(){ n.remove(); }, 7000);
+    }
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch(e) {}
+}
+
+function _mcLsLoad(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+  catch(e) { return []; }
+}
+
+function _mcBuildMinEntry(e) {
+  var ts = (e.timestamp||'').slice(0,16).replace('T',' ');
+  var doms = e.dominios || {};
+  var tags = Object.keys(doms).map(function(k){
+    var dd = doms[k]||{};
+    var col = dd.semaforo==='GREEN'?'#00ff88':(dd.semaforo==='AMBER'?'#ffd54f':'#ff3d5a');
+    return '<span style="display:inline-block;padding:2px 5px;border-radius:3px;border:1px solid '+col+'44;background:'+col+'11;color:'+col+';font-size:.52rem;margin:2px;">'+k+'</span>';
+  }).join('');
+  var ne = document.createElement('div');
+  ne.className = 'mc-hist-entry';
+  ne.style.cssText = 'border-bottom:1px solid #131f2e;padding:6px 0;font-size:.57rem;';
+  ne.innerHTML = '<div style="display:flex;justify-content:space-between;">'
+    +'<span style="color:#3a5a7a;">'+ts+'</span>'
+    +'<span style="color:#00e5ff;">'+(e.total_papers||0)+' papers</span></div>'
+    +'<div style="margin-top:3px;">'+tags+'</div>';
+  return ne;
+}
+
+function _mcBuildClEntry(e) {
+  var ts = (e.timestamp||'').slice(0,16).replace('T',' ');
+  var obras = e.obras || {};
+  var tags = Object.keys(obras).slice(0,6).map(function(k){
+    var n = (obras[k]||{}).n_papers||0;
+    var col = n>=3?'#00ff88':(n>0?'#ffd54f':'#3a5a7a');
+    return '<span style="display:inline-block;padding:2px 4px;border-radius:3px;border:1px solid '+col+'44;background:'+col+'11;color:'+col+';font-size:.50rem;margin:2px;">'+k.replace(/_/g,' ').slice(0,14)+' '+n+'p</span>';
+  }).join('');
+  var ne = document.createElement('div');
+  ne.className = 'mc-cl-hist-entry';
+  ne.style.cssText = 'border-bottom:1px solid #131f2e;padding:6px 0;font-size:.57rem;';
+  ne.innerHTML = '<div style="display:flex;justify-content:space-between;">'
+    +'<span style="color:#3a5a7a;">'+ts+'</span>'
+    +'<span style="color:#ffd54f;">'+(e.total_papers||e.total_papers_found||0)+' papers</span></div>'
+    +'<div style="margin-top:3px;">'+tags+'</div>';
+  return ne;
+}
+
+function _mcRenderMinHist(panel, arr) {
+  if (!panel) return;
+  panel.innerHTML = '';
+  if (!arr.length) {
+    panel.innerHTML = '<div style="color:#2a4a6a;font-size:.57rem;padding:6px 0;">Sin búsquedas registradas aún.</div>';
+    return;
+  }
+  arr.slice(0, _MC_LS_SHOW).forEach(function(e){ panel.appendChild(_mcBuildMinEntry(e)); });
+  if (arr.length > _MC_LS_SHOW) {
+    var rest = arr.length - _MC_LS_SHOW;
+    var btn = document.createElement('button');
+    btn.textContent = '▾ ver ' + rest + ' más (total ' + arr.length + ')';
+    btn.style.cssText = 'background:none;border:1px solid #00e5ff33;color:#00e5ff88;font-size:.54rem;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:4px;width:100%;';
+    btn.onclick = function() { arr.slice(_MC_LS_SHOW).forEach(function(e){ panel.insertBefore(_mcBuildMinEntry(e), btn); }); btn.remove(); };
+    panel.appendChild(btn);
+  }
+}
+
+function _mcRenderClHist(panel, arr) {
+  if (!panel) return;
+  panel.innerHTML = '';
+  if (!arr.length) {
+    panel.innerHTML = '<div style="color:#2a4a6a;font-size:.57rem;padding:6px 0;">Sin verificaciones registradas aún.</div>';
+    return;
+  }
+  arr.slice(0, _MC_LS_SHOW).forEach(function(e){ panel.appendChild(_mcBuildClEntry(e)); });
+  if (arr.length > _MC_LS_SHOW) {
+    var rest = arr.length - _MC_LS_SHOW;
+    var btn = document.createElement('button');
+    btn.textContent = '▾ ver ' + rest + ' más (total ' + arr.length + ')';
+    btn.style.cssText = 'background:none;border:1px solid #ffd54f33;color:#ffd54f88;font-size:.54rem;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:4px;width:100%;';
+    btn.onclick = function() { arr.slice(_MC_LS_SHOW).forEach(function(e){ panel.insertBefore(_mcBuildClEntry(e), btn); }); btn.remove(); };
+    panel.appendChild(btn);
+  }
+}
+
+// ── TAB SWITCHER ──────────────────────────────────────────────────────────────
+var _mcTabAccents = {dominios:'#00e5ff',clasicos:'#ffd54f'};
+document.addEventListener('DOMContentLoaded', function() {
+  mcSwitchTab('dominios');
+  _mcRenderMinHist(document.getElementById('mc-minerva-historial'), _mcLsLoad(_MC_LS_MINERVA));
+  _mcRenderClHist(document.getElementById('mc-cl-historial'), _mcLsLoad(_MC_LS_CLASICOS));
+});
+function mcSwitchTab(tab) {
+  ['dominios','clasicos'].forEach(function(t) {
+    var panel = document.getElementById('mctab-' + t);
+    var btn   = document.getElementById('mctab-btn-' + t);
+    if (!panel || !btn) return;
+    var active = (t === tab);
+    var ac = _mcTabAccents[t];
+    panel.style.display = active ? 'block' : 'none';
+    btn.style.background  = active ? (ac==='#00e5ff' ? 'rgba(0,229,255,.14)' : 'rgba(255,213,79,.14)') : 'rgba(0,0,0,.2)';
+    btn.style.borderColor = active ? (ac==='#00e5ff' ? 'rgba(0,229,255,.35)' : 'rgba(255,213,79,.35)') : '#1a2a3a';
+    btn.style.color       = active ? ac : '#3a5a7a';
+    btn.style.fontWeight  = active ? 'bold' : 'normal';
+  });
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function mcShowStatus(id, msg, col) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = msg ? 'block' : 'none';
+  el.style.borderLeftColor = col || 'rgba(0,229,255,.4)';
+  el.innerHTML = msg || '';
+}
+function mcSetBtn(id, disabled, label) {
+  var b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = disabled;
+  b.textContent = label;
+  b.style.opacity = disabled ? '.5' : '1';
+  b.style.cursor = disabled ? 'not-allowed' : 'pointer';
+}
+
+// ── FETCH WITH RETRY ──────────────────────────────────────────────────────────
+// SIN AbortController: evita error "AbortSignal cannot be cloned" en extensiones Chrome
+async function mcFetchRetry(url, ms, tries) {
+  tries = tries || 2;
+  for (var attempt=0; attempt<=tries; attempt++) {
+    try {
+      var _fp = fetch(url);
+      var _tp = new Promise(function(_, rej) {
+        setTimeout(function() { rej(new Error('timeout_' + ms)); }, ms);
+      });
+      var r = await Promise.race([_fp, _tp]);
+      if (r.status === 429) {
+        if (attempt < tries) { await new Promise(function(rv){ setTimeout(rv, 1500*(attempt+1)); }); continue; }
+        return null;
+      }
+      return r;
+    } catch(e) {
+      if (attempt < tries) { await new Promise(function(rv){ setTimeout(rv, 900*(attempt+1)); }); }
+    }
+  }
+  return null;
+}
+
+// ── Rotación de offset por clave (localStorage) ───────────────────────────
+var _MC_OFFSET_KEY = 'lum_mc_offsets';
+function _mcNextOffset(key) {
+  var offs = {};
+  try { offs = JSON.parse(localStorage.getItem(_MC_OFFSET_KEY) || '{}'); } catch(e) {}
+  var off = offs[key] || 0;
+  offs[key] = (off + 5) % 40;  // páginas de 5 (0,5,10,15,20,25,30,35)
+  try { localStorage.setItem(_MC_OFFSET_KEY, JSON.stringify(offs)); } catch(e) {}
+  return off;
+}
+
+// ── BUSCAR DOMINIOS EN SEMANTIC SCHOLAR ───────────────────────────────────────
+var _mcSearching = false;
+var _mcLastAt = 0;
+var MC_SS_QUERIES = {
+  'FORM':    'categorical closure formal mathematics axiomatic systems',
+  'NAT':     'categorical closure natural sciences causal laws empirical',
+  'TEC':     'categorical closure engineering technology systems design',
+  'SOC_IV':  'categorical closure social sciences interpretive hermeneutics',
+  'SOC_DID': 'categorical closure social sciences diachronic historical',
+  'ARTE':    'categorical closure aesthetics art symbolic materialist philosophy'
+};
+async function mcBuscarMinerva() {
+  if (_mcSearching) return;
+  var now = Date.now();
+  if (now - _mcLastAt < 30000) {
+    mcShowStatus('mc-minerva-status', '⏳ Cooldown — espera ' + Math.ceil((30000-(now-_mcLastAt))/1000) + ' s', '#ffd54f');
+    return;
+  }
+  _mcSearching = true;
+  _mcLastAt = now;
+  mcSetBtn('mc-btn-minerva', true, '🔍 Buscando…');
+  mcShowStatus('mc-minerva-status', '⏳ Consultando Semantic Scholar (6 dominios)…', '#00e5ff');
+  var baseUrl = 'https://api.semanticscholar.org/graph/v1/paper/search';
+  var results = {};
+  var ok = 0;
+  for (var dom in MC_SS_QUERIES) {
+    var q = encodeURIComponent(MC_SS_QUERIES[dom]);
+    var _mOff = _mcNextOffset('DOM_' + dom);
+    var url = baseUrl + '?query=' + q + '&offset=' + _mOff + '&limit=5&fields=title,year,externalIds';
+    try {
+      var r = await mcFetchRetry(url, 14000, 1);
+      if (r && r.ok) {
+        var d = await r.json();
+        results[dom] = (d.data || []).length;
+        ok++;
+      } else {
+        results[dom] = 0;
+      }
+    } catch(e) { results[dom] = 0; }
+    await new Promise(function(rv){ setTimeout(rv, 400); });
+  }
+  var ts = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  if (ok === 0) {
+    mcShowStatus('mc-minerva-status', '⚠ No se pudo contactar Semantic Scholar · ' + ts + ' — verifica conexión o intenta más tarde.', '#ff3d5a');
+  } else {
+    var summary = Object.keys(results).map(function(k){ return k+':'+results[k]; }).join(' · ');
+    mcShowStatus('mc-minerva-status', '✓ SS consultado · ' + ts + ' · ' + summary, '#00ff88');
+    var _mcEntrada = {
+      timestamp: new Date().toISOString(),
+      source: 'live_mapa',
+      total_papers: Object.values(results).reduce(function(a,b){return a+b;},0),
+      dominios: Object.fromEntries(Object.keys(results).map(function(k){
+        return [k, {p_sintetico:0, semaforo:'N/A', n_papers_ss:results[k], score_ss:0}];
+      }))
+    };
+    // 1. localStorage (persiste sin Flask)
+    _mcLsSave(_MC_LS_MINERVA, _mcEntrada);
+    // 2. Flask (silencioso)
+    try { fetch('http://localhost:5050/api/minerva_historial', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_mcEntrada)}).catch(function(){}); } catch(e) {}
+    // 3. Actualizar panel
+    var panel = document.getElementById('mc-minerva-historial');
+    if (panel) _mcRenderMinHist(panel, _mcLsLoad(_MC_LS_MINERVA));
+  }
+  mcSetBtn('mc-btn-minerva', false, '🔍 Buscar en SS');
+  _mcSearching = false;
+}
+
+// ── VERIFICAR CLÁSICOS EN SEMANTIC SCHOLAR ────────────────────────────────────
+var _mcClSearching = false;
+var _mcClLastAt = 0;
+var MC_CL_QUERIES = {
+  'EUCLID_ELEMENTOS':  'Euclid Elements geometry axiomatic formal',
+  'NEWTON_PRINCIPIA':  'Newton Principia Mathematica natural philosophy mechanics',
+  'BUENO_TCC':         'Bueno teoria cierre categorial materialismo filosofico',
+  'FREGE_BEGRIF':      'Frege Begriffsschrift formal logic predicate calculus',
+  'MAXWELL_ECUACIONES':'Maxwell equations electromagnetism field theory',
+  'DARWIN_ORIGEN':     'Darwin origin of species natural selection evolution',
+  'ARISTOTELES_ORGANON':'Aristotle Organon logic syllogism categories',
+  'KANT_KRV':          'Kant Critique of Pure Reason transcendental idealism',
+  'BUENO_ANIMAL_DIVINO':'Bueno El animal divino religion philosophy materialism',
+  'MARX_CAPITAL':      'Marx Capital political economy commodity labour value',
+  'SAUSSURE_CLG':      'Saussure cours linguistique generale structural linguistics',
+  'FREUD_SUENOS':      'Freud interpretation of dreams psychoanalysis unconscious',
+  'HEGEL_FENOMENOLOGIA':'Hegel Phenomenology of Spirit dialectic absolute idealism',
+  'NIETZSCHE_ZARATHUSTRA':'Nietzsche Thus Spoke Zarathustra nihilism will to power'
+};
+async function mcBuscarClasicos() {
+  if (_mcClSearching) return;
+  var now = Date.now();
+  if (now - _mcClLastAt < 30000) {
+    mcShowStatus('mc-cl-status', '⏳ Cooldown — espera ' + Math.ceil((30000-(now-_mcClLastAt))/1000) + ' s', '#ffd54f');
+    return;
+  }
+  _mcClSearching = true;
+  _mcClLastAt = now;
+  mcSetBtn('mc-btn-clasicos', true, '📚 Verificando…');
+  mcShowStatus('mc-cl-status', '⏳ Consultando Semantic Scholar (14 obras)…', '#ffd54f');
+  var baseUrl = 'https://api.semanticscholar.org/graph/v1/paper/search';
+  var totalFound = 0;
+  var hitsCount = 0;
+  var ok = 0;
+  var obrasCounts = {};  // rastrea counts directamente (badge DOM no existe en mapa)
+  for (var key in MC_CL_QUERIES) {
+    var q = encodeURIComponent(MC_CL_QUERIES[key]);
+    var _cOff = _mcNextOffset('CL_' + key);
+    var url = baseUrl + '?query=' + q + '&offset=' + _cOff + '&limit=4&fields=title,year';
+    obrasCounts[key] = 0;
+    try {
+      var r = await mcFetchRetry(url, 13000, 1);
+      if (r && r.ok) {
+        var d = await r.json();
+        var n = (d.data || []).length;
+        obrasCounts[key] = n;
+        totalFound += n;
+        if (n > 0) hitsCount++;
+        ok++;
+      }
+    } catch(e) { /* sin resultado para esta obra */ }
+    await new Promise(function(rv){ setTimeout(rv, 350); });
+  }
+  var ts = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  if (ok === 0) {
+    mcShowStatus('mc-cl-status', '⚠ No se pudo contactar Semantic Scholar · ' + ts, '#ff3d5a');
+  } else {
+    mcShowStatus('mc-cl-status',
+      '✓ Verificación completa · ' + ts + ' · '
+      + hitsCount + '/14 obras con resultados · ' + totalFound + ' papers total', '#00ff88');
+    var _mcClEntrada = {
+      timestamp: new Date().toISOString(),
+      total_papers: totalFound,
+      total_papers_found: totalFound,
+      obras_con_resultados: hitsCount,
+      source: 'live_mapa',
+      obras: Object.fromEntries(Object.keys(MC_CL_QUERIES).map(function(k){
+        return [k, {n_papers: obrasCounts[k]||0}];
+      }))
+    };
+    // 1. localStorage (persiste sin Flask)
+    _mcLsSave(_MC_LS_CLASICOS, _mcClEntrada);
+    // 2. Flask (silencioso)
+    try { fetch('http://localhost:5050/api/clasicos_historial', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_mcClEntrada)}).catch(function(){}); } catch(e) {}
+    // 3. Actualizar panel
+    var panel = document.getElementById('mc-cl-historial');
+    if (panel) _mcRenderClHist(panel, _mcLsLoad(_MC_LS_CLASICOS));
+  }
+  mcSetBtn('mc-btn-clasicos', false, '📚 Verificar en SS');
+  _mcClSearching = false;
+}
+
+// ── AUTO-RELOAD via sentinel lum_build_mapa.txt (funciona con file://) ───────
+var _BUILD_TS = '2026-03-28 16:08:28';
+(function() {
+  var _arKnown = _BUILD_TS.trim(), _arNotif = null;
+  var _arSentinel = location.href.replace(/[^/\\]*$/, 'lum_build_mapa.txt');
+  function _arCheck() {
+    fetch(_arSentinel + '?_=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(txt) {
+        txt = txt.trim();
+        if (!txt) return;
+        if (_arKnown && txt !== _arKnown) {
+          if (_arNotif) return;
+          _arKnown = txt;
+          _arNotif = document.createElement('div');
+          _arNotif.innerHTML = '🔄 Mapa actualizado — recargando en <b id="_ar_cnt_mc">5</b>s &nbsp;<span style="cursor:pointer;color:#3a6080;" onclick="this.parentElement.remove();">✕</span>';
+          _arNotif.style.cssText = 'position:fixed;top:12px;right:12px;background:#0a1a2a;border:1px solid #00e5ff66;color:#00e5ffcc;padding:10px 16px;border-radius:6px;font-size:.72rem;z-index:99999;font-family:monospace;box-shadow:0 4px 20px #000a;';
+          document.body.appendChild(_arNotif);
+          var cnt = 5;
+          var tick = setInterval(function() {
+            cnt--;
+            var el = document.getElementById('_ar_cnt_mc');
+            if (el) el.textContent = cnt;
+            if (cnt <= 0) { clearInterval(tick); location.reload(); }
+          }, 1000);
+        }
+        if (!_arKnown) _arKnown = txt;
+      }).catch(function() {});
+  }
+  setTimeout(_arCheck, 2000);
+  setInterval(_arCheck, 10000);
+})();
+</script>
 
 <!-- ═══════════════════════════════════════════════════════════════════
      ARCHIVO DE EVIDENCIA POR SEMÁFORO
@@ -1033,7 +2114,7 @@ details > summary::-webkit-details-marker { display:none; }
                border-top:1px solid var(--border);padding-top:20px;
                display:flex;align-items:center;gap:12px;">
     <span>◈ ARCHIVO DE EVIDENCIA — clasificado por semáforo y dominio</span>
-    <span style="color:#1a3a5a;font-size:.57rem;">Se actualiza con cada exploración MINERVA · 2026-03-25</span>
+    <span style="color:#1a3a5a;font-size:.57rem;">Se actualiza con cada exploración MINERVA · 2026-03-28</span>
   </div>
 
   <div style="margin-bottom:28px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:9px;border-bottom:2px solid #ffd54f44;"><span style="font-size:1.4rem;">🟡</span><span style="font-size:.9rem;font-weight:bold;color:#ffd54f;letter-spacing:2px;font-family:'Courier New',monospace;">ÁMBAR — Proto-cierre / cierre parcial</span><span style="font-size:.62rem;color:#ffd54f;background:#ffd54f11;padding:2px 10px;border-radius:10px;border:1px solid #ffd54f33;margin-left:4px;">20 papers · 5 dominio(s)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;"><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">∑</span><span style="font-size:.7rem;color:#00e5ff;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Ciencias Formales</span><span style="font-size:.57rem;color:#1a3a5a;background:#00e5ff11;padding:1px 6px;border-radius:8px;border:1px solid #00e5ff22;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00e5ff55;"><a href="https://www.researchgate.net/publication/271742214_Completeness_and_categoricity_in_power_Formalization_without_foundationalism" target="_blank" style="color:#00e5ff;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Completeness and Categoricity (in power): Formalization without Foundationalism</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Propone que la categoricidad en potencia —cierre formal de sistemas lógicos— tiene consecuencias estructurales profundas: toda teoría categórica es completa, y este cierre implica la independencia gnoseológica de la matemática respecto de s</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2014 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.88</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00e5ff55;"><a href="https://arxiv.org/abs/2406.15584" target="_blank" style="color:#00e5ff;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">On the Multicategorical Meta-Theorem and the Completeness of Restricted Algebraic Deduction Sys</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Establece teoremas de solidez y completitud para multicategorías sobre categorías monoidales cartesianas, demostrando propiedades de cierre algebraico-deductivo para ocho estructuras contextuales distintas.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.82</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00e5ff55;"><a href="https://www.cambridge.org/core/books/model-theory-and-the-philosophy-of-mathematical-practice/290AC3C8D457CAB3D87DACF42BD3D8EE" target="_blank" style="color:#00e5ff;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Model Theory and the Philosophy of Mathematical Practice</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Defiende la formalización sin fundacionalismo: el cierre categorial en matemáticas no requiere una base ontológica última, sino que se constituye por la práctica operatoria de demostración y modelo.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2018 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.80</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00e5ff55;"><a href="https://homepages.math.uic.edu/~jbaldwin/model11.html" target="_blank" style="color:#00e5ff;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">When does ℵ₁-categoricity imply ω-stability</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Investiga condiciones bajo las cuales la categoricidad en cardinales no contables implica estabilidad ω, avanzando la comprensión del cierre formal en teorías de primer orden.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.76</span></div></div></div><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">⚛</span><span style="font-size:.7rem;color:#00ff88;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Ciencias Naturales</span><span style="font-size:.57rem;color:#1a3a5a;background:#00ff8811;padding:1px 6px;border-radius:8px;border:1px solid #00ff8822;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00ff8855;"><a href="https://philarchive.org/citations/JGEOCA" target="_blank" style="color:#00ff88;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Operational Closure and Stability</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">El cierre operacional en sistemas biológicos —donde los procesos constitutivos se producen y sostienen mutuamente— es la característica holística que define la organización viva, y constituye un análogo biológico directo del cierre categori</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2021 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.90</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00ff8855;"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7431902/" target="_blank" style="color:#00ff88;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">The Causal Closure of Physics in Real World Contexts</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Examina el cierre causal de la física en escenarios reales (biología, ingeniería), hallando que la emergencia fuerte y la causación descendente desafían el cierre fisicista simple, pero el conjunto de leyes naturales sigue siendo operatoria</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2020 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.87</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00ff8855;"><a href="https://philpapers.org/rec/LOWPCC" target="_blank" style="color:#00ff88;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Physical Causal Closure and the Invisibility of Mental Causation</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Analiza el cierre causal físico como tesis sobre la completitud explicativa de la física, argumentando que las ciencias naturales logran un cierre operatorio a través de leyes causales, aunque el nivel mental plantea cuestiones de demarcaci</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2019 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.80</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #00ff8855;"><a href="https://www.researchgate.net/publication/325579930_Epistemic_closure_in_science" target="_blank" style="color:#00ff88;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Epistemic Closure in Science</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Analiza la clausura epistémica como propiedad de las disciplinas científicas, examinando cómo las ciencias naturales logran demarcación a través de métodos operacionales y reproducibilidad experimental.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2018 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.75</span></div></div></div><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">◈</span><span style="font-size:.7rem;color:#ffd54f;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Ciencias Sociales Interpretativas</span><span style="font-size:.57rem;color:#1a3a5a;background:#ffd54f11;padding:1px 6px;border-radius:8px;border:1px solid #ffd54f22;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ffd54f55;"><a href="https://link.springer.com/article/10.1007/s11229-021-03215-3" target="_blank" style="color:#ffd54f;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Experimental practices and objectivity in the social sciences: re-embedding construct validity</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Argumenta que la validez de constructo requiere marcos teóricos compartidos más allá de la medición objetiva, mostrando que el cierre de las ciencias sociales es consensual-operatorio: no axiomático sino intersubjetivamente validado.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2021 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.83</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ffd54f55;"><a href="https://plato.stanford.edu/archives/spr2024/entries/epistemology-social/" target="_blank" style="color:#ffd54f;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Social Epistemology (Spring 2024 Edition)</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Análisis sistemático de cómo los sistemas de conocimiento social logran cierre epistémico a través de validación comunitaria, cognición distribuida y normas institucionales — un modo de cierre propio de las ciencias γ.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.76</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ffd54f55;"><a href="https://www.frontiersin.org/journals/social-psychology/articles/10.3389/frsps.2023.1283272/full" target="_blank" style="color:#ffd54f;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Grand challenge: social psychology without hubris</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Identifica fallas sistemáticas de operacionalización en psicología social (sobreestimación de replicabilidad, subdeterminación de estímulos), mostrando que el cierre disciplinar es parcial y dependiente de marcos de medición más rigurosos.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2023 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.72</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ffd54f55;"><a href="https://journals.sagepub.com/doi/10.1177/23326492241302332" target="_blank" style="color:#ffd54f;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Epistemic Marginalization and Methodology 50 Years after The Death of White Sociology</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Examina cómo el cierre epistémico en sociología es disputado por tradiciones de investigación marginalizadas, revelando que el cierre en ciencias sociales es parcial y políticamente mediado.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2025 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.67</span></div></div></div><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">⏳</span><span style="font-size:.7rem;color:#ff9800;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Ciencias Sociales Diacrónicas</span><span style="font-size:.57rem;color:#1a3a5a;background:#ff980011;padding:1px 6px;border-radius:8px;border:1px solid #ff980022;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ff980055;"><a href="https://www.pnas.org/doi/10.1073/pnas.2212490119" target="_blank" style="color:#ff9800;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Current developments and future directions in archaeological science</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Revisa avances en técnicas arqueológicas (isotópicas, genómicas, datación), mostrando que el cierre empírico en ciencias históricas depende de la convergencia multimétodo —no de un único método operatorio— lo que define un modo propio de ci</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2022 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.79</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ff980055;"><a href="https://link.springer.com/article/10.1007/s11191-008-9146-6" target="_blank" style="color:#ff9800;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Understanding Scientific Methodology in Historical and Experimental Sciences</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Distingue metodología histórica de metodología experimental, argumentando que las ciencias históricas tienen un tipo particular de cierre: el cierre por reconstrucción de trazas —singular, no repetible, pero verificable por convergencia.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2009 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.74</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ff980055;"><a href="https://www.cambridge.org/core/journals/antiquity/article/negotiating-scientific-knowledge-and-heritage-values-with-the-history-of-archaeology/7D74EB7DAC08FE09CC6951DD6346A927" target="_blank" style="color:#ff9800;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Negotiating scientific knowledge and heritage values with the history of archaeology</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Analiza la tensión entre el cierre científico y la interpretación patrimonial en arqueología, argumentando que la disciplina opera entre el rigor internalista y la contextualización externalista, definiendo un cierre parcial e históricament</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2023 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.72</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #ff980055;"><a href="https://link.springer.com/rwe/10.1007/978-3-031-27510-4_31" target="_blank" style="color:#ff9800;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Historiography of Science: History and the History of Science</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Examina cómo la historiografía logra cierre parcial a través de protocolos metodológicos, mientras permanece abierta a reinterpretación — un modo de cierre diacrónico distintivo frente a las ciencias sincrónicas.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2023 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.70</span></div></div></div><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">⚙</span><span style="font-size:.7rem;color:#b39ddb;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Ingeniería y Tecnología</span><span style="font-size:.57rem;color:#1a3a5a;background:#b39ddb11;padding:1px 6px;border-radius:8px;border:1px solid #b39ddb22;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #b39ddb55;"><a href="https://www.sciencedirect.com/science/article/pii/S2405896324002246" target="_blank" style="color:#b39ddb;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">The Cybernetic Artificial Intelligence (CAI): A new scientific field for modelling Complex Dyna</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Propone reunificar cibernética e IA bajo el campo CAI, argumentando que el bucle cerrado de control-retroalimentación constituye el cierre operatorio definitorio de los sistemas tecnológicos, análogo al cierre categorial de las ciencias for</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.84</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #b39ddb55;"><a href="https://cacm.acm.org/research/toward-verified-artificial-intelligence/" target="_blank" style="color:#b39ddb;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Toward Verified Artificial Intelligence</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Argumenta que la verificación formal provee un camino hacia el cierre categorial en sistemas de IA, donde especificaciones e implementaciones logran correspondencia operatoria verificable.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2022 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.79</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #b39ddb55;"><a href="https://link.springer.com/article/10.1007/s10664-025-10729-8" target="_blank" style="color:#b39ddb;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Application of AI to Formal Methods: an Analysis of Current Trends</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Mapea 189 publicaciones (2019-2023) que aplican IA a métodos formales, identificando la demostración de teoremas como el dominio más próximo al cierre categorial en sistemas computacionales.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2025 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.73</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #b39ddb55;"><a href="https://proceedings.neurips.cc/paper_files/paper/2024/file/62c6d7893b13a13c659cb815852dd00d-Paper-Datasets_and_Benchmarks_Track.pdf" target="_blank" style="color:#b39ddb;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">FVEL: Interactive Formal Verification Environment with Language Models</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Introduce entornos de verificación formal que conectan lenguaje natural y pruebas formales, contribuyendo al cierre operatorio en verificación de software asistida por IA.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.71</span></div></div></div></div></div><div style="margin-bottom:28px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:9px;border-bottom:2px solid #ff3d5a44;"><span style="font-size:1.4rem;">🔴</span><span style="font-size:.9rem;font-weight:bold;color:#ff3d5a;letter-spacing:2px;font-family:'Courier New',monospace;">ROJO — Cierre no logrado / evidencia débil</span><span style="font-size:.62rem;color:#ff3d5a;background:#ff3d5a11;padding:2px 10px;border-radius:10px;border:1px solid #ff3d5a33;margin-left:4px;">4 papers · 1 dominio(s)</span></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px;"><div style="background:rgba(0,0,0,.18);border-radius:8px;padding:12px 14px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;"><span style="font-size:1rem;">🎨</span><span style="font-size:.7rem;color:#f48fb1;font-weight:bold;letter-spacing:1px;text-transform:uppercase;font-family:'Courier New',monospace;">Arte y Estética</span><span style="font-size:.57rem;color:#1a3a5a;background:#f48fb111;padding:1px 6px;border-radius:8px;border:1px solid #f48fb122;">4 papers</span></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #f48fb155;"><a href="https://www.fgbueno.es/bas/pdf3/bas60d.pdf" target="_blank" style="color:#f48fb1;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Revista de Materialismo Filosófico Nº 60: El cierre categorial en el centenario de Bueno</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Contribución reciente a la tradición del materialismo filosófico con ocasión del centenario de Bueno, examinando el estado actual de la teoría del cierre categorial en todas las disciplinas incluyendo las artes y humanidades.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.92</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #f48fb155;"><a href="http://www.scielo.org.co/scielo.php?script=sci_arttext&amp;pid=S0124-61272021000200075" target="_blank" style="color:#f48fb1;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">El cierre operatorio de las ciencias y sus diversos tipos</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Clasifica los tipos de cierre operatorio según Bueno aplicándolo a todas las ciencias, incluyendo las artes dentro de la taxonomía — concluyendo que las disciplinas estéticas tienen un modo simbólico-operatorio de cierre distinto del natura</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2021 · <span style="color:#00ff88;font-weight:bold;">relevancia 0.88</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #f48fb155;"><a href="https://www.academia.edu/105390790/What_Is_New_Materialist_Aesthetics" target="_blank" style="color:#f48fb1;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">What Is New Materialist Aesthetics?</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Argumenta que los enfoques materialistas del arte revelan cómo la experiencia estética implica cierre operatorio entre forma, material y respuesta subjetiva — validando parcialmente una teoría materialista del cierre estético.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2023 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.72</span></div></div><div style="padding:8px 10px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:6px;border-left:3px solid #f48fb155;"><a href="https://www.mdpi.com/3042-8084/2/1/1" target="_blank" style="color:#f48fb1;text-decoration:none;font-weight:bold;font-size:.68rem;line-height:1.4;">Toward a Multidimensional Definition of Art from the Perspective of Cognitive Sciences</a><div style="font-size:.62rem;color:#7ab0b0;margin-top:4px;line-height:1.5;">Propone criterios cognitivo-operacionales para definir el arte, sugiriendo que el cierre artístico opera a través de circuitos afectivo-simbólicos antes que puramente formales o empíricos — un proto-cierre de tipo γ-simbólico.</div><div style="font-size:.57rem;color:#2a4a6a;margin-top:3px;">2024 · <span style="color:#ffd54f;font-weight:bold;">relevancia 0.68</span></div></div></div></div></div>

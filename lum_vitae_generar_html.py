@@ -11,7 +11,9 @@ ESTADO_FILE     = BASE / "lum_vitae_estado.json"
 LEDGER_FILE     = BASE / "lum_vitae_ledger_meta.ndjson"
 REPORTE_FILE    = BASE / "lum_vitae_reporte.txt"
 OUT_FILE        = BASE / "lum_vitae_dashboard.html"
-HISTORIAL_FILE  = BASE / "lum_minerva_historial.json"
+HISTORIAL_FILE          = BASE / "lum_minerva_historial.json"
+CLASICOS_FILE           = BASE / "lum_clasicos_cierres.json"
+CLASICOS_HISTORIAL_FILE = BASE / "lum_clasicos_historial.json"
 
 def tama_face(estado, color, size=90):
     """
@@ -275,6 +277,25 @@ def generar():
     except Exception:
         pass
 
+    # ── CLÁSICOS — corpus de obras fundacionales analizadas con TCC ─────────────
+    clasicos_data = {}
+    try:
+        if CLASICOS_FILE.exists():
+            _cd = json.loads(CLASICOS_FILE.read_text())
+            clasicos_data = _cd.get("clasicos", {})
+    except Exception:
+        pass
+
+    # ── CLÁSICOS — historial de verificaciones SS ─────────────────────────────
+    clasicos_historial = []
+    try:
+        if CLASICOS_HISTORIAL_FILE.exists():
+            clasicos_historial = json.loads(
+                CLASICOS_HISTORIAL_FILE.read_text()
+            ).get("historial", [])
+    except Exception:
+        pass
+
     hist_ECE   = e.get("historial_ECE",   [1.0])
     hist_Brier = e.get("historial_Brier", [1.0])
     hist_kappa = e.get("historial_kappa",  [0.0])
@@ -484,6 +505,190 @@ def generar():
 </div>\n"""
         return out
 
+    def clasicos_historial_panel():
+        """Panel de historial de verificaciones SS para la sección Clásicos."""
+        if not clasicos_historial:
+            return ('<div id="cl-historial-panel">'
+                    '<div style="color:var(--dim);font-size:.6rem;padding:6px 0;">'
+                    'Sin verificaciones registradas — usa el botón '
+                    '<b style="color:#ffd54f">📚 Verificar en SS</b> para registrar la primera.'
+                    '</div></div>')
+
+        entradas = list(reversed(clasicos_historial))
+        VISIBLE  = 3
+
+        def entrada_html(idx, en, hidden=False):
+            ts     = en.get("timestamp", "")[:16].replace("T", " ") + " UTC"
+            total  = en.get("total_papers", 0)
+            obras  = en.get("obras", {})
+            obras_html = ""
+            for key, info in list(obras.items())[:8]:   # max 8 obras visibles por entrada
+                n   = info.get("n_papers", 0)
+                col = "#00ff88" if n >= 3 else ("#ffd54f" if n > 0 else "#3a5a7a")
+                lbl = (key.replace("_", " ").replace("EUCLID ELEMENTOS", "Euclides")
+                          .replace("NEWTON PRINCIPIA", "Newton")
+                          .replace("BUENO TCC", "Bueno TCC")
+                          .replace("DARWIN ORIGEN", "Darwin")
+                          .replace("HEGEL FENOMENOLOGIA", "Hegel")
+                          .replace("FREUD SUENOS", "Freud")[:18])
+                obras_html += (
+                    f'<span title="{key} · {n} papers SS" '
+                    f'style="display:inline-block;padding:2px 5px;border-radius:3px;'
+                    f'border:1px solid {col}44;background:{col}11;color:{col};'
+                    f'font-size:.52rem;margin:2px;">{lbl} {n}p</span>'
+                )
+            n_mas = max(0, len(obras) - 8)
+            if n_mas:
+                obras_html += (f'<span style="font-size:.52rem;color:var(--dim);">+{n_mas} más</span>')
+            vis = 'style="display:none;"' if hidden else ''
+            return (
+                f'<div class="cl-hist-entry" {vis} style="padding:7px 9px;margin-bottom:5px;'
+                f'border:1px solid #ffd54f22;border-radius:5px;background:rgba(255,213,79,.03);">'
+                f'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
+                f'<span style="font-size:.57rem;color:var(--dim);">{ts}</span>'
+                f'<span style="font-size:.54rem;color:#ffd54f88;">📚 SS · {total} papers</span>'
+                f'</div>'
+                f'<div>{obras_html}</div>'
+                f'</div>'
+            )
+
+        items_html = ""
+        for i, en in enumerate(entradas):
+            items_html += entrada_html(i, en, hidden=(i >= VISIBLE))
+
+        n_hidden = max(0, len(entradas) - VISIBLE)
+        ver_mas_btn = ""
+        if n_hidden > 0:
+            ver_mas_btn = (
+                f'<button id="btn-cl-historial-mas" onclick="toggleClHistorial()" '
+                f'style="background:none;border:1px solid #ffd54f33;color:var(--dim);'
+                f'font-size:.6rem;padding:4px 12px;border-radius:4px;cursor:pointer;'
+                f'font-family:\'Courier New\',monospace;margin-top:4px;">'
+                f'▼ Ver {n_hidden} más ({len(entradas)} total)</button>'
+            )
+
+        return f'''<div id="cl-historial-panel">
+{items_html}{ver_mas_btn}
+</div>
+<script>
+function toggleClHistorial() {{
+  const entries = document.querySelectorAll('.cl-hist-entry');
+  const btn = document.getElementById('btn-cl-historial-mas');
+  let anyHidden = false;
+  entries.forEach(function(el, i) {{
+    if (i >= {VISIBLE}) {{
+      if (el.style.display === 'none') {{ el.style.display = ''; anyHidden = true; }}
+    }}
+  }});
+  if (!anyHidden) {{
+    entries.forEach(function(el, i) {{ if (i >= {VISIBLE}) el.style.display = 'none'; }});
+    if (btn) btn.textContent = '▼ Ver {n_hidden} más ({len(entradas)} total)';
+  }} else {{
+    if (btn) btn.textContent = '▲ Mostrar menos';
+  }}
+}}
+</script>'''
+
+    def clasicos_cards():
+        """Tarjetas de obras clásicas analizadas con TCC — Corpus Fundacional."""
+        SEM_COL  = {"GREEN": "#00ff88", "AMBER": "#ffd54f", "RED": "#ff3d5a"}
+        SEM_ICON = {"GREEN": "🟢", "AMBER": "🟡", "RED": "🔴"}
+        DOM_COL  = {"FORM": "#00e5ff", "NAT": "#00ff88", "TEC": "#b39ddb",
+                    "SOC_IV": "#ffd54f", "SOC_DID": "#ff9800", "ARTE": "#f48fb1"}
+        DOM_NAME = {"FORM": "Formal", "NAT": "Natural", "TEC": "Técnica",
+                    "SOC_IV": "Social-IV", "SOC_DID": "Social-Diacr.", "ARTE": "Arte"}
+        ORDER    = ["GREEN", "AMBER", "RED"]
+
+        if not clasicos_data:
+            return ('<div style="color:var(--dim);font-size:.62rem;padding:10px;">'
+                    'Sin datos de clásicos — ejecuta <code>python3 lum_mapa_cierres.py --html-only</code>'
+                    '</div>')
+
+        # Ordenar: verde → ámbar → rojo, dentro de cada grupo por p_sintetico desc
+        def sort_key(item):
+            sem = item[1].get("semaforo", "RED")
+            return (ORDER.index(sem), -item[1].get("p_sintetico", 0))
+
+        entries = sorted(clasicos_data.items(), key=sort_key)
+        out = ""
+        for key, cl in entries:
+            sem   = cl.get("semaforo", "RED")
+            p     = cl.get("p_sintetico", 0.0)
+            col   = SEM_COL.get(sem, "#9e9e9e")
+            dom   = cl.get("dominio", "FORM")
+            dcol  = DOM_COL.get(dom, "#9e9e9e")
+            dname = DOM_NAME.get(dom, dom)
+            pct   = int(round(p * 100))
+            icon  = cl.get("icono", "◈")
+            titulo = html.escape(cl.get("titulo", ""))
+            autor  = html.escape(cl.get("autor", ""))
+            anio   = html.escape(cl.get("anio", ""))
+            desc   = html.escape(cl.get("descripcion", ""))
+            tipo   = html.escape(cl.get("tipo_cierre", ""))
+            bueno  = html.escape(cl.get("bueno_ref", ""))
+            out += f"""<div style="background:rgba(0,0,0,.32);border:1px solid {col}28;
+  border-radius:7px;padding:10px 11px;display:flex;flex-direction:column;gap:5px;
+  transition:border-color .2s;" onmouseover="this.style.borderColor='{col}66'"
+  onmouseout="this.style.borderColor='{col}28'">
+  <!-- Header: icono + título + semáforo -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
+    <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:0;">
+      <span style="color:{col};font-size:.85rem;flex-shrink:0;">{icon}</span>
+      <div style="min-width:0;">
+        <div style="font-size:.64rem;font-weight:bold;color:{col};white-space:nowrap;
+                    overflow:hidden;text-overflow:ellipsis;">{titulo}</div>
+        <div style="font-size:.54rem;color:var(--dim);">{autor} · {anio}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;">
+      <span style="font-size:.54rem;background:{col}20;color:{col};
+                   border:1px solid {col}44;border-radius:3px;padding:1px 6px;
+                   font-weight:bold;">{SEM_ICON.get(sem,'')} {sem}</span>
+      <span style="font-size:.50rem;color:{dcol};background:{dcol}15;
+                   border-radius:2px;padding:1px 5px;">{dname}</span>
+    </div>
+  </div>
+  <!-- Barra de cierre + badge SS -->
+  <div style="display:flex;align-items:center;gap:7px;">
+    <div style="flex:1;height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;">
+      <div style="width:{pct}%;height:100%;background:{col};border-radius:3px;"></div>
+    </div>
+    <span style="font-size:.58rem;color:{col};font-family:'Courier New',monospace;
+                 flex-shrink:0;">p={p:.2f}</span>
+    <span id="cl-badge-{key}" style="font-size:.50rem;color:#3a5a7a;flex-shrink:0;
+          font-family:'Courier New',monospace;" title="Pulsa Verificar en SS para buscar">—</span>
+  </div>
+  <!-- Descripción + tipo de cierre -->
+  <div style="font-size:.56rem;color:var(--dim);line-height:1.55;">{desc}</div>
+  <div style="font-size:.53rem;color:{col}99;font-style:italic;border-top:1px solid {col}18;
+              padding-top:4px;line-height:1.5;">⊢ {tipo}</div>
+  <!-- Referencia Bueno (tooltip-like) -->
+  <div style="font-size:.51rem;color:#3a6a8a;line-height:1.4;border-top:1px solid #1a3a5a;
+              padding-top:4px;">◈ {bueno}</div>
+</div>\n"""
+        return out
+
+    def clasicos_legend():
+        """Leyenda de la sección clásicos con resumen de distribución GREEN/AMBER/RED."""
+        counts = {"GREEN": 0, "AMBER": 0, "RED": 0}
+        for cl in clasicos_data.values():
+            s = cl.get("semaforo", "RED")
+            counts[s] = counts.get(s, 0) + 1
+        total = sum(counts.values())
+        col   = {"GREEN": "#00ff88", "AMBER": "#ffd54f", "RED": "#ff3d5a"}
+        lbl   = {"GREEN": "\U0001f7e2 Verde", "AMBER": "\U0001f7e1 \xc1mbar", "RED": "\U0001f534 Rojo"}
+        parts = "".join(
+            f'<span style="color:{col[s]};font-size:.6rem;">'
+            f'{lbl.get(s, s)}: {n} '
+            f'({int(n/total*100) if total else 0}%)</span>'
+            for s, n in counts.items() if n > 0
+        )
+        return (f'<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">'
+                f'{parts}'
+                f'<span style="color:var(--dim);font-size:.55rem;">· {total} obras analizadas '
+                f'con la TCC · Bueno 1992–1993</span>'
+                f'</div>')
+
     def repo_links():
         """Panel de repositorios registrados del proyecto."""
         repos = [
@@ -584,8 +789,9 @@ def generar():
 </div>
 <script>
 function toggleHistorial() {{
-  const entries = document.querySelectorAll('.hist-entry');
-  const btn = document.getElementById('btn-historial-mas');
+  const panel   = document.getElementById('minerva-historial-panel');
+  const entries = panel ? panel.querySelectorAll('.hist-entry') : [];
+  const btn     = document.getElementById('btn-historial-mas');
   let anyHidden = false;
   entries.forEach(function(el, i) {{
     if (i >= {VISIBLE}) {{
@@ -593,19 +799,20 @@ function toggleHistorial() {{
     }}
   }});
   if (!anyHidden) {{
-    entries.forEach(function(el, i) {{
-      if (i >= {VISIBLE}) el.style.display = 'none';
-    }});
-    btn.textContent = '▼ Ver {n_hidden} más ({len(entradas)} total)';
+    entries.forEach(function(el, i) {{ if (i >= {VISIBLE}) el.style.display = 'none'; }});
+    if (btn) btn.textContent = '▼ Ver {n_hidden} más ({len(entradas)} total)';
   }} else {{
-    btn.textContent = '▲ Mostrar menos';
+    if (btn) btn.textContent = '▲ Mostrar menos';
   }}
 }}
 </script>'''
 
     # ── COLORES / CLASES DERICADOS DEL ESTADO ─────────────────────────────────
+    ece_min_ventana = min(ece_ventana) if ece_ventana else ece_actual
     ece_col = "#00ff88" if ece_actual <= 0.05 else ("#ffd54f" if ece_actual <= 0.15 else "#ff3d5a")
+    ece_min_col = "#00ff88" if ece_min_ventana <= 0.05 else ("#ffd54f" if ece_min_ventana <= 0.15 else "#ff3d5a")
     ece_pct = min(100, ece_actual / 0.5 * 100)
+    ece_homeo_ok = ece_ok_ventana   # bool — ya calculado arriba
 
     ece_series   = [round(r["ECE"],        5) for r in ledger]
     kappa_series = [round(r["kappa_conf"], 4) for r in ledger]
@@ -664,6 +871,7 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 @media(max-width:900px) {{ .row2,.row3,.row4 {{ grid-template-columns:1fr; }} }}
 @media(max-width:700px) {{ .minerva-grid {{ grid-template-columns:1fr 1fr !important; }} }}
 @media(max-width:480px) {{ .minerva-grid {{ grid-template-columns:1fr !important; }} }}
+@media(max-width:700px) {{ #mtab-clasicos > div[style*="grid-template-columns:repeat(2"] {{ grid-template-columns:1fr !important; }} }}
 
 /* ── Paneles ─────────────────────────────────── */
 .panel {{ background:var(--panel); border:1px solid var(--border); border-radius:10px;
@@ -819,10 +1027,13 @@ header {{ display:flex; justify-content:space-between; align-items:center;
   <!-- MÉTRICAS VITALES -->
   <div class="panel">
     <div class="panel-title">Métricas vitales</div>
-    <!-- ECE con barra -->
-    <div style="margin-bottom:14px;">
+    <!-- ECE con barra + contexto ventana -->
+    <div style="margin-bottom:14px;"
+         title="ECE oscila naturalmente entre ciclos PSNC (~0.15) y ciclos VIVO (~0.001).&#10;Lo que determina Homeostasis es el mínimo en ventana de 5 ciclos, no el valor actual.&#10;Ventana mín: {ece_min_ventana:.5f} · Homeostasis: {'OK' if ece_homeo_ok else 'NO OK'}">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-        <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
+        <div>
+          <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
+        </div>
         <span style="display:flex;align-items:center;gap:5px;">
           {tend_ece}
           <span style="font-size:1.15rem;font-weight:bold;color:{ece_col};
@@ -835,6 +1046,24 @@ header {{ display:flex; justify-content:space-between; align-items:center;
       <div style="display:flex;justify-content:space-between;margin-top:3px;
                   font-size:.54rem;color:var(--dim);">
         <span>0 — óptimo</span><span>umbral 0.05</span><span>0.50 — pésimo</span>
+      </div>
+      <!-- Fila de contexto: ventana mín + estado Homeostasis -->
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                  margin-top:5px;padding:4px 7px;background:rgba(0,0,0,.25);
+                  border-radius:4px;border:1px solid var(--border);">
+        <span style="font-size:.54rem;color:var(--dim);">
+          ventana 5 ciclos mín:
+          <b style="color:{ece_min_col};font-family:'Courier New',monospace;">
+            {ece_min_ventana:.5f}
+          </b>
+        </span>
+        <span style="font-size:.54rem;{'color:#00ff88;' if ece_homeo_ok else 'color:#ffd54f;'}font-weight:bold;">
+          {'✓ Homeostasis OK' if ece_homeo_ok else '⚠ Homeostasis NO OK'}
+        </span>
+      </div>
+      <div style="font-size:.52rem;color:#2a4a5a;margin-top:3px;line-height:1.5;">
+        El ECE oscila entre ciclos PSNC (~0.15) y VIVO (~0.001) — esto es normal.
+        Homeostasis se evalúa sobre la ventana, no sobre el ciclo actual.
       </div>
     </div>
     <!-- Cuadrícula 2×2 — métricas vitales con contexto auto-explicativo -->
@@ -938,37 +1167,115 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 </div>
 
 <!-- ═══ MINERVA — MAPA DE CIERRES CATEGORIALES ═══ -->
-<div class="section-sep">◈ MINERVA — Cierre categorial por área científica · LUM-PE + Semantic Scholar</div>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;
-            flex-wrap:wrap;margin-bottom:8px;">
-  <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
-    Audita 6 dominios de cierre categorial (Bueno α/β/γ). Barras = probabilidad LUM-PE.
-    El botón consulta Semantic Scholar en vivo — sin novedades lo indica solo.
-    Cooldown 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">{minerva_ts}</span>
-    &nbsp;·&nbsp;
-    <a href="lum_mapa_cierres.html" style="color:var(--cyan);" target="_blank">Ver mapa completo →</a>
-  </div>
-  <button id="btn-minerva" onclick="buscarMinerva()" style="
-    cursor:pointer;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.45);
-    color:#00e5ff;font-size:.72rem;font-weight:bold;padding:7px 16px;border-radius:6px;
-    font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
-    flex-shrink:0;transition:all .2s;">🔍 Buscar ahora</button>
-</div>
-<div id="minerva-status"></div>
-<div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
-{minerva_cards()}
+<div class="section-sep">◈ MINERVA — Cierre categorial · LUM-PE + Semantic Scholar · Corpus Fundacional</div>
+
+<!-- ── Tab bar ─────────────────────────────────────────────────────────────── -->
+<div id="minerva-tab-bar" style="display:flex;gap:0;margin-bottom:12px;
+     border-bottom:1px solid rgba(0,229,255,.18);">
+  <button id="mtab-btn-dominios" onclick="switchMinervaTab('dominios')"
+    style="cursor:pointer;background:rgba(0,229,255,.14);border:1px solid rgba(0,229,255,.4);
+           border-bottom:none;color:#00e5ff;font-size:.68rem;font-weight:bold;
+           padding:6px 16px;border-radius:6px 6px 0 0;font-family:'Courier New',monospace;
+           letter-spacing:.5px;margin-right:3px;transition:all .2s;">
+    ◈ Dominios Científicos
+  </button>
+  <button id="mtab-btn-clasicos" onclick="switchMinervaTab('clasicos')"
+    style="cursor:pointer;background:rgba(0,0,0,.2);border:1px solid rgba(255,213,79,.22);
+           border-bottom:none;color:#ffd54f88;font-size:.68rem;font-weight:bold;
+           padding:6px 16px;border-radius:6px 6px 0 0;font-family:'Courier New',monospace;
+           letter-spacing:.5px;transition:all .2s;">
+    ★ Clásicos Fundacionales
+  </button>
 </div>
 
-<!-- ═══ HISTORIAL DE BÚSQUEDAS MINERVA ═══ -->
-<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
-  <div style="font-size:.6rem;color:var(--cyan);font-weight:bold;letter-spacing:.5px;">
-    ◈ HISTORIAL · Búsquedas anteriores
+<!-- ── Panel: Dominios Científicos ───────────────────────────────────────── -->
+<div id="mtab-dominios">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;
+              flex-wrap:wrap;margin-bottom:8px;">
+    <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
+      Audita 6 dominios de cierre categorial (Bueno α/β/γ). Barras = probabilidad LUM-PE.
+      El botón consulta Semantic Scholar en vivo — sin novedades lo indica solo.
+      Cooldown 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">{minerva_ts}</span>
+      &nbsp;·&nbsp;
+      <a href="lum_mapa_cierres.html" style="color:var(--cyan);" target="_blank">Ver mapa completo →</a>
+    </div>
+    <button id="btn-minerva" onclick="buscarMinerva()" style="
+      cursor:pointer;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.45);
+      color:#00e5ff;font-size:.72rem;font-weight:bold;padding:7px 16px;border-radius:6px;
+      font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
+      flex-shrink:0;transition:all .2s;">🔍 Buscar ahora</button>
   </div>
-  <div style="font-size:.55rem;color:var(--dim);">
-    Se actualiza al ejecutar <code>lum_mapa_cierres.py</code> o al buscar desde aquí
+  <div id="minerva-status"></div>
+  <div class="minerva-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+{minerva_cards()}
   </div>
+  <!-- Historial dentro del panel de dominios -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+              flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+    <div style="font-size:.6rem;color:var(--cyan);font-weight:bold;letter-spacing:.5px;">
+      ◈ HISTORIAL · Búsquedas anteriores
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div style="font-size:.55rem;color:var(--dim);">Se actualiza al buscar o al ejecutar <code>lum_mapa_cierres.py</code></div>
+      <button onclick="_exportHistorial(_LS_MINERVA,'Dominios','#00e5ff')"
+        style="background:none;border:1px solid #00e5ff44;color:#00e5ff99;font-size:.55rem;
+               padding:3px 9px;border-radius:4px;cursor:pointer;font-family:monospace;"
+        title="Descargar historial completo como archivo HTML">📥 Exportar</button>
+    </div>
+  </div>
+  {historial_panel()}
 </div>
-{historial_panel()}
+
+<!-- ── Panel: Clásicos Fundacionales ─────────────────────────────────────── -->
+<div id="mtab-clasicos" style="display:none;">
+  <!-- Encabezado -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+              flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+    <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
+      Obras fundacionales analizadas con la TCC (Teoría del Cierre Categorial · Bueno 1992).
+      p_sint = grado de cierre alcanzado · τ_verde ≥ 0.80 · τ_rojo &lt; 0.40
+      &nbsp;·&nbsp; {clasicos_legend()}
+    </div>
+    <button id="btn-clasicos" onclick="buscarClasicos()" style="
+      cursor:pointer;background:rgba(255,213,79,.10);border:1px solid rgba(255,213,79,.40);
+      color:#ffd54f;font-size:.68rem;font-weight:bold;padding:7px 16px;border-radius:6px;
+      font-family:'Courier New',monospace;letter-spacing:1px;white-space:nowrap;
+      flex-shrink:0;transition:all .2s;">📚 Verificar en SS</button>
+  </div>
+  <div id="cl-status" style="display:none;margin-bottom:8px;padding:6px 10px;
+       background:rgba(0,0,0,.3);border-left:3px solid rgba(255,213,79,.4);border-radius:4px;
+       font-size:.6rem;"></div>
+  <!-- Grid de clásicos — 2 columnas en pantalla grande -->
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:16px;
+              grid-auto-rows:auto;">
+{clasicos_cards()}
+  </div>
+  <!-- Nota epistemológica -->
+  <div style="font-size:.54rem;color:var(--dim);line-height:1.7;
+              border-top:1px solid var(--border);padding-top:8px;margin-top:4px;">
+    <span style="color:var(--cyan);">◈ Nota metodológica:</span>
+    Los scores no provienen de Semantic Scholar sino de la aplicación directa de la TCC
+    (Bueno 1992–1993). Verde = cierre categorial completo verificado históricamente.
+    Ámbar = cierre parcial o en construcción. Rojo = proto-cierre sin identidades sintéticas
+    estables.
+  </div>
+
+  <!-- Historial de verificaciones SS para clásicos -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+              flex-wrap:wrap;gap:6px;margin-top:12px;margin-bottom:6px;">
+    <div style="font-size:.6rem;color:#ffd54f;font-weight:bold;letter-spacing:.5px;">
+      📚 HISTORIAL · Verificaciones Semantic Scholar
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div style="font-size:.55rem;color:var(--dim);">Se actualiza al usar el botón Verificar en SS</div>
+      <button onclick="_exportHistorial(_LS_CLASICOS,'Clásicos','#ffd54f')"
+        style="background:none;border:1px solid #ffd54f44;color:#ffd54f99;font-size:.55rem;
+               padding:3px 9px;border-radius:4px;cursor:pointer;font-family:monospace;"
+        title="Descargar historial completo como archivo HTML">📥 Exportar</button>
+    </div>
+  </div>
+  {clasicos_historial_panel()}
+</div>
 
 <!-- ═══ REPOSITORIOS REGISTRADOS ═══ -->
 <div class="section-sep">◈ Repositorios registrados · presencia verificable en la web</div>
@@ -1148,6 +1455,260 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 </div>
 
 <script>
+// ── HISTORIAL localStorage — persiste entre recargas sin necesidad de Flask ──
+const _LS_MINERVA = 'lum_minerva_historial';
+const _LS_CLASICOS = 'lum_clasicos_historial';
+const _LS_MAX  = 200;
+const _LS_SHOW = 20;
+const _LS_KEEP = 100;
+const _DEDUP_MS = 5 * 60 * 1000;  // 5 min — umbral anti-duplicados
+
+// ── Session ID persistente — huella del navegador ─────────────────────────
+// Se genera una sola vez y vive en localStorage para siempre.
+// Identifica de qué perfil/equipo provienen las entradas y los archivos exportados.
+function _lsGetSid() {{
+  let sid = localStorage.getItem('lum_sid');
+  if (!sid) {{
+    sid = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    localStorage.setItem('lum_sid', sid);
+  }}
+  return sid;
+}}
+const _LUM_SID = _lsGetSid();
+
+function _lsSave(key, entrada) {{
+  try {{
+    const arr = JSON.parse(localStorage.getItem(key) || '[]');
+
+    // ── Dedup híbrido: bloquear solo si contenido idéntico Y menos de 30 min ──
+    if (arr.length > 0) {{
+      const last = arr[0];
+      const diffMs = Date.now() - new Date(last.timestamp||0).getTime();
+      const within30 = diffMs < 30 * 60 * 1000;
+      if (within30) {{
+        const sameTotal  = (last.total_papers||0) === (entrada.total_papers||0);
+        const sameSource = last.source === entrada.source;
+        if (sameTotal && sameSource) {{
+          const lastDoms = JSON.stringify(Object.fromEntries(
+            Object.keys(last.dominios||{{}}).map(k => [k, (last.dominios[k]||{{}}).n_papers_ss||0])
+          ));
+          const newDoms = JSON.stringify(Object.fromEntries(
+            Object.keys(entrada.dominios||{{}}).map(k => [k, (entrada.dominios[k]||{{}}).n_papers_ss||0])
+          ));
+          if (lastDoms === newDoms) return;  // idéntico en <30 min — saltar
+        }}
+      }}
+    }}
+
+    entrada.sid = _LUM_SID;   // estampar huella de sesión
+    arr.unshift(entrada);
+
+    if (arr.length > _LS_MAX) {{
+      const label = key.includes('clasicos') ? 'Clásicos' : 'Dominios';
+      const col   = key.includes('clasicos') ? '#ffd54f' : '#00e5ff';
+      const old100 = arr.slice(_LS_KEEP);
+      _exportHistorialArr(old100, label + ' — Archivo ' + new Date().toISOString().slice(0,10), col);
+      arr.splice(_LS_KEEP);
+      const n = document.createElement('div');
+      n.textContent = '📥 100 entradas antiguas exportadas — historial renovado (100 recientes conservadas)';
+      n.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#0a1a2a;border:1px solid '+col+';color:'+col+';padding:10px 16px;border-radius:6px;font-size:.7rem;z-index:9999;font-family:monospace;max-width:380px;';
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 7000);
+    }}
+    localStorage.setItem(key, JSON.stringify(arr));
+  }} catch(e) {{}}
+}}
+
+// ── EXPORTAR HISTORIAL como HTML descargable ──────────────────────────────
+// _exportHistorialArr: núcleo — trabaja con un array ya cargado
+// sid: session_id opcional para el nombre de archivo (si no se pasa, usa _LUM_SID global)
+function _exportHistorialArr(arr, titulo, color, sid) {{
+  if (!arr.length) {{ alert('Sin entradas en el historial aún.'); return; }}
+  const _sid = sid || (typeof _LUM_SID !== 'undefined' ? _LUM_SID : 'local');
+  const DCOL = {{FORM:'#00e5ff',NAT:'#00ff88',TEC:'#b39ddb',SOC_IV:'#ffd54f',SOC_DID:'#ff9800',ARTE:'#f48fb1'}};
+  const SCOL = {{GREEN:'#00ff88',AMBER:'#ffd54f',RED:'#ff3d5a'}};
+  const SDOT = {{GREEN:'●',AMBER:'◑',RED:'○'}};
+  let rows = '';
+  arr.forEach((e, i) => {{
+    const ts  = (e.timestamp||'').slice(0,19).replace('T',' ');
+    const src = e.source||'';
+    const total = e.total_papers || e.total_papers_found || 0;
+    const esid = e.sid || '—';
+    let detail = '';
+    if (e.dominios) {{
+      Object.keys(e.dominios).forEach(k => {{
+        const dd = e.dominios[k]||{{}};
+        const sc = SCOL[dd.semaforo]||'#9e9e9e', dc = DCOL[k]||'#9e9e9e';
+        detail += `<span style="display:inline-block;margin:2px 3px;padding:2px 7px;border-radius:3px;border:1px solid ${{dc}}55;background:${{dc}}14;color:${{dc}};font-size:.78rem;">${{k}} <span style="color:${{sc}}">${{SDOT[dd.semaforo]||'?'}}</span> ${{dd.n_papers_ss||0}}p</span>`;
+      }});
+    }} else if (e.obras) {{
+      Object.keys(e.obras).forEach(k => {{
+        const n = (e.obras[k]||{{}}).n_papers||0;
+        const col2 = n>=3?'#00ff88':(n>0?'#ffd54f':'#555');
+        detail += `<span style="display:inline-block;margin:2px 3px;padding:2px 7px;border-radius:3px;border:1px solid ${{col2}}55;background:${{col2}}14;color:${{col2}};font-size:.75rem;">${{k.replace(/_/g,' ')}} ${{n}}p</span>`;
+      }});
+    }}
+    const bg = i%2===0?'#0a1520':'#0d1a28';
+    rows += `<tr style="background:${{bg}};">
+      <td style="padding:8px 12px;color:#4a7090;font-size:.8rem;">${{i+1}}</td>
+      <td style="padding:8px 12px;color:#5a8aaa;font-size:.8rem;font-family:monospace;white-space:nowrap;">${{ts}}</td>
+      <td style="padding:8px 12px;color:#3a6080;font-size:.75rem;">${{src}}</td>
+      <td style="padding:8px 12px;color:${{color}};font-size:.8rem;font-weight:bold;">${{total}}</td>
+      <td style="padding:8px 12px;color:#2a4060;font-size:.7rem;font-family:monospace;">${{esid}}</td>
+      <td style="padding:8px 12px;">${{detail}}</td>
+    </tr>`;
+  }});
+  const now = new Date().toISOString().slice(0,19).replace('T',' ');
+  const tsFirst = (arr[arr.length-1]?.timestamp||'').slice(0,10);
+  const tsLast  = (arr[0]?.timestamp||'').slice(0,10);
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>MINERVA — ${{titulo}}</title>
+<style>
+  body{{background:#060d14;color:#8aacbe;font-family:'Courier New',monospace;margin:0;padding:24px;}}
+  h1{{color:${{color}};font-size:1.1rem;letter-spacing:2px;border-bottom:1px solid ${{color}}44;padding-bottom:10px;margin-bottom:6px;}}
+  .meta{{font-size:.72rem;color:#3a5a7a;margin-bottom:6px;line-height:1.8;}}
+  .sid{{display:inline-block;background:#0a1a2a;border:1px solid ${{color}}44;color:${{color}}bb;padding:2px 10px;border-radius:4px;font-size:.72rem;letter-spacing:1px;margin-bottom:14px;}}
+  table{{width:100%;border-collapse:collapse;font-size:.82rem;}}
+  th{{background:#0a1a2a;color:#3a6080;padding:8px 12px;text-align:left;border-bottom:1px solid #1a3a5a;font-size:.72rem;letter-spacing:1px;}}
+  tr:hover td{{background:#0f2030!important;}}
+  .total{{font-size:.78rem;color:#3a5a7a;margin-top:16px;}}
+</style></head><body>
+<h1>◈ MINERVA ALFA LUM-vitae — ${{titulo}}</h1>
+<div class="meta">
+  Exportado: ${{now}} UTC &nbsp;·&nbsp; ${{arr.length}} registros &nbsp;·&nbsp; rango: ${{tsFirst}} → ${{tsLast}}<br>
+  Generado por ALFA LUM-vitae vΩ.4
+</div>
+<div class="sid">SID: ${{_sid}}</div>
+<table>
+  <thead><tr>
+    <th>#</th><th>TIMESTAMP</th><th>FUENTE</th><th>PAPERS</th><th>SID</th><th>DETALLE</th>
+  </tr></thead>
+  <tbody>${{rows}}</tbody>
+</table>
+<div class="total">Total: ${{arr.length}} registros · SID sesión actual: ${{_sid}}</div>
+</body></html>`;
+  const blob = new Blob([html], {{type:'text/html;charset=utf-8'}});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  // Nombre incluye SID para identificar fácilmente el archivo
+  const tipo = titulo.toLowerCase().includes('clás') || titulo.toLowerCase().includes('clas') ? 'clasicos' : 'dominios';
+  a.download = `lum_hist_${{tipo}}_${{new Date().toISOString().slice(0,10)}}_${{_sid}}.html`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}}
+// Wrapper para los botones manuales — carga desde localStorage
+function _exportHistorial(key, titulo, color) {{
+  _exportHistorialArr(_lsLoad(key), titulo, color);
+}}
+
+function _lsLoad(key) {{
+  try {{ return JSON.parse(localStorage.getItem(key) || '[]'); }}
+  catch(e) {{ return []; }}
+}}
+
+function _buildMinEntry(e) {{
+  const DCOL = {{FORM:'#00e5ff',NAT:'#00ff88',TEC:'#b39ddb',SOC_IV:'#ffd54f',SOC_DID:'#ff9800',ARTE:'#f48fb1'}};
+  const SCOL = {{GREEN:'#00ff88',AMBER:'#ffd54f',RED:'#ff3d5a'}};
+  const SDOT = {{GREEN:'●',AMBER:'◑',RED:'○'}};
+  const ts16 = (e.timestamp||'').slice(0,16).replace('T',' ')+' UTC';
+  const doms = e.dominios || {{}};
+  let domHtml = '';
+  Object.keys(doms).forEach(k => {{
+    const dc=DCOL[k]||'#9e9e9e', dd=doms[k]||{{}}, sc=SCOL[dd.semaforo]||'#9e9e9e';
+    domHtml+=`<span style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid ${{dc}}44;background:${{dc}}11;color:${{dc}};font-size:.55rem;margin:2px;">${{k}} <span style="color:${{sc}}">${{SDOT[dd.semaforo]||'○'}}</span></span>`;
+  }});
+  const src = e.source==='full_run'?'🔄 run':'⚡ live';
+  const ne = document.createElement('div');
+  ne.className = 'hist-entry';
+  ne.style.cssText = 'padding:8px 10px;margin-bottom:6px;border:1px solid #00e5ff33;border-radius:6px;background:rgba(0,229,255,.04);';
+  ne.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">${{ts16}}</span><span style="font-size:.55rem;color:var(--muted);">${{src}} · ${{e.total_papers||0}} papers</span></div><div>${{domHtml}}</div>`;
+  return ne;
+}}
+
+function _buildClEntry(e) {{
+  const ts16 = (e.timestamp||'').slice(0,16).replace('T',' ')+' UTC';
+  const obras = e.obras || {{}};
+  let obHtml = '';
+  Object.keys(obras).slice(0,8).forEach(k => {{
+    const n = (obras[k]||{{}}).n_papers || 0;
+    const col = n >= 3 ? '#00ff88' : (n > 0 ? '#ffd54f' : '#3a5a7a');
+    obHtml += `<span style="display:inline-block;padding:2px 5px;border-radius:3px;border:1px solid ${{col}}44;background:${{col}}11;color:${{col}};font-size:.52rem;margin:2px;">${{k.replace(/_/g,' ').slice(0,18)}} ${{n}}p</span>`;
+  }});
+  const ne = document.createElement('div');
+  ne.className = 'cl-hist-entry';
+  ne.style.cssText = 'padding:7px 9px;margin-bottom:5px;border:1px solid #ffd54f22;border-radius:5px;background:rgba(255,213,79,.03);';
+  ne.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.57rem;color:var(--dim);">${{ts16}}</span><span style="font-size:.54rem;color:#ffd54f88;">📚 SS · ${{e.total_papers||0}} papers</span></div><div>${{obHtml}}</div>`;
+  return ne;
+}}
+
+function _renderMinHistorial(panel, arr) {{
+  if (!panel) return;
+  panel.innerHTML = '';
+  if (!arr.length) {{
+    panel.innerHTML = '<div style="color:var(--dim);font-size:.6rem;padding:8px 0;">Sin búsquedas registradas aún.</div>';
+    return;
+  }}
+  const visible = arr.slice(0, _LS_SHOW);
+  visible.forEach(e => panel.appendChild(_buildMinEntry(e)));
+  if (arr.length > _LS_SHOW) {{
+    const rest = arr.length - _LS_SHOW;
+    const btn = document.createElement('button');
+    btn.textContent = `▾ ver ${{rest}} más (total ${{arr.length}})`;
+    btn.style.cssText = 'background:none;border:1px solid #00e5ff33;color:#00e5ff99;font-size:.55rem;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:4px;width:100%;';
+    btn.onclick = function() {{
+      arr.slice(_LS_SHOW).forEach(e => panel.insertBefore(_buildMinEntry(e), btn));
+      btn.remove();
+    }};
+    panel.appendChild(btn);
+  }}
+}}
+
+function _renderClHistorial(panel, arr) {{
+  if (!panel) return;
+  panel.innerHTML = '';
+  if (!arr.length) {{
+    panel.innerHTML = '<div style="color:var(--dim);font-size:.6rem;padding:6px 0;">Sin verificaciones registradas aún.</div>';
+    return;
+  }}
+  const visible = arr.slice(0, _LS_SHOW);
+  visible.forEach(e => panel.appendChild(_buildClEntry(e)));
+  if (arr.length > _LS_SHOW) {{
+    const rest = arr.length - _LS_SHOW;
+    const btn = document.createElement('button');
+    btn.textContent = `▾ ver ${{rest}} más (total ${{arr.length}})`;
+    btn.style.cssText = 'background:none;border:1px solid #ffd54f33;color:#ffd54f99;font-size:.55rem;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:4px;width:100%;';
+    btn.onclick = function() {{
+      arr.slice(_LS_SHOW).forEach(e => panel.insertBefore(_buildClEntry(e), btn));
+      btn.remove();
+    }};
+    panel.appendChild(btn);
+  }}
+}}
+
+// ── MINERVA TAB SWITCHER ──────────────────────────────────────────────────
+const _tabAccents = {{ dominios:'#00e5ff', clasicos:'#ffd54f' }};
+document.addEventListener('DOMContentLoaded', function() {{
+  switchMinervaTab('dominios');
+  const mPanel = document.getElementById('minerva-historial-panel');
+  _renderMinHistorial(mPanel, _lsLoad(_LS_MINERVA));
+  const cPanel = document.getElementById('cl-historial-panel');
+  _renderClHistorial(cPanel, _lsLoad(_LS_CLASICOS));
+}});
+function switchMinervaTab(tab) {{
+  ['dominios','clasicos'].forEach(t => {{
+    const panel = document.getElementById('mtab-' + t);
+    const btn   = document.getElementById('mtab-btn-' + t);
+    if (!panel || !btn) return;
+    const active = (t === tab);
+    const ac = _tabAccents[t];
+    panel.style.display = active ? 'block' : 'none';
+    btn.style.background   = active ? `rgba(${{ac==='#00e5ff'?'0,229,255':'255,213,79'}},.14)` : 'rgba(0,0,0,.2)';
+    btn.style.borderColor  = active ? `${{ac}}55` : '#1a2a3a';
+    btn.style.color        = active ? ac : '#3a5a7a';
+    btn.style.fontWeight   = active ? 'bold' : 'normal';
+  }});
+}}
+
 const C = {{CYAN:'#00e5ff',GREEN:'#00ff88',YELLOW:'#ffd54f',RED:'#ff3d5a',PURPLE:'#b39ddb'}};
 Chart.defaults.color = '#4a7090';
 Chart.defaults.borderColor = '#1a2a3a';
@@ -1205,6 +1766,47 @@ const SS_QUERIES = {{
   SOC_DID: 'historical method scientific demarcation historiography archaeology',
   ARTE:    'aesthetic closure art theory pictorial formalization materialist'
 }};
+
+// ── Variantes de query por dominio (rotación para obtener papers DISTINTOS) ─
+const SS_QUERY_VARIANTS = {{
+  FORM: [
+    'mathematical closure axiomatization completeness theorem formal system',
+    'formal logic proof theory deductive closure completeness incompleteness',
+    'category theory algebraic closure structure morphism mathematics',
+    'axiomatic system logical closure Hilbert program foundation mathematics'
+  ],
+  NAT: [
+    'natural science causal closure physical laws empirical measurement',
+    'physical causal closure hypothesis neuroscience physicalism mind',
+    'scientific realism natural kinds empirical closure experimental method',
+    'causal completeness physical world closure argument philosophy science'
+  ],
+  TEC: [
+    'cybernetics feedback closure formal verification control systems AI',
+    'feedback loop stability analysis formal closure property software',
+    'formal methods model checking closure operator automata specification',
+    'AI alignment formal verification closure safety machine learning'
+  ],
+  SOC_IV: [
+    'social science operationalization construct validity measurement',
+    'sociological theory operationalization validity reliability construct',
+    'quantitative social research measurement demarcation methodology scale',
+    'social measurement theory latent variable construct validation psychometrics'
+  ],
+  SOC_DID: [
+    'historical method scientific demarcation historiography archaeology',
+    'philosophy of history demarcation chronology systematic evidence',
+    'historiography methodology historical explanation demarcation science',
+    'archaeological stratigraphy dating method systematic evidence historical'
+  ],
+  ARTE: [
+    'aesthetic closure art theory pictorial formalization materialist',
+    'philosophy of art aesthetic formalism pictorial representation theory',
+    'art theory materialist aesthetics pictorial space formalization',
+    'aesthetic theory artistic closure pictorial analysis formal critique'
+  ]
+}};
+
 const DOMAIN_COLORS = {{
   FORM:'#00e5ff', NAT:'#00ff88', TEC:'#b39ddb',
   SOC_IV:'#ffd54f', SOC_DID:'#ff9800', ARTE:'#f48fb1'
@@ -1218,10 +1820,70 @@ const SIGNALS = {{
   ARTE:    ['pictorial','aesthetic closure','artistic operation','formal analysis','materialist']
 }};
 
+// ── Rotación de query variant + offset por dominio (localStorage) ──────────
+const _SS_QROT_KEY   = 'lum_ss_qrot';
+const _SS_OFFSET_KEY = 'lum_ss_offsets';
+
+function _nextQuery(domKey) {{
+  var rot = {{}};
+  try {{ rot = JSON.parse(localStorage.getItem(_SS_QROT_KEY) || '{{}}'); }} catch(e) {{}}
+  var variants = SS_QUERY_VARIANTS[domKey] || [SS_QUERIES[domKey]];
+  var idx = (rot[domKey] || 0) % variants.length;
+  rot[domKey] = (idx + 1) % variants.length;
+  try {{ localStorage.setItem(_SS_QROT_KEY, JSON.stringify(rot)); }} catch(e) {{}}
+  return variants[idx];
+}}
+
+function _nextOffset(domKey) {{
+  var offs = {{}};
+  try {{ offs = JSON.parse(localStorage.getItem(_SS_OFFSET_KEY) || '{{}}'); }} catch(e) {{}}
+  var off = offs[domKey] || 0;
+  offs[domKey] = (off + 8) % 48;  // 6 páginas de 8 (0,8,16,24,32,40)
+  try {{ localStorage.setItem(_SS_OFFSET_KEY, JSON.stringify(offs)); }} catch(e) {{}}
+  return off;
+}}
+
+// ── Síntesis breve desde papers encontrados ────────────────────────────────
+function _genSintetico(papers) {{
+  if (!papers || papers.length === 0) return null;
+  var years = papers.map(function(p) {{ return p.year; }}).filter(function(y) {{ return y && y > 1900; }});
+  var minY = years.length ? Math.min.apply(null, years) : null;
+  var maxY = years.length ? Math.max.apply(null, years) : null;
+  var maxCit = papers.reduce(function(m, p) {{ return Math.max(m, p.citationCount || 0); }}, 0);
+  var s = papers.length + ' papers';
+  if (minY && maxY && minY !== maxY) s += ' (' + minY + '–' + maxY + ')';
+  else if (maxY) s += ' (' + maxY + ')';
+  if (maxCit > 0) s += ', máx ' + maxCit + 'c';
+  return s;
+}}
+
+// ── Estado de búsqueda — Dominios Científicos ─────────────────────────────
 let _mSearching = false;
 let _mLastAt    = 0;
-let _mCache     = {{}};        // domain → {{n, titles: Set}}
-const COOLDOWN  = 60000;   // ms
+let _mCache     = {{}};
+const COOLDOWN  = 30000;  // ms — 30s entre búsquedas
+
+// ── Estado de búsqueda — Clásicos ─────────────────────────────────────────
+let _clSearching = false;
+let _clLastAt    = 0;
+
+// ── Queries SS para obras clásicas (citas y papers relacionados) ───────────
+const CL_SS_QUERIES = {{
+  EUCLID_ELEMENTOS:       'Euclid Elements geometry axiom proof mathematics',
+  NEWTON_PRINCIPIA:       'Newton Principia Mathematica mechanics gravity classical physics',
+  BUENO_TCC:              'categorical closure scientific theory philosophy Bueno',
+  FREGE_BEGRIF:           'Frege Begriffsschrift predicate logic formalization',
+  MAXWELL_ECUACIONES:     'Maxwell equations electromagnetism classical field theory',
+  DARWIN_ORIGEN:          'Darwin natural selection evolution species origin',
+  ARISTOTELES_ORGANON:    'Aristotle logic syllogism Categories Organon',
+  KANT_KRV:               'Kant Critique Pure Reason transcendental categories',
+  BUENO_ANIMAL_DIVINO:    'Bueno animal divino materialismo religion philosophy',
+  MARX_CAPITAL:           'Marx Capital value labor surplus political economy',
+  SAUSSURE_CLG:           'Saussure linguistics sign langue parole structural',
+  FREUD_SUENOS:           'Freud interpretation dreams psychoanalysis unconscious',
+  HEGEL_FENOMENOLOGIA:    'Hegel Phenomenology Spirit dialectic consciousness',
+  NIETZSCHE_ZARATHUSTRA:  'Nietzsche Zarathustra will power philosophy eternal'
+}};
 
 function scoreTexto(txt, sigs) {{
   if (!txt) return 0;
@@ -1229,34 +1891,73 @@ function scoreTexto(txt, sigs) {{
   return sigs.filter(s => t.includes(s)).length / Math.max(sigs.length * 0.3, 1);
 }}
 
-// Fetch con timeout compatible con todos los browsers (sin AbortSignal.timeout)
-function fetchConTimeout(url, ms) {{
-  const ctrl = new AbortController();
-  const tid  = setTimeout(() => ctrl.abort(), ms);
-  return fetch(url, {{signal: ctrl.signal}}).finally(() => clearTimeout(tid));
+// ── Fetch con retry automático (timeout + 429 backoff) ─────────────────────
+// SIN AbortController: evita error "AbortSignal cannot be cloned" en extensiones Chrome.
+// El timeout se implementa con Promise.race + timer independiente.
+async function fetchWithRetry(url, timeoutMs, maxRetries) {{
+  maxRetries = maxRetries || 2;
+  for (var attempt = 0; attempt <= maxRetries; attempt++) {{
+    try {{
+      var _fetchP   = fetch(url);
+      var _toMs     = timeoutMs;
+      var _timeoutP = new Promise(function(_, rej) {{
+        setTimeout(function() {{ rej(new Error('timeout_' + _toMs)); }}, _toMs);
+      }});
+      var r = await Promise.race([_fetchP, _timeoutP]);
+      if (r.status === 429) {{
+        if (attempt < maxRetries) {{
+          await new Promise(function(rv) {{ setTimeout(rv, 1500 * (attempt + 1)); }});
+          continue;
+        }}
+        return null;
+      }}
+      return r;
+    }} catch(e) {{
+      if (attempt < maxRetries) {{
+        await new Promise(function(rv) {{ setTimeout(rv, 900 * (attempt + 1)); }});
+      }}
+    }}
+  }}
+  return null;
 }}
 
+// ── Función de utilidad: estado del botón ─────────────────────────────────
+function setBtnState(btnId, statusId, loading, loadingText, idleText) {{
+  const btn = document.getElementById(btnId);
+  const st  = document.getElementById(statusId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<span style="display:inline-block;animation:spin .7s linear infinite">⟳</span> ${{loadingText}}`
+    : idleText;
+  if (st) {{ st.style.display = loading ? 'block' : st.style.display; }}
+}}
+
+function showStatus(elId, color, html, autohide) {{
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.style.display = 'block';
+  el.style.borderLeftColor = color;
+  el.innerHTML = html;
+  if (autohide > 0) setTimeout(() => {{ el.style.display = 'none'; }}, autohide);
+}}
+
+// ── MINERVA: buscar Dominios Científicos ──────────────────────────────────
 async function buscarMinerva() {{
   if (_mSearching) return;
   const now = Date.now();
-  const btn    = document.getElementById('btn-minerva');
-  const status = document.getElementById('minerva-status');
 
-  // Cooldown
   if (_mLastAt > 0 && (now - _mLastAt) < COOLDOWN) {{
     const seg = Math.ceil((COOLDOWN - (now - _mLastAt)) / 1000);
-    status.style.display = 'block';
-    status.style.borderLeftColor = 'var(--dim)';
-    status.innerHTML = `<span style="color:var(--dim)">⏱ Búsqueda reciente — espera <b style="color:var(--cyan)">${{seg}}s</b> para volver a consultar</span>`;
+    showStatus('minerva-status','var(--dim)',
+      `<span style="color:var(--dim)">⏱ Búsqueda reciente — espera <b style="color:var(--cyan)">${{seg}}s</b></span>`, 0);
     return;
   }}
 
   _mSearching = true;
-  btn.disabled = true;
-  btn.innerHTML = '<span style="display:inline-block;animation:spin .7s linear infinite">⟳</span> Buscando…';
-  status.style.display = 'block';
-  status.style.borderLeftColor = 'rgba(0,229,255,.3)';
-  status.innerHTML = '<span style="color:var(--dim)">Consultando Semantic Scholar (6 dominios)…</span>';
+  setBtnState('btn-minerva','minerva-status', true, 'Buscando…', '🔍 Buscar ahora');
+  showStatus('minerva-status','rgba(0,229,255,.3)',
+    '<span style="color:var(--dim)">Consultando Semantic Scholar (6 dominios)…</span>', 0);
 
   const newCache = {{}};
   let totalNew = 0, domainsWithNew = [], errCount = 0, successCount = 0;
@@ -1264,151 +1965,315 @@ async function buscarMinerva() {{
 
   for (let i = 0; i < keys.length; i++) {{
     const key = keys[i];
-    status.innerHTML = `<span style="color:var(--dim)">Dominio ${{i+1}}/6: <b style="color:${{DOMAIN_COLORS[key]}}">${{key}}</b>…</span>`;
-    try {{
-      const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query='
-                + encodeURIComponent(SS_QUERIES[key])
-                + '&limit=8&fields=title,abstract,year,citationCount';
-      const r = await fetchConTimeout(url, 12000);
-      if (!r.ok) {{
-        // 429 rate-limit u otro error HTTP — no es fallo de red
-        newCache[key] = {{n:0, titles: new Set()}};
-        if (r.status === 429) {{
-          // esperar 2s extra por rate-limit
-          await new Promise(rv => setTimeout(rv, 2000));
-        }}
-        continue;
-      }}
-      const d = await r.json();
-      const papers = (d.data || []).filter(p =>
-        scoreTexto((p.title||'')+' '+(p.abstract||''), SIGNALS[key]) > 0
-      );
-      const titles = new Set(papers.map(p => (p.title||'').trim().toLowerCase()));
-      newCache[key] = {{n: papers.length, titles}};
-      successCount++;
+    const st  = document.getElementById('minerva-status');
+    if (st) st.innerHTML = `<span style="color:var(--dim)">Dominio ${{i+1}}/${{keys.length}}: <b style="color:${{DOMAIN_COLORS[key]}}">${{key}}</b>…</span>`;
 
-      // Detectar novedades vs caché anterior
-      const prev       = _mCache[key];
-      const prevTitles = prev ? prev.titles : new Set();
-      const genuNew    = [...titles].filter(t => !prevTitles.has(t));
-      if (genuNew.length > 0) {{ totalNew += genuNew.length; domainsWithNew.push(key); }}
+    const _qVariant = _nextQuery(key);
+    const _qOffset  = _nextOffset(key);
+    const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query='
+              + encodeURIComponent(_qVariant)
+              + '&offset=' + _qOffset
+              + '&limit=8&fields=title,abstract,year,citationCount';
+    const r = await fetchWithRetry(url, 15000, 2);
 
-      // Actualizar tarjeta
-      const elN = document.getElementById('mc-n-' + key);
-      if (elN) elN.textContent = papers.length + (papers.length !== 1 ? ' papers live' : ' paper live');
-      const elS = document.getElementById('mc-state-' + key);
-      if (elS && papers.length > 0) {{
-        elS.textContent = papers.length >= 5 ? 'VERDE live' : 'ÁMBAR live';
-        elS.style.color = papers.length >= 5 ? '#00ff88' : '#ffd54f';
-      }}
-    }} catch(e) {{
+    if (!r) {{
       errCount++;
       newCache[key] = {{n:0, titles: new Set()}};
-      // Continúa con el siguiente dominio — error parcial no es fatal
+    }} else if (!r.ok) {{
+      if (r.status !== 429) errCount++;   // 429 ya fue reintentado — no contar doble
+      newCache[key] = {{n:0, titles: new Set()}};
+    }} else {{
+      try {{
+        const d = await r.json();
+        // scoreTexto solo para ORDENAR, no filtrar
+        const allPapers = (d.data || []);
+        const scored = allPapers.map(p => ({{
+          ...p,
+          _score: scoreTexto((p.title||'')+' '+(p.abstract||''), SIGNALS[key])
+        }})).sort((a,b) => b._score - a._score);
+        const papers = scored.slice(0, 6);
+        const titles = new Set(papers.map(p => (p.title||'').trim().toLowerCase()));
+        const synth  = _genSintetico(papers);
+        newCache[key] = {{n: papers.length, titles, papers, sintetico: synth}};
+        successCount++;
+
+        const prev = _mCache[key];
+        const genuNew = [...titles].filter(t => !(prev && prev.titles.has(t)));
+        if (genuNew.length > 0) {{ totalNew += genuNew.length; domainsWithNew.push(key); }}
+
+        // ── Actualizar card visual ─────────────────────────────────────────
+        const domCol   = DOMAIN_COLORS[key] || '#4a7090';
+        const semCol   = papers.length >= 5 ? '#00ff88' : (papers.length > 0 ? '#ffd54f' : '#4a7090');
+        const semLabel = papers.length >= 5 ? 'VERDE live' : (papers.length > 0 ? 'ÁMBAR live' : 'SIN SS');
+
+        // Badge count
+        const elN = document.getElementById('mc-n-' + key);
+        if (elN) {{
+          elN.textContent = papers.length + (papers.length !== 1 ? ' papers live' : ' paper live');
+          elN.style.color = semCol;
+        }}
+        // Semáforo label
+        const elS = document.getElementById('mc-state-' + key);
+        if (elS) {{ elS.textContent = semLabel; elS.style.color = semCol; }}
+
+        // Card border color (refleja semáforo live)
+        const elCard = document.getElementById('mc-' + key);
+        if (elCard) {{
+          elCard.style.borderColor = semCol + '44';
+          elCard.style.boxShadow   = papers.length >= 5 ? ('0 0 8px ' + semCol + '22') : 'none';
+
+          // Lista de papers live (siempre reemplaza con los NUEVOS)
+          let livelist = elCard.querySelector('.ss-live-list');
+          if (!livelist) {{
+            livelist = document.createElement('div');
+            livelist.className = 'ss-live-list';
+            livelist.style.cssText = 'margin-top:6px;border-top:1px solid #1a2a3a;padding-top:6px;';
+            elCard.appendChild(livelist);
+          }}
+          if (papers.length > 0) {{
+            livelist.innerHTML =
+              '<div style="font-size:.52rem;color:#2a6a8a;margin-bottom:4px;letter-spacing:.4px;">'
+              + '▸ PAPERS SS LIVE' + (synth ? ' · <span style="color:#3a8aaa">' + synth + '</span>' : '') + '</div>'
+              + papers.map(function(p) {{
+                  return '<div style="font-size:.57rem;color:#4a8aaa;margin-bottom:3px;line-height:1.4;">'
+                    + '<span style="color:' + domCol + '99;">·</span> '
+                    + (p.title||'').slice(0,82) + ((p.title||'').length>82?'…':'')
+                    + (p.year ? '<span style="color:#2a4a6a;margin-left:4px;">' + p.year + '</span>' : '')
+                    + (p.citationCount>0 ? '<span style="color:#ffd54f88;margin-left:4px;">' + p.citationCount + 'c</span>' : '')
+                    + '</div>';
+                }}).join('');
+          }} else {{
+            livelist.innerHTML = '<div style="font-size:.54rem;color:#3a5a7a;">Sin resultados SS</div>';
+          }}
+        }}
+      }} catch(jsonErr) {{
+        errCount++;
+        newCache[key] = {{n:0, titles: new Set(), sintetico: null}};
+      }}
     }}
-    if (i < keys.length - 1) await new Promise(rv => setTimeout(rv, 600));
+    if (i < keys.length - 1) await new Promise(rv => setTimeout(rv, 500));
   }}
 
-  _mCache   = newCache;
-  _mLastAt  = Date.now();
+  _mCache     = newCache;
+  _mLastAt    = Date.now();
   _mSearching = false;
-  btn.disabled = false;
-  btn.innerHTML = '🔍 Buscar ahora';
+  setBtnState('btn-minerva', 'minerva-status', false, '', '🔍 Buscar ahora');
 
-  const hora = new Date().toLocaleTimeString('es', {{hour:'2-digit',minute:'2-digit'}});
+  const hora          = new Date().toLocaleTimeString('es', {{hour:'2-digit',minute:'2-digit'}});
   const todosFallaron = errCount === keys.length;
   const mayoriaFallo  = errCount > keys.length / 2;
+  const errExtra      = errCount > 0 && !todosFallaron
+    ? ` <span style="color:#ff9800;font-size:.85em">(${{errCount}} dominio${{errCount>1?'s':''}} sin respuesta)</span>` : '';
 
   if (todosFallaron) {{
-    // Sin conexión o API caída — es un error real
-    status.style.borderLeftColor = '#ff9800';
-    status.innerHTML = `<span style="color:#ff9800">⚠ No se pudo contactar Semantic Scholar · ${{hora}} — verifica conexión o intenta más tarde</span>`;
-  }} else if (totalNew === 0 && successCount === 0 && errCount > 0) {{
-    // Parcialmente fallido, sin resultados válidos
-    status.style.borderLeftColor = '#ff9800';
-    const txt = mayoriaFallo
-      ? `⚠ ${{errCount}}/6 dominios con error · ${{hora}} — API lenta, intenta en unos minutos`
-      : `⚠ ${{errCount}}/6 dominios sin respuesta · ${{hora}}`;
-    status.innerHTML = `<span style="color:#ff9800">${{txt}}</span>`;
-    setTimeout(() => {{ status.style.display = 'none'; }}, 12000);
+    showStatus('minerva-status','#ff9800',
+      `<span style="color:#ff9800">⚠ Semantic Scholar no responde · ${{hora}}</span>
+       <span style="font-size:.82em;color:#cc6600;display:block;margin-top:4px;">
+         Sin conexión o rate-limit · intenta en 1–2 min<br>
+         <span style="color:#3a7a5a">▸ El historial anterior sigue disponible en localStorage</span></span>`, 0);
+  }} else if (mayoriaFallo && successCount === 0) {{
+    showStatus('minerva-status','#ff9800',
+      `<span style="color:#ff9800">⚠ ${{errCount}}/${{keys.length}} dominios sin respuesta · ${{hora}} — API lenta</span>`, 12000);
   }} else if (totalNew === 0) {{
-    // OK — sin novedades
-    const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${{errCount}} dominio${{errCount>1?'s':''}} sin respuesta)</span>` : '';
-    status.style.borderLeftColor = 'var(--dim)';
-    status.innerHTML = `<span style="color:var(--dim)">✓ Sin novedades · ${{hora}}</span>${{extra}}`;
-    setTimeout(() => {{ status.style.display = 'none'; }}, 9000);
+    // "Sin novedades" ahora significa mismos títulos que antes en sesión — igual guardamos
+    const totalEncontrados = keys.reduce((s,k) => s+(newCache[k]||{{}}).n||0, 0);
+    showStatus('minerva-status','var(--dim)',
+      `<span style="color:var(--dim)">✓ ${{totalEncontrados}} papers encontrados · ${{hora}} (mismos que antes en sesión)</span>${{errExtra}}`, 9000);
   }} else {{
-    const extra = errCount > 0 ? ` <span style="color:#ff9800;font-size:.85em">(${{errCount}} dominio${{errCount>1?'s':''}} sin respuesta)</span>` : '';
-    status.style.borderLeftColor = 'var(--green)';
-    status.innerHTML = `<span style="color:var(--green)">● ${{totalNew}} paper(s) nuevo(s) en: <b>${{domainsWithNew.join(', ')}}</b> · ${{hora}} — ejecuta <code>lum_mapa_cierres.py</code> para actualizar</span>${{extra}}`;
+    showStatus('minerva-status','var(--green)',
+      `<span style="color:var(--green)">● ${{totalNew}} paper(s) nuevos en: <b>${{domainsWithNew.join(', ')}}</b> · ${{hora}}</span>${{errExtra}}`, 0);
   }}
 
-  // ── Guardar en historial ─────────────────────────────────────────────────
+  // ── Persistir historial (localStorage + Flask silencioso) ────────────────
   if (!todosFallaron && successCount > 0) {{
-    const tsISO = new Date().toISOString();
+    const tsISO  = new Date().toISOString();
     const domData = {{}};
-    keys.forEach(k => {{
+    keys.forEach(function(k) {{
       const c = newCache[k] || {{}};
       domData[k] = {{
         n_papers_ss: c.n || 0,
-        semaforo: c.n >= 5 ? 'GREEN' : (c.n > 0 ? 'AMBER' : 'RED'),
-        p_sintetico: null,
-        score_ss: null
+        semaforo:    c.n >= 5 ? 'GREEN' : (c.n > 0 ? 'AMBER' : 'RED'),
+        p_sintetico: c.sintetico || null,
+        score_ss:    null
       }};
     }});
+    const totalPapers = keys.reduce(function(s,k) {{ return s + (newCache[k]||{{}}).n||0; }}, 0);
     const entrada = {{
-      timestamp: tsISO,
-      source: 'live_search',
-      total_papers: keys.reduce((s,k) => s + (newCache[k]||{{}}).n||0, 0),
-      dominios: domData
+      timestamp:    tsISO,
+      source:       'live_search',
+      total_papers: totalPapers,
+      dominios:     domData
     }};
 
-    // Intentar persistir en Flask (si está corriendo)
-    try {{
-      fetch('http://localhost:5050/api/minerva_historial', {{
-        method: 'POST',
-        headers: {{'Content-Type': 'application/json'}},
-        body: JSON.stringify(entrada)
-      }}).catch(() => {{}});  // silencioso si Flask no está corriendo
-    }} catch(e) {{}}
+    // 1. localStorage
+    _lsSave(_LS_MINERVA, entrada);
 
-    // Agregar al panel de historial en la página actual (in-memory)
+    // 2. Flask (silencioso)
+    fetch('http://localhost:5050/api/minerva_historial', {{
+      method:'POST', headers:{{'Content-Type':'application/json'}},
+      body: JSON.stringify(entrada)
+    }}).catch(function(){{}});
+
+    // 3. Actualizar panel historial
     const panel = document.getElementById('minerva-historial-panel');
-    if (panel) {{
-      const DCOL = {{FORM:'#00e5ff',NAT:'#00ff88',TEC:'#b39ddb',SOC_IV:'#ffd54f',SOC_DID:'#ff9800',ARTE:'#f48fb1'}};
-      const SCOL = {{GREEN:'#00ff88',AMBER:'#ffd54f',RED:'#ff3d5a'}};
-      const SDOT = {{GREEN:'●',AMBER:'◑',RED:'○'}};
-      let domHtml = '';
-      keys.forEach(k => {{
-        const dc = DCOL[k] || '#9e9e9e';
-        const dd = domData[k] || {{}};
-        const sc = SCOL[dd.semaforo] || '#9e9e9e';
-        domHtml += `<span title="${{k}} · ${{dd.n_papers_ss}} papers"
-          style="display:inline-block;padding:2px 6px;border-radius:3px;
-          border:1px solid ${{dc}}44;background:${{dc}}11;color:${{dc}};
-          font-size:.55rem;margin:2px;">
-          ${{k}} <span style="color:${{sc}}">${{SDOT[dd.semaforo]||'○'}}</span></span>`;
-      }});
-      const ts16 = tsISO.slice(0,16).replace('T',' ') + ' UTC';
-      const total = entrada.total_papers;
-      const newEntry = document.createElement('div');
-      newEntry.className = 'hist-entry';
-      newEntry.style.cssText = 'padding:8px 10px;margin-bottom:6px;border:1px solid #00e5ff33;border-radius:6px;background:rgba(0,229,255,.04);';
-      newEntry.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <span style="font-size:.58rem;color:var(--dim);">${{ts16}} <span style="color:#00e5ff;font-size:.85em">● nuevo</span></span>
-          <span style="font-size:.55rem;color:var(--muted);">⚡ búsqueda live · ${{total}} papers</span>
-        </div>
-        <div>${{domHtml}}</div>`;
-      panel.insertBefore(newEntry, panel.firstChild);
+    if (panel) _renderMinHistorial(panel, _lsLoad(_LS_MINERVA));
+
+    // 4. Actualizar resumen global de síntesis (si existe el bloque)
+    const elSummary = document.getElementById('minerva-summary-live');
+    if (elSummary) {{
+      var summLines = keys.filter(function(k) {{ return (newCache[k]||{{}}).n > 0; }})
+        .map(function(k) {{
+          var c = newCache[k]; var col = DOMAIN_COLORS[k]||'#9e9e9e';
+          return '<span style="color:' + col + ';margin-right:8px;">'
+            + k + ' <span style="color:#00ff8888">' + c.n + 'p</span>'
+            + (c.sintetico ? ' <span style="color:#3a6a8a;font-size:.85em;">[' + c.sintetico + ']</span>' : '')
+            + '</span>';
+        }});
+      elSummary.innerHTML = summLines.join('') || '<span style="color:var(--dim)">—</span>';
     }}
   }}
 }}
+
+// ── CLÁSICOS: buscar papers sobre cada obra ───────────────────────────────
+async function buscarClasicos() {{
+  if (_clSearching) return;
+  const now = Date.now();
+
+  if (_clLastAt > 0 && (now - _clLastAt) < COOLDOWN) {{
+    const seg = Math.ceil((COOLDOWN-(now-_clLastAt))/1000);
+    showStatus('cl-status','var(--dim)',
+      `<span style="color:var(--dim)">⏱ Espera <b style="color:var(--cyan)">${{seg}}s</b></span>`,0);
+    return;
+  }}
+
+  _clSearching = true;
+  setBtnState('btn-clasicos','cl-status',true,'Buscando…','📚 Verificar en SS');
+  showStatus('cl-status','rgba(255,213,79,.3)',
+    '<span style="color:var(--dim)">Consultando Semantic Scholar (14 obras)…</span>',0);
+
+  const keys     = Object.keys(CL_SS_QUERIES);
+  var ok=0, fail=0, found=0;
+  var clCounts = {{}};  // rastreo directo de counts (no depende de DOM badges)
+
+  for (let i=0; i<keys.length; i++) {{
+    const key = keys[i];
+    const st  = document.getElementById('cl-status');
+    if (st) st.innerHTML = '<span style="color:var(--dim)">Obra ' + (i+1) + '/' + keys.length + ': <b style="color:#ffd54f">' + key.replace(/_/g,' ') + '</b>…</span>';
+
+    // Rotar offset para obtener páginas distintas de resultados cada búsqueda
+    const _clOff = _nextOffset('CL_' + key);
+    const url = 'https://api.semanticscholar.org/graph/v1/paper/search?query='
+              + encodeURIComponent(CL_SS_QUERIES[key])
+              + '&offset=' + _clOff
+              + '&limit=5&fields=title,year,citationCount';
+    const r = await fetchWithRetry(url, 14000, 1);
+
+    clCounts[key] = 0;
+    if (!r || !r.ok) {{
+      fail++;
+    }} else {{
+      try {{
+        const d = await r.json();
+        const n = (d.data||[]).length;
+        found += n;
+        ok++;
+        clCounts[key] = n;  // guardar directamente (NO leer del DOM badge)
+        // Actualizar badge DOM si existe
+        const badge = document.getElementById('cl-badge-' + key);
+        if (badge) {{
+          badge.textContent = n > 0 ? (n + ' papers SS') : 'Sin resultados SS';
+          badge.style.color = n >= 3 ? '#00ff88' : (n > 0 ? '#ffd54f' : '#ff3d5a');
+        }}
+      }} catch(e) {{ fail++; }}
+    }}
+    if (i < keys.length-1) await new Promise(function(rv) {{ setTimeout(rv, 500); }});
+  }}
+
+  _clLastAt    = Date.now();
+  _clSearching = false;
+  setBtnState('btn-clasicos','cl-status',false,'','📚 Verificar en SS');
+
+  const hora = new Date().toLocaleTimeString('es',{{hour:'2-digit',minute:'2-digit'}});
+  if (fail === keys.length) {{
+    showStatus('cl-status','#ff9800',
+      '<span style="color:#ff9800">⚠ Sin respuesta de Semantic Scholar · ' + hora + '</span>'
+      + '<span style="font-size:.85em;color:#cc6600;display:block;margin-top:3px;">Sin conexión o API caída — intenta en 1-2 minutos.</span>', 0);
+  }} else {{
+    const extra = fail>0 ? (' <span style="color:#ff9800;font-size:.85em">(' + fail + ' sin respuesta)</span>') : '';
+    showStatus('cl-status', found>0?'#ffd54f':'var(--dim)',
+      '<span style="color:' + (found>0?'#ffd54f':'var(--dim)') + '">✓ ' + found + ' papers en ' + ok + ' obras verificadas · ' + hora + '</span>' + extra,
+      found>0 ? 0 : 9000);
+
+    // ── Persistir historial ────────────────────────────────────────────────
+    if (ok > 0) {{
+      const tsISO   = new Date().toISOString();
+      const obrasData = {{}};
+      keys.forEach(function(k) {{
+        obrasData[k] = {{ n_papers: clCounts[k] || 0 }};  // usa variable local, no DOM
+      }});
+      const entrada = {{
+        timestamp:    tsISO,
+        total_papers: found,
+        obras:        obrasData
+      }};
+
+      // 1. localStorage
+      _lsSave(_LS_CLASICOS, entrada);
+
+      // 2. Flask (silencioso)
+      fetch('http://localhost:5050/api/clasicos_historial', {{
+        method:'POST', headers:{{'Content-Type':'application/json'}},
+        body: JSON.stringify(entrada)
+      }}).catch(function(){{}});
+
+      // 3. Actualizar panel historial
+      const panel = document.getElementById('cl-historial-panel');
+      if (panel) _renderClHistorial(panel, _lsLoad(_LS_CLASICOS));
+    }}
+  }}
+}}
+
+// ── AUTO-RECARGA via sentinel lum_build_vitae.txt (funciona con file://) ─────
+// Python escribe ese archivo cada vez que regenera el HTML (solo ~20 bytes)
+const _BUILD_TS = '{now_str}';
+(function() {{
+  let _arKnown = _BUILD_TS.trim(), _arNotif = null;
+  // Sentinel PROPIO del dashboard (distinto al del mapa para evitar loops)
+  const _arSentinel = location.href.replace(/[^/\\\\]*$/, 'lum_build_vitae.txt');
+  async function _checkReload() {{
+    try {{
+      const r   = await fetch(_arSentinel + '?_=' + Date.now());
+      const txt = (await r.text()).trim();
+      if (!txt) return;
+      if (_arKnown && txt !== _arKnown) {{
+        if (_arNotif) return;
+        _arKnown = txt;
+        _arNotif = document.createElement('div');
+        _arNotif.innerHTML = '🔄 Dashboard actualizado — recargando en <b id="_ar_cnt">5</b>s &nbsp;<span style="cursor:pointer;color:#3a6080;" onclick="this.parentElement.remove();">✕</span>';
+        _arNotif.style.cssText = 'position:fixed;top:12px;right:12px;background:#0a1a2a;border:1px solid #00e5ff66;color:#00e5ffcc;padding:10px 16px;border-radius:6px;font-size:.72rem;z-index:9999;font-family:monospace;box-shadow:0 4px 20px #000a;';
+        document.body.appendChild(_arNotif);
+        let cnt = 5;
+        const tick = setInterval(() => {{
+          cnt--;
+          const el = document.getElementById('_ar_cnt');
+          if (el) el.textContent = cnt;
+          if (cnt <= 0) {{ clearInterval(tick); location.reload(); }}
+        }}, 1000);
+      }}
+      if (!_arKnown) _arKnown = txt;
+    }} catch(e) {{}}
+  }}
+  setTimeout(_checkReload, 2000);
+  setInterval(_checkReload, 10000);
+}})();
 </script>
 </body>
 </html>"""
 
     OUT_FILE.write_text(page, encoding="utf-8")
+    # Sentinel PROPIO del dashboard (evita conflicto con el del mapa)
+    sentinel = OUT_FILE.parent / "lum_build_vitae.txt"
+    sentinel.write_text(now_str, encoding="utf-8")
     print(f"[OK] Dashboard generado → {OUT_FILE}")
     return OUT_FILE
 

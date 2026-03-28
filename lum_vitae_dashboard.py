@@ -4,14 +4,13 @@ ALFA LUM-vitae vΩ.4 — Dashboard Visual
 Servidor local: http://localhost:5050
 Ejecuta: python3 lum_vitae_dashboard.py
 """
-import json, pathlib, threading, webbrowser, time, os, shutil
-from flask import Flask, jsonify, render_template_string, request
+import json, pathlib, threading, webbrowser, time
+from flask import Flask, jsonify, render_template_string
 
 BASE = pathlib.Path(__file__).parent
-ESTADO_FILE     = BASE / "lum_vitae_estado.json"
-LEDGER_FILE     = BASE / "lum_vitae_ledger_meta.ndjson"
-REPORTE_FILE    = BASE / "lum_vitae_reporte.txt"
-HISTORIAL_FILE  = BASE / "lum_minerva_historial.json"
+ESTADO_FILE  = BASE / "lum_vitae_estado.json"
+LEDGER_FILE  = BASE / "lum_vitae_ledger_meta.ndjson"
+REPORTE_FILE = BASE / "lum_vitae_reporte.txt"
 
 app = Flask(__name__)
 
@@ -64,7 +63,7 @@ def api_estado():
     brier_actual = hist_Brier[-1] if hist_Brier else 1.0
     brier_prev   = hist_Brier[-2] if len(hist_Brier) >= 2 else brier_actual
     spawns = e.get("n_spawns_total", 0)
-    n_hashes = e.get("n_hashes", e.get("n_hashes_total", len(ledger)))
+    n_hashes = e.get("n_hashes_total", len(ledger))
 
     cond1 = ece_actual <= 0.05 and brier_actual <= brier_prev
     cond2 = spawns > 0
@@ -101,42 +100,6 @@ def api_estado():
 @app.route("/api/reporte")
 def api_reporte():
     return jsonify({"texto": leer_reporte()})
-
-@app.route("/api/minerva_historial", methods=["GET"])
-def api_minerva_historial_get():
-    """Devuelve el historial de búsquedas MINERVA."""
-    try:
-        data = json.loads(HISTORIAL_FILE.read_text()) if HISTORIAL_FILE.exists() else {"version": 1, "historial": []}
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({"version": 1, "historial": [], "error": str(e)})
-
-@app.route("/api/minerva_historial", methods=["POST"])
-def api_minerva_historial_post():
-    """Añade una entrada al historial de búsquedas MINERVA (desde JS live search)."""
-    try:
-        entrada = request.get_json(force=True)
-        if not entrada:
-            return jsonify({"ok": False, "error": "payload vacío"}), 400
-        data = {"version": 1, "historial": []}
-        if HISTORIAL_FILE.exists():
-            try:
-                data = json.loads(HISTORIAL_FILE.read_text())
-            except Exception:
-                pass
-        lista = data.get("historial", [])
-        lista.append(entrada)
-        if len(lista) > 50:
-            lista = lista[-50:]
-        data["historial"] = lista
-        tmp = HISTORIAL_FILE.with_suffix(".tmp")
-        tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2))
-        if HISTORIAL_FILE.exists():
-            shutil.copy2(HISTORIAL_FILE, HISTORIAL_FILE.with_suffix(".bak"))
-        os.replace(tmp, HISTORIAL_FILE)
-        return jsonify({"ok": True, "n": len(lista)})
-    except Exception as e:
-        return jsonify({"ok": False, "error": str(e)}), 500
 
 # ─── DASHBOARD HTML ──────────────────────────────────────────────────────────
 

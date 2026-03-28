@@ -114,15 +114,8 @@ def cargar_estado() -> dict:
     return estado_inicial()
 
 def guardar_estado(estado: dict):
-    """Escritura atómica: tmp → replace; copia .bak antes de sobrescribir."""
-    import shutil
-    tmp = ESTADO_FILE.with_suffix(".tmp")
-    bak = ESTADO_FILE.with_suffix(".bak")
-    with open(tmp, "w", encoding="utf-8") as f:
+    with open(ESTADO_FILE, "w", encoding="utf-8") as f:
         json.dump(estado, f, ensure_ascii=False, indent=2)
-    if ESTADO_FILE.exists():
-        shutil.copy2(ESTADO_FILE, bak)
-    os.replace(tmp, ESTADO_FILE)
 
 def tail_historial(lista: list, max_n: int = 500) -> list:
     """Mantiene el historial acotado."""
@@ -526,8 +519,8 @@ class MotorCompacto:
             with open(LEDGER_FILE, "a", encoding="utf-8") as f:
                 for entrada in ledger_buffer:
                     f.write(json.dumps(entrada, ensure_ascii=False) + "\n")
-        except IOError as _e:
-            print(f"[WARN] escritura ledger/reporte falló: {_e}", flush=True)
+        except IOError:
+            pass
 
         # ── Calcular condiciones de vida ──────────────────────────────────
         ece_final   = buf_L[-1] if buf_L else 0.5  # reuse L como proxy
@@ -698,8 +691,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
     try:
         with open(REPORTE_FILE, "w", encoding="utf-8") as f:
             f.write("\n".join(_log_lines))
-    except IOError as _e:
-        print(f"[WARN] No se pudo escribir reporte: {_e}", flush=True)
+    except IOError:
+        pass
 
     # Regenerar dashboard HTML automáticamente
     try:
@@ -710,8 +703,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             mod  = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
             mod.generar()
-    except Exception as _e:
-        print(f"[WARN] lum_vitae_generar_html falló: {_e}", flush=True)
+    except Exception:
+        pass
 
     # Regenerar mapa de cierres (modo local, usa JSON cacheado con datos reales)
     try:
@@ -727,8 +720,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             _data = _json.loads(_mj.read_text())
             mod2.generar_html(_data)
             _sys.argv = _orig
-    except Exception as _e:
-        print(f"[WARN] lum_mapa_cierres.generar_html falló: {_e}", flush=True)
+    except Exception:
+        pass
 
     # Regenerar INICIO.html con datos actualizados embebidos
     try:
@@ -739,8 +732,8 @@ def run(n_ciclos: int = N_CICLOS_POR_RUN):
             mod3  = importlib.util.module_from_spec(spec3)
             spec3.loader.exec_module(mod3)
             mod3.generar()
-    except Exception as _e:
-        print(f"[WARN] lum_generar_inicio.generar falló: {_e}", flush=True)
+    except Exception:
+        pass
 
     return resumen
 
@@ -845,8 +838,8 @@ def _run_con_lvm(estado: dict, n_ciclos: int) -> dict:
         with open(LEDGER_FILE, "a", encoding="utf-8") as f:
             for entrada in ledger_buf:
                 f.write(json.dumps(entrada, ensure_ascii=False) + "\n")
-    except IOError as _e:
-        print(f"[WARN] No se pudo escribir ledger: {_e}", flush=True)
+    except IOError:
+        pass
 
     # Extraer estado final
     estado_final = bucle.estado_vida()
