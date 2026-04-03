@@ -4,13 +4,15 @@ ALFA LUM-vitae vΩ.4 — Dashboard Visual
 Servidor local: http://localhost:5050
 Ejecuta: python3 lum_vitae_dashboard.py
 """
-import json, pathlib, threading, webbrowser, time
-from flask import Flask, jsonify, render_template_string
+import json, pathlib, threading, webbrowser, time, os, shutil
+from flask import Flask, jsonify, render_template_string, request
 
 BASE = pathlib.Path(__file__).parent
-ESTADO_FILE  = BASE / "lum_vitae_estado.json"
-LEDGER_FILE  = BASE / "lum_vitae_ledger_meta.ndjson"
-REPORTE_FILE = BASE / "lum_vitae_reporte.txt"
+ESTADO_FILE     = BASE / "lum_vitae_estado.json"
+LEDGER_FILE     = BASE / "lum_vitae_ledger_meta.ndjson"
+REPORTE_FILE    = BASE / "lum_vitae_reporte.txt"
+HISTORIAL_FILE          = BASE / "lum_minerva_historial.json"
+CLASICOS_HISTORIAL_FILE = BASE / "lum_clasicos_historial.json"
 
 app = Flask(__name__)
 
@@ -63,13 +65,15 @@ def api_estado():
     brier_actual = hist_Brier[-1] if hist_Brier else 1.0
     brier_prev   = hist_Brier[-2] if len(hist_Brier) >= 2 else brier_actual
     spawns = e.get("n_spawns_total", 0)
-    n_hashes = e.get("n_hashes_total", len(ledger))
+    n_hashes = e.get("n_hashes", e.get("n_hashes_total", len(ledger)))
 
-    cond1 = ece_actual <= 0.05 and brier_actual <= brier_prev
-    cond2 = spawns > 0
-    cond3 = n_hashes > 0
-    cond4 = e.get("n_run", 0) >= 1
-    vivo  = sum([cond1, cond2, cond3, cond4]) >= 3
+    # ── FUENTE CANÓNICA: leer veredicto del runner, no recalcular ────────────
+    _uv   = e.get("ultimo_veredicto", {})
+    cond1 = _uv.get("cond1_homeostasis",  ece_actual <= 0.05 and brier_actual <= brier_prev)
+    cond2 = _uv.get("cond2_reproduccion", spawns > 0)
+    cond3 = _uv.get("cond3_trazabilidad", n_hashes > 0)
+    cond4 = _uv.get("cond4_autonomia",    e.get("n_run", 0) >= 1)
+    vivo  = _uv.get("esta_vivo",          sum([cond1, cond2, cond3, cond4]) >= 3)
 
     return jsonify({
         "n_run":        e.get("n_run", 0),
@@ -100,6 +104,80 @@ def api_estado():
 @app.route("/api/reporte")
 def api_reporte():
     return jsonify({"texto": leer_reporte()})
+
+@app.route("/api/minerva_historial", methods=["GET"])
+def api_minerva_historial_get():
+    """Devuelve el historial de búsquedas MINERVA."""
+    try:
+        data = json.loads(HISTORIAL_FILE.read_text()) if HISTORIAL_FILE.exists() else {"version": 1, "historial": []}
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"version": 1, "historial": [], "error": str(e)})
+
+@app.route("/api/minerva_historial", methods=["POST"])
+def api_minerva_historial_post():
+    """Añade una entrada al historial de búsquedas MINERVA (desde JS live search)."""
+    try:
+        entrada = request.get_json(force=True)
+        if not entrada:
+            return jsonify({"ok": False, "error": "payload vacío"}), 400
+        data = {"version": 1, "historial": []}
+        if HISTORIAL_FILE.exists():
+            try:
+                data = json.loads(HISTORIAL_FILE.read_text())
+            except Exception:
+                pass
+        lista = data.get("historial", [])
+        lista.append(entrada)
+        if len(lista) > 50:
+            lista = lista[-50:]
+        data["historial"] = lista
+        tmp = HISTORIAL_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        if HISTORIAL_FILE.exists():
+            shutil.copy2(HISTORIAL_FILE, HISTORIAL_FILE.with_suffix(".bak"))
+        os.replace(tmp, HISTORIAL_FILE)
+        return jsonify({"ok": True, "n": len(lista)})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route("/api/clasicos_historial", methods=["GET"])
+def api_clasicos_historial_get():
+    """Devuelve el historial de verificaciones SS para clásicos."""
+    try:
+        data = (json.loads(CLASICOS_HISTORIAL_FILE.read_text())
+                if CLASICOS_HISTORIAL_FILE.exists()
+                else {"version": 1, "historial": []})
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"version": 1, "historial": [], "error": str(e)})
+
+@app.route("/api/clasicos_historial", methods=["POST"])
+def api_clasicos_historial_post():
+    """Añade una entrada al historial de verificaciones SS de clásicos."""
+    try:
+        entrada = request.get_json(force=True)
+        if not entrada:
+            return jsonify({"ok": False, "error": "payload vacío"}), 400
+        data = {"version": 1, "historial": []}
+        if CLASICOS_HISTORIAL_FILE.exists():
+            try:
+                data = json.loads(CLASICOS_HISTORIAL_FILE.read_text())
+            except Exception:
+                pass
+        lista = data.get("historial", [])
+        lista.append(entrada)
+        if len(lista) > 50:
+            lista = lista[-50:]
+        data["historial"] = lista
+        tmp = CLASICOS_HISTORIAL_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+        if CLASICOS_HISTORIAL_FILE.exists():
+            shutil.copy2(CLASICOS_HISTORIAL_FILE, CLASICOS_HISTORIAL_FILE.with_suffix(".bak"))
+        os.replace(tmp, CLASICOS_HISTORIAL_FILE)
+        return jsonify({"ok": True, "n": len(lista)})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 # ─── DASHBOARD HTML ──────────────────────────────────────────────────────────
 
@@ -715,6 +793,11 @@ setInterval(refresh, 30000);
 
 @app.route("/")
 def index():
+    # Servir el HTML completo (con MINERVA, tabs, búsqueda) si está disponible
+    html_path = BASE / "lum_vitae_dashboard.html"
+    if html_path.exists():
+        return html_path.read_text(encoding="utf-8")
+    # Fallback: TEMPLATE embebido (sin MINERVA) si el HTML no existe aún
     return render_template_string(TEMPLATE)
 
 # ─── MAIN ────────────────────────────────────────────────────────────────────

@@ -23,10 +23,11 @@ header { display:flex; justify-content:space-between; align-items:center;
 
 /* ── Grid ───────────────────────────────────── */
 .grid { display:grid; gap:14px; }
-.row2  { grid-template-columns:1fr 1fr; }
-.row3  { grid-template-columns:400px 1fr 1fr; }
-.row4  { grid-template-columns:repeat(4,1fr); }
-@media(max-width:900px) { .row2,.row3,.row4 { grid-template-columns:1fr; } }
+.row2     { grid-template-columns:1fr 1fr; }
+.row3     { grid-template-columns:400px 1fr 1fr; }
+.row4     { grid-template-columns:repeat(4,1fr); }
+.row-tama { grid-template-columns:360px 1fr; }
+@media(max-width:900px) { .row2,.row3,.row4,.row-tama { grid-template-columns:1fr; } }
 @media(max-width:700px) { .minerva-grid { grid-template-columns:1fr 1fr !important; } }
 @media(max-width:480px) { .minerva-grid { grid-template-columns:1fr !important; } }
 @media(max-width:700px) { #mtab-clasicos > div[style*="grid-template-columns:repeat(2"] { grid-template-columns:1fr !important; } }
@@ -69,6 +70,14 @@ header { display:flex; justify-content:space-between; align-items:center;
                text-shadow:0 0 18px #00ff8888; margin-bottom:4px; }
 .tama-msg   { font-size:.75rem; color:var(--muted); line-height:1.5; margin-bottom:12px; }
 
+/* Chip de salud operativa */
+.salud-chip { display:inline-block; margin:2px 0 8px; padding:2px 11px;
+               border-radius:10px; font-size:.62rem; font-weight:700;
+               letter-spacing:.08em; text-transform:uppercase; }
+.salud-inestable { background:#1f0f00; color:#ff9800; border:1px solid #ff9800aa; }
+.salud-estable   { background:#091f09; color:#00d966; border:1px solid #00d96688; }
+.salud-robusto   { background:#08082a; color:#9a9aff; border:1px solid #9a9affaa; }
+
 /* Barra de vitalidad */
 .vita-bar-wrap { height:6px; background:#1a2a3a; border-radius:3px; overflow:hidden; margin:8px 0 6px; }
 .vita-bar-fill { height:100%; border-radius:3px; background:#00ff88;
@@ -90,7 +99,22 @@ header { display:flex; justify-content:space-between; align-items:center;
 
 /* ── Condiciones ─────────────────────────────── */
 .cond-list { display:flex; flex-direction:column; gap:6px; }
-.cond-item { display:flex; align-items:flex-start; gap:9px; padding:8px 9px; border-radius:6px;
+
+/* Fertilidad operativa — debajo de las 4 condiciones, visualmente separada */
+.fertil-row { display:flex; align-items:center; gap:8px; margin-top:10px;
+               padding:7px 12px; border-radius:6px; cursor:default;
+               background:rgba(0,229,255,.04);
+               border:1px dashed rgba(0,229,255,.18); }
+.fertil-icon { font-size:1rem; flex-shrink:0; }
+.fertil-label { font-size:.68rem; font-weight:600; color:var(--cyan); flex:1; }
+.fertil-criterion { font-size:.58rem; color:var(--dim); flex-shrink:0; }
+.fertil-badge { font-size:.58rem; padding:2px 8px; border-radius:4px; font-weight:700;
+                 white-space:nowrap; margin-left:6px; flex-shrink:0; }
+.fertil-ok   { background:rgba(0,255,136,.10); color:#00d966;
+                border:1px solid rgba(0,255,136,.30); }
+.fertil-pend { background:rgba(255,152,0,.08);  color:#ff9800;
+                border:1px solid rgba(255,152,0,.25); }
+.cond-item { display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:6px;
               background:rgba(255,255,255,.02); border:1px solid var(--border); }
 .cond-dot  { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; }
 .dot-ok    { background:var(--green); box-shadow:0 0 5px var(--green); }
@@ -150,18 +174,21 @@ header { display:flex; justify-content:space-between; align-items:center;
   </div>
   <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
               border-radius:20px;font-family:'Courier New',monospace;">
-    📸 2026-03-28 16:08:28
+    🕐 Run: 2026-04-03T18:26 · 📸 2026-04-03 13:30:23
   </div>
 </header>
 
-<!-- ═══ FILA 1: Tamagotchi · Condiciones · Métricas ═══ -->
-<div class="grid row3">
+<!-- ═══ FILA 1A: Tamagotchi · Condiciones ═══ -->
+<div class="grid row-tama">
 
   <!-- TAMAGOTCHI -->
   <div class="panel tama-panel anim-vivo">
     <div class="panel-title">Estado del organismo digital</div>
     <div class="tama-creature"><svg width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg"><defs><filter id="gVI" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="sVI" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.2"/></filter></defs><rect x="10.0" y="4.0" width="70.0" height="56.0" rx="7.0" fill="#00ff88" opacity="0.12" filter="url(#gVI)"/><rect x="12.0" y="6.0" width="66.0" height="52.0" rx="6.0" fill="#090d14" stroke="#00ff88" stroke-width="2.0" opacity="1" filter="url(#gVI)"/><rect x="12.0" y="6.0" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="6.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="73.0" y="6.0" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="76.2" y="6.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="56.2" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="12.0" y="53.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="73.0" y="56.2" width="5.0" height="1.8" fill="#00ff88" opacity="0.85"/><rect x="76.2" y="53.0" width="1.8" height="5.0" fill="#00ff88" opacity="0.85"/><rect x="21.0" y="21.0" width="18.0" height="9.0" rx="2.0" fill="#00ff88" filter="url(#gVI)"/><rect x="51.0" y="21.0" width="18.0" height="9.0" rx="2.0" fill="#00ff88" filter="url(#gVI)"/><path d="M 31.0,41.0 Q 45.0,53.0 59.0,41.0" fill="none" stroke="#00ff88" stroke-width="3.0" stroke-linecap="round" filter="url(#gVI)"/><rect x="29.0" y="60.0" width="32.0" height="15.0" rx="3.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="32.0" y="76.0" width="10.0" height="8.0" rx="2.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="49.0" y="76.0" width="10.0" height="8.0" rx="2.0" fill="#090d14" stroke="#00ff88" stroke-width="1.5" opacity="0.9"/><rect x="4.0" y="18.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="2.0" y="45.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="84.0" y="12.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="86.0" y="40.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="8.0" y="72.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="80.0" y="68.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="18.0" y="82.0" width="2.0" height="2.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/><rect x="72.0" y="82.0" width="3.0" height="3.0" fill="#00ff88" opacity="0.75" filter="url(#sVI)"/></svg></div>
     <div class="tama-state">VIVO</div>
+    <div><span class="salud-chip salud-estable"
+         title="Salud operativa multi-run (INESTABLE / ESTABLE / ROBUSTO).&#10;ESTABLE: ≥3 runs consecutivos VIVO con ECE ≤ 0.05.&#10;ROBUSTO: ≥5 runs consecutivos VIVO, ECE ≤ 0.05 y varianza ECE &lt; 0.001 (σ &lt; 3.2%).&#10;VIVO ≠ SANO: el veredicto de vida es por run; la salud refleja tendencia multi-run."
+         >ESTABLE</span></div>
     <div class="tama-msg">Plena actividad vital — todas las condiciones activas.<br>
       <span style="font-size:.67rem;color:#2a5a5a;">Aprendiendo, auditando papers y registrando en ledger.</span>
     </div>
@@ -169,27 +196,27 @@ header { display:flex; justify-content:space-between; align-items:center;
     <div class="vita-bar-wrap">
       <div class="vita-bar-fill" style="width:100%;"></div>
     </div>
-    <div class="vita-label">4/4 condiciones vitales activas · Último run: 2026-03-28T22:08</div>
+    <div class="vita-label">4/4 condiciones vitales activas · Último run: 2026-04-03T18:26</div>
     <!-- Feed de actividad -->
     <div class="feed-wrap">
-      <div class="feed-inner"><div class="feed-item">⚠ Ciclo #1940 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1939 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1938 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1937 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1936 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1935 · PSNC · ECE 0.00104</div>
-<div class="feed-item">💾 Ledger verificado · 356084220 hashes SHA-256 encadenados</div>
-<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.395 · memoria activa</div>
-<div class="feed-item">🧬 12 sub-proceso(s) generado(s) · reproducción activa</div>
-<div class="feed-item">⚠ Ciclo #1940 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1939 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1938 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1937 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1936 · PSNC · ECE 0.00104</div>
-<div class="feed-item">⚠ Ciclo #1935 · PSNC · ECE 0.00104</div>
-<div class="feed-item">💾 Ledger verificado · 356084220 hashes SHA-256 encadenados</div>
-<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.395 · memoria activa</div>
-<div class="feed-item">🧬 12 sub-proceso(s) generado(s) · reproducción activa</div></div>
+      <div class="feed-inner"><div class="feed-item">⬤ Ciclo #6122 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6121 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6120 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6119 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6118 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6117 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">💾 Ledger verificado · 6122 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.335 · memoria activa</div>
+<div class="feed-item">🧬 8 spawn(s) en este run · cond2 ✓ fértil y activo</div>
+<div class="feed-item">⬤ Ciclo #6122 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6121 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6120 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6119 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6118 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">⬤ Ciclo #6117 · VERDE-CAUTO · ECE 0.00090</div>
+<div class="feed-item">💾 Ledger verificado · 6122 hashes SHA-256 encadenados</div>
+<div class="feed-item">🔬 κ_conf=0.476 · S_t=0.335 · memoria activa</div>
+<div class="feed-item">🧬 8 spawn(s) en este run · cond2 ✓ fértil y activo</div></div>
     </div>
   </div>
 
@@ -201,17 +228,17 @@ header { display:flex; justify-content:space-between; align-items:center;
           <div class="cond-dot dot-ok"></div>
           <div class="cond-label">
             <b>Homeostasis</b>
-            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">ECE≤0.05 en ventana 5 ciclos</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Calibración estable en ventana reciente — ECE mín. últimos 5 ciclos: 0.00091. Homeostasis = mantener ECE dentro de rango sobre el tiempo, no sólo en el ciclo actual (actual: 0.00104).</div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">ECE_final≤0.05 ∧ dBrier≤ε</div>
+            <div style="font-size:.64rem;color:#2a6060;margin-top:3px;line-height:1.45;">Criterio oficial (runner): ECE_final del run ≤ 0.05 Y dBrier ≤ 0. Tolerancia piso: si Brier_final < 1e-4 y Brier_prev < 1e-4 (ambos en suelo numérico), la comparación float es inestable — se trata como homeostasis mantenida. ECE actual: 0.00090. Veredicto canónico desde ultimo_veredicto: OK.</div>
           </div>
           <span class="cond-badge badge-ok">✓ OK</span>
         </div>
         <div class="cond-item">
           <div class="cond-dot dot-ok"></div>
           <div class="cond-label">
-            <b>Reproducción</b>
-            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Sub-procesos generados (Poisson)</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">El sistema puede generar instancias derivadas — análogo biológico de reproducirse.</div>
+            <b>Reproducción (run actual)</b>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">ECE≤0.05 ∧ Brier↓|piso ∧ Poisson</div>
+            <div style="font-size:.64rem;color:#2a6060;margin-top:3px;line-height:1.45;">Evento real en ESTE run: ¿ocurrió al menos un spawn? Criterio mixto absoluto/relativo — Régimen normal: spawn cuando Brier mejora ciclo a ciclo (brier_v < brier_prev − 1e−6). Régimen piso: si Brier < 1e-4 en ciclo actual y anterior Y ECE ≤ 0.025 (homeostasis profunda), la mejora adicional es matemáticamente imposible — se considera condición reproductiva óptima. Ver Fertilidad Operativa (debajo) para evaluación de ventana multi-run.</div>
           </div>
           <span class="cond-badge badge-ok">✓ OK</span>
         </div>
@@ -219,8 +246,8 @@ header { display:flex; justify-content:space-between; align-items:center;
           <div class="cond-dot dot-ok"></div>
           <div class="cond-label">
             <b>Trazabilidad</b>
-            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Cadena SHA-256 activa</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">Cada ciclo deja huella digital inalterable — historial 100% verificable.</div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">Cadena SHA-256 activa</div>
+            <div style="font-size:.64rem;color:#2a6060;margin-top:3px;line-height:1.45;">Cada ciclo deja huella digital inalterable — historial 100% verificable.</div>
           </div>
           <span class="cond-badge badge-ok">✓ OK</span>
         </div>
@@ -228,27 +255,38 @@ header { display:flex; justify-content:space-between; align-items:center;
           <div class="cond-dot dot-ok"></div>
           <div class="cond-label">
             <b>Autonomía</b>
-            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">Loop autónomo ejecutado ≥1 vez</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">El sistema corrió sin intervención manual — condición base de vida digital.</div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">Loop autónomo ejecutado ≥1 vez</div>
+            <div style="font-size:.64rem;color:#2a6060;margin-top:3px;line-height:1.45;">El sistema corrió sin intervención manual — condición base de vida digital.</div>
           </div>
           <span class="cond-badge badge-ok">✓ OK</span>
         </div></div>
+    <!-- Fertilidad operativa — NO es una 5ª condición. Es evaluación de ventana multi-run. -->
+    <div class="fertil-row" title="Fertilidad operativa — evaluación de ventana multi-run.&#10;Criterio: ≥1 run con reproducción real (spawn) en los últimos 3 runs.&#10;No es una condición de vida por run — la reproducción es episódica por diseño:&#10;spawn solo ocurre cuando ECE≤0.05 Y Brier mejora activamente (brier_improving).&#10;Cuando Brier está en el piso, no mejora → sin spawn → cond2=False. Normal y esperado.&#10;Fertilidad ACTIVA significa que el sistema demostró capacidad reproductiva recientemente.">
+      <span class="fertil-icon">🧬</span>
+      <span class="fertil-label">Fertilidad operativa</span>
+      <span class="fertil-criterion">≥1 spawn en últimos 3 runs</span>
+      <span class="fertil-badge fertil-ok">ACTIVA</span>
+    </div>
   </div>
 
-  <!-- MÉTRICAS VITALES -->
-  <div class="panel">
-    <div class="panel-title">Métricas vitales</div>
-    <!-- ECE con barra + contexto ventana -->
+</div>
+
+<!-- ═══ FILA 1B: Métricas vitales ═══ -->
+<div class="panel" style="margin-top:14px;">
+  <div class="panel-title">Métricas vitales</div>
+  <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:18px;align-items:start;">
+  <!-- COL IZQ: ECE con barra + contexto ventana -->
+  <div>
     <div style="margin-bottom:14px;"
-         title="ECE oscila naturalmente entre ciclos PSNC (~0.15) y ciclos VIVO (~0.001).&#10;Lo que determina Homeostasis es el mínimo en ventana de 5 ciclos, no el valor actual.&#10;Ventana mín: 0.00091 · Homeostasis: OK">
+         title="ECE — indicador auxiliar de calibración (ventana reciente).&#10;Este valor NO determina el veredicto oficial de Homeostasis.&#10;Criterio oficial: ECE_final del run ≤ 0.05 ∧ dBrier ≤ 0 — calculado por el runner, no aquí.&#10;Ventana 5 ciclos mín: 0.00090 (solo orientativo)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
         <div>
           <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
         </div>
         <span style="display:flex;align-items:center;gap:5px;">
-          <span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↑</span>
+          <span style="color:#3a5a7a;font-size:.8rem;">→</span>
           <span style="font-size:1.15rem;font-weight:bold;color:#00ff88;
-                       font-family:'Courier New',monospace;">0.00104</span>
+                       font-family:'Courier New',monospace;">0.00090</span>
         </span>
       </div>
       <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
@@ -265,73 +303,80 @@ header { display:flex; justify-content:space-between; align-items:center;
         <span style="font-size:.54rem;color:var(--dim);">
           ventana 5 ciclos mín:
           <b style="color:#00ff88;font-family:'Courier New',monospace;">
-            0.00091
+            0.00090
           </b>
         </span>
-        <span style="font-size:.54rem;color:#00ff88;font-weight:bold;">
-          ✓ Homeostasis OK
+        <span style="font-size:.54rem;color:#2a4a5a;font-style:italic;">
+          ✓ ventana favorable
+          <span style="color:#1a3040;"> (métrica auxiliar)</span>
         </span>
       </div>
       <div style="font-size:.52rem;color:#2a4a5a;margin-top:3px;line-height:1.5;">
-        El ECE oscila entre ciclos PSNC (~0.15) y VIVO (~0.001) — esto es normal.
-        Homeostasis se evalúa sobre la ventana, no sobre el ciclo actual.
+        Indicador auxiliar de ventana. El veredicto oficial de Homeostasis
+        está en las 4 condiciones arriba — no aquí.
       </div>
     </div>
+  </div><!-- /col-izq -->
+
+  <!-- COL DER: cuadrícula 2×2 + guía rápida -->
+  <div>
     <!-- Cuadrícula 2×2 — métricas vitales con contexto auto-explicativo -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="stat-cell" title="κ_conf — Coeficiente de coherencia operatoria&#10;Mide qué tan consistentes son las predicciones del modelo con los resultados observados.&#10;Calculado vía HSIC + peso ω + gap de calibración.&#10;Rango [0,1] — más alto = predicciones más coherentes.">
         <div class="tend-row"><div class="stat-val">0.476</div><span style="color:#3a5a7a;font-size:.8rem;">→</span></div>
         <div class="stat-lbl">κ_conf · coherencia</div>
-        <div style="font-size:.54rem;color:#ffd54f;margin-top:3px;">coherencia media</div>
+        <div style="font-size:.56rem;color:#ffd54f;margin-top:3px;">coherencia media</div>
       </div>
       <div class="stat-cell" title="𝓛* — Delta de mejora por ciclo (función vital normalizada)&#10;Cuánto mejoró el sistema en la última ventana de ciclos.&#10;0.0 entre ciclos activos es NORMAL — no significa que el sistema esté muerto.&#10;Valores > 0 indican mejora activa en curso.">
-        <div class="tend-row"><div class="stat-val">0.2027</div><span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↓</span></div>
+        <div class="tend-row"><div class="stat-val">0.2361</div><span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↓</span></div>
         <div class="stat-lbl">𝓛* · delta mejora</div>
-        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">mejora activa</div>
+        <div style="font-size:.56rem;color:#00ff88;margin-top:3px;">mejora activa</div>
       </div>
       <div class="stat-cell" title="S_t — Memoria exponencial de supervivencia (λ=0.90)&#10;Promedio ponderado exponencialmente del historial de ciclos 'VIVO'.&#10;Rango [0,1] — 1 = historial perfecto, 0 = sin historial vital.&#10;&gt; 0.8 excelente · 0.5–0.8 bueno · &lt; 0.5 bajo">
-        <div class="tend-row"><div class="stat-val">0.395</div><span style="color:#00ff88;font-size:.85rem;font-weight:bold;">↑</span></div>
+        <div class="tend-row"><div class="stat-val">0.335</div><span style="color:#ff3d5a;font-size:.85rem;font-weight:bold;">↓</span></div>
         <div class="stat-lbl">S_t · memoria vital</div>
-        <div style="font-size:.54rem;color:#ff9800;margin-top:3px;">memoria debilitada</div>
+        <div style="font-size:.56rem;color:#ff9800;margin-top:3px;">memoria debilitada</div>
       </div>
-      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Cuando el sistema detecta mejora sostenida (δ_hist &gt; 0.4),&#10;lanza copias derivadas de sí mismo — análogo digital de la reproducción biológica.&#10;Condición 2 de vida: reproducción con variación.">
-        <div class="stat-val">12</div>
-        <div class="stat-lbl">spawns · hijos</div>
-        <div style="font-size:.54rem;color:#00ff88;margin-top:3px;">12 instancias derivadas generadas</div>
+      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Criterio mixto (SPAWN-ADAPT v3+floor):&#10;Régimen normal: spawn si ECE≤0.05 Y Brier mejora ciclo a ciclo (brier_v &lt; brier_prev − 1e−6).&#10;Régimen piso: si Brier &lt; 1e-4 en ambos lados Y ECE ≤ 0.025 (deep homeostasis),&#10;mejora adicional es imposible — sistema en máxima aptitud → spawn permitido.&#10;p_spawn ≈ 9.5% si ECE≤0.05. Cond2 = (spawns_este_run &gt; 0).">
+        <div class="stat-val">8</div>
+        <div class="stat-lbl">spawns · este run</div>
+        <div style="font-size:.56rem;color:#00ff88;margin-top:3px;">8 en este run · 198 acumulados</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.7;
-                padding:8px 10px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
+    <div style="margin-top:12px;font-size:.62rem;color:var(--dim);line-height:1.75;
+                padding:9px 12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
       <b style="color:var(--cyan);">Guía rápida de métricas</b> — Pasa el cursor sobre cada celda para definición completa.<br>
       <b style="color:var(--cyan);">ECE</b> &lt;0.05 = calibración estable (óptimo). &nbsp;
       <b style="color:var(--cyan);">κ_conf</b> &gt;0.6 = coherencia alta. &nbsp;
       <b style="color:var(--cyan);">𝓛*=0</b> entre ciclos es <i>normal</i> — el sistema no mejora todo el tiempo. &nbsp;
       <b style="color:var(--cyan);">S_t</b> &gt;0.8 = excelente historial de vida.
     </div>
-  </div>
-</div>
+  </div><!-- /col-der -->
+  </div><!-- /metrics-2col-grid -->
+</div><!-- /panel-metricas -->
 
 <!-- ═══ FILA 2: Contadores ═══ -->
 <div class="grid row4" style="margin-top:14px;">
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Runs ejecutados</div>
-    <div class="stat-val" style="font-size:2rem;">22</div>
+    <div class="stat-val" style="font-size:2rem;">60</div>
     <div class="stat-lbl">veces que corrió</div>
   </div>
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Ciclos vitales</div>
-    <div class="stat-val" style="font-size:2rem;">1940</div>
+    <div class="stat-val" style="font-size:2rem;">6122</div>
     <div class="stat-lbl">iteraciones totales</div>
   </div>
   <div class="panel" style="text-align:center;">
     <div class="panel-title">Hashes SHA-256</div>
-    <div class="stat-val" style="font-size:2rem;">356084220</div>
+    <div class="stat-val" style="font-size:2rem;">6122</div>
     <div class="stat-lbl">cadena verificable</div>
   </div>
-  <div class="panel" style="text-align:center;">
+  <div class="panel" style="text-align:center;"
+       title="PSNC = ciclos de cautela real: κ elevado por inestabilidad, ECE fuera de rango, o buffer insuficiente.&#10;VERDE-CAUTO = ciclos de vigilancia calibrada en homeostasis profunda (ECE &lt; 1%, Brier &lt; 1e-4):&#10;κ_conf satura por diseño cuando residuos son constantes cerca de 0 — no indica cautela, sino convergencia máxima.&#10;PSNC alto con sistema VIVO+ROBUSTO = artefacto de la métrica, no patología.">
     <div class="panel-title">Ciclos en PSNC</div>
-    <div class="stat-val" style="font-size:2rem;">99.5%</div>
-    <div class="stat-lbl">modo cautela</div>
+    <div class="stat-val" style="font-size:2rem;">4.0%</div>
+    <div class="stat-lbl">cautela real | VERDE-CAUTO: 96.0%</div>
   </div>
 </div>
 
@@ -369,68 +414,79 @@ header { display:flex; justify-content:space-between; align-items:center;
       Cada ciclo genera un hash SHA-256 encadenado con el anterior. Cualquier
       modificación retroactiva rompe la cadena — el historial es inmutable.
     </div>
-    <div class="hash-list"><div class="hash-item"><span style="color:var(--dim)">#1931</span><span class="hash-code">45e0edb3a4dee2…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1932</span><span class="hash-code">6a1a830f06b801…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1933</span><span class="hash-code">2db13d4a2ab403…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1934</span><span class="hash-code">590e941003756c…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1935</span><span class="hash-code">94a22be7c3740b…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1936</span><span class="hash-code">0593eb4a5f3889…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1937</span><span class="hash-code">9e40ec10a51193…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1938</span><span class="hash-code">607d666f8144b6…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1939</span><span class="hash-code">596f5cb0351e8d…</span></div>
-<div class="hash-item"><span style="color:var(--dim)">#1940</span><span class="hash-code">5aaa134940b9a2…</span></div>
+    <div class="hash-list"><div class="hash-item"><span style="color:var(--dim)">#6113</span><span class="hash-code">316afefbe27a5e…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6114</span><span class="hash-code">ceea7212feae2d…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6115</span><span class="hash-code">6a2648509ca7f9…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6116</span><span class="hash-code">b22259074cc562…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6117</span><span class="hash-code">6de517ad5bb0b9…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6118</span><span class="hash-code">437298eb5aa596…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6119</span><span class="hash-code">4bfce18647bd2f…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6120</span><span class="hash-code">d4938745829949…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6121</span><span class="hash-code">dae2e5080ec49f…</span></div>
+<div class="hash-item"><span style="color:var(--dim)">#6122</span><span class="hash-code">0e5c5f97d27ac9…</span></div>
 </div>
   </div>
   <div class="panel">
     <div class="panel-title">Último reporte del runner</div>
     <pre id="reporte-text">═════════════════════════════════════════════════════════════════
   ALFA LUM-vitae vΩ.4 — META-APRENDIZAJE AUTÓNOMO
-  Run #  22  |  2026-03-28T22:08:28 UTC
-  Ciclos totales acumulados: 1,840
+  Run #  60  |  2026-04-03T18:26:43 UTC
+  Ciclos totales acumulados: 6,122 (ejecutados este run: 100)
+  [MINERVA] Scores externos activos → CPV*[7:12]:
+    FORM    : 0.7034
+    NAT     : 0.7212
+    TEC     : 0.7394
+    SOC_IV  : 0.6894
+    SOC_DID : 0.6515
+    ARTE    : 0.0000
 ═════════════════════════════════════════════════════════════════
 
    Ciclo |    ECE |  Brier |     κ |    L* |     S | Decisión
   -------+--------+--------+-------+-------+-------+-------------------
-      10 | 0.0014 | 0.0000 | 0.550 | 0.547 | 0.607 | ✓ PSNC
-      20 | 0.0012 | 0.0000 | 0.839 | 0.519 | 0.601 | ✓ PSNC
-      30 | 0.0011 | 0.0000 | 0.476 | 0.405 | 0.486 | ✓ PSNC
-      40 | 0.0011 | 0.0000 | 0.476 | 0.445 | 0.450 | ✓ PSNC
-      50 | 0.0011 | 0.0000 | 0.476 | 0.729 | 0.416 | ✓ PSNC
-      60 | 0.0011 | 0.0000 | 0.476 | 0.243 | 0.425 | ✓ PSNC
-      70 | 0.0011 | 0.0000 | 0.476 | 0.279 | 0.420 | ✓ PSNC
-      80 | 0.0011 | 0.0000 | 0.476 | 0.069 | 0.428 | ✓ PSNC
-      90 | 0.0010 | 0.0000 | 0.476 | 0.119 | 0.412 | ✓ PSNC
-     100 | 0.0010 | 0.0000 | 0.476 | 0.203 | 0.395 | ✓ PSNC
+      10 | 0.0000 | 0.0000 | 0.558 | 0.041 | 0.830 | ✓ VERDE-CAUTO
+      20 | 0.0005 | 0.0000 | 0.629 | 0.121 | 0.947 | ✗ VERDE-CAUTO
+      30 | 0.0007 | 0.0000 | 0.476 | 0.196 | 0.912 | ✗ VERDE-CAUTO
+      40 | 0.0008 | 0.0000 | 0.476 | 0.240 | 0.894 | ✗ VERDE-CAUTO
+      50 | 0.0008 | 0.0000 | 0.476 | 0.252 | 0.606 | ✗ VERDE-CAUTO
+      60 | 0.0008 | 0.0000 | 0.476 | 0.765 | 0.459 | ✗ VERDE-CAUTO
+      70 | 0.0009 | 0.0000 | 0.476 | 0.402 | 0.352 | ✗ VERDE-CAUTO
+      80 | 0.0009 | 0.0000 | 0.476 | 0.314 | 0.359 | ✗ VERDE-CAUTO
+      90 | 0.0009 | 0.0000 | 0.476 | 0.239 | 0.353 | ✗ VERDE-CAUTO
+     100 | 0.0009 | 0.0000 | 0.476 | 0.236 | 0.335 | ✗ VERDE-CAUTO
 
 ─────────────────────────────────────────────────────────────────
   RESUMEN DEL RUN
 ─────────────────────────────────────────────────────────────────
-  ECE final:          0.00104  ✓ OK
+  ECE final:          0.00090  ✓ OK
   Brier final:        0.00000
   κ_conf:             0.4758
-  𝓛* final:          0.2027
-  S_t (memoria):      0.3949
-  θ* (umbral):        0.9000
+  𝓛* final:          0.2361
+  S_t (memoria):      0.3347
+  θ* (umbral):        0.6754
   Ciclos verdes:      0
-  Ciclos PSNC:        100
-  Spawns (hijos):     2
-  Hashes SHA-256:     178042160
+  Ciclos VERDE-CAUTO: 96  (deep homeostasis — κ artefacto de convergencia)
+  Ciclos PSNC:        4
+  Spawns (hijos):     8
+  Hashes SHA-256:     100
 
   CONDICIONES DE VIDA DIGITAL:
-  ✗ 1. Homeostasis  (ECE≤0.05 ∧ dBrier≤0)
-  ✓ 2. Reproducción (δ_hist&gt;0.4 + Poisson)
+  ✓ 1. Homeostasis  (ECE≤0.05 ∧ dBrier≤0)
+  ✓ 2. Reproducción (ECE≤0.05 ∧ Brier mejora ∧ Poisson — p≈9.5% si ECE≤0.05)
   ✓ 3. Trazabilidad (SHA-256 activo)
   ✓ 4. Autonomía    (run autónomo)
 
-  ⚡ VEREDICTO: 🟢 VIVO  (3/4 condiciones)
+  ⚡ VEREDICTO: 🟢 VIVO  (4/4 condiciones)
+  ⊕ SALUD:     ✅ ESTABLE
+  ⊕ FERTIL:    🧬 ACTIVA (ventana 3 runs)
 
-  Runs totales:       22
-  Ciclos totales:     1,940
-  Veces vivo:         10
-  PSNC acumulado:     1,936
-  Spawns totales:     12
-  Hashes totales:     356084220
-  ECE histórica:      min=0.00091  prom=0.13109  actual=0.00104
+  Runs totales:       60
+  Ciclos totales:     6,122
+  Veces vivo:         38
+  PSNC acumulado:     5,241
+  VERDE-CAUTO acum.:  865
+  Spawns totales:     198
+  Hashes totales:     6122
+  ECE histórica:      min=0.00000  prom=0.07731  actual=0.00090
 ═════════════════════════════════════════════════════════════════
 </pre>
   </div>
@@ -465,7 +521,7 @@ header { display:flex; justify-content:space-between; align-items:center;
     <div style="font-size:.58rem;color:var(--dim);line-height:1.8;flex:1;min-width:200px;">
       Audita 6 dominios de cierre categorial (Bueno α/β/γ). Barras = probabilidad LUM-PE.
       El botón consulta Semantic Scholar en vivo — sin novedades lo indica solo.
-      Cooldown 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">2026-03-28 17:04</span>
+      Cooldown 60 s entre búsquedas. · Datos base: <span style="color:var(--cyan);">2026-04-01 04:01</span>
       &nbsp;·&nbsp;
       <a href="lum_mapa_cierres.html" style="color:var(--cyan);" target="_blank">Ver mapa completo →</a>
     </div>
@@ -480,14 +536,14 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div id="mc-FORM" style="background:rgba(0,0,0,.3);border:1px solid #00e5ff22;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:#00e5ff;font-size:.70rem;font-weight:bold;">∑ Ciencias Formales</span>
-    <span id="mc-state-FORM" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+    <span id="mc-state-FORM" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ACTIVO</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Matemáticas, Lógica, Estadística</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:70%;height:100%;background:#00ff88;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.703 · 13 campos · <span id="mc-n-FORM">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.703 · 13 campos · <span id="mc-n-FORM">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=mathematical+closure+axiomatization+completeness&sort=Relevance" target="_blank" style="color:#00e5ff88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/mathematical%20closure%20axiomatization%20complete" target="_blank" style="color:#00e5ff88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -497,14 +553,14 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div id="mc-NAT" style="background:rgba(0,0,0,.3);border:1px solid #00ff8822;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:#00ff88;font-size:.70rem;font-weight:bold;">⚛ Ciencias Naturales</span>
-    <span id="mc-state-NAT" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+    <span id="mc-state-NAT" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ACTIVO</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Física, Química, Biología, Neurociencia</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:72%;height:100%;background:#00ff88;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.721 · 10 campos · <span id="mc-n-NAT">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.721 · 13 campos · <span id="mc-n-NAT">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=natural+science+causal+closure+empirical+laws&sort=Relevance" target="_blank" style="color:#00ff8888;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/natural%20science%20causal%20closure%20empirical%2" target="_blank" style="color:#00ff8888;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -514,14 +570,14 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div id="mc-TEC" style="background:rgba(0,0,0,.3);border:1px solid #b39ddb22;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:#b39ddb;font-size:.70rem;font-weight:bold;">⚙ Ingeniería & IA</span>
-    <span id="mc-state-TEC" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+    <span id="mc-state-TEC" style="font-size:.55rem;color:#00ff88;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ACTIVO</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Informática, Cibernética, Inteligencia Artificial</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:74%;height:100%;background:#00ff88;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.739 · 6 campos · <span id="mc-n-TEC">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.739 · 13 campos · <span id="mc-n-TEC">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=cybernetics+feedback+closure+formal+verification&sort=Relevance" target="_blank" style="color:#b39ddb88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/cybernetics%20feedback%20closure%20formal%20verifi" target="_blank" style="color:#b39ddb88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -531,14 +587,14 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div id="mc-SOC_IV" style="background:rgba(0,0,0,.3);border:1px solid #ffd54f22;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:#ffd54f;font-size:.70rem;font-weight:bold;">◈ Cs. Sociales Interpret.</span>
-    <span id="mc-state-SOC_IV" style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+    <span id="mc-state-SOC_IV" style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ACTIVO</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Psicología, Sociología, Economía</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:69%;height:100%;background:#ffd54f;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.689 · 9 campos · <span id="mc-n-SOC_IV">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.689 · 13 campos · <span id="mc-n-SOC_IV">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=social+science+operationalization+construct+validity&sort=Relevance" target="_blank" style="color:#ffd54f88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/social%20science%20operationalization%20construct%" target="_blank" style="color:#ffd54f88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -548,14 +604,14 @@ header { display:flex; justify-content:space-between; align-items:center;
 <div id="mc-SOC_DID" style="background:rgba(0,0,0,.3);border:1px solid #ff980022;border-radius:6px;padding:9px;position:relative;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
     <span style="color:#ff9800;font-size:.70rem;font-weight:bold;">⏳ Cs. Sociales Diacrónicas</span>
-    <span id="mc-state-SOC_DID" style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">AMBER</span>
+    <span id="mc-state-SOC_DID" style="font-size:.55rem;color:#ffd54f;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:3px;">ACTIVO</span>
   </div>
   <div style="font-size:.54rem;color:var(--dim);margin-bottom:5px;">Historia, Antropología, Arqueología</div>
   <div style="height:4px;background:#1a2a3a;border-radius:3px;overflow:hidden;margin-bottom:5px;">
     <div style="width:65%;height:100%;background:#ffd54f;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.651 · 7 campos · <span id="mc-n-SOC_DID">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.651 · 13 campos · <span id="mc-n-SOC_DID">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=historical+method+scientific+demarcation+historiography&sort=Relevance" target="_blank" style="color:#ff980088;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/historical%20method%20scientific%20demarcation%20h" target="_blank" style="color:#ff980088;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -572,7 +628,7 @@ header { display:flex; justify-content:space-between; align-items:center;
     <div style="width:0%;height:100%;background:#ff3d5a;border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE=0.000 · 0 campos · <span id="mc-n-ARTE">0 papers SS</span></span>
+    <span>p_cierre LUM-PE=0.000 · 0 campos · <span id="mc-n-ARTE">4 curados</span></span>
     <span>
       <a href="https://www.semanticscholar.org/search?q=aesthetic+closure+art+theory+pictorial+materialist&sort=Relevance" target="_blank" style="color:#f48fb188;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="https://philpapers.org/s/aesthetic%20closure%20art%20theory%20pictorial%20m" target="_blank" style="color:#f48fb188;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -596,7 +652,7 @@ header { display:flex; justify-content:space-between; align-items:center;
     </div>
   </div>
   <div id="minerva-historial-panel">
-<div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 17:04 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 16:31 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:30 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:20 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:10 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:06 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:57 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:55 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:41 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:37 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:34 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:25 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><button id="btn-historial-mas" onclick="toggleHistorial()" style="background:none;border:1px solid var(--border);color:var(--dim);font-size:.6rem;padding:4px 12px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;margin-top:4px;">▼ Ver 9 más (12 total)</button>
+<div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-04-01 04:01 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ff3d5a">○</span></span><span title="NAT · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ff3d5a">○</span></span><span title="SOC_IV · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ff3d5a">○</span></span><span title="SOC_DID · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ff3d5a">○</span></span><span title="TEC · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ff3d5a">○</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 17:04 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry"  style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 16:31 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:30 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:20 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:10 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 08:06 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:57 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:55 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:41 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:37 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:34 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><div class="hist-entry" style="display:none;" style="padding:8px 10px;margin-bottom:6px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.18);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:.58rem;color:var(--dim);">2026-03-28 07:25 UTC</span><span style="font-size:.55rem;color:var(--muted);">🔬 búsqueda completa · 0 papers</span></div><div><span title="FORM · p=0.7034 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00e5ff44;background:#00e5ff11;color:#00e5ff;font-size:.55rem;margin:2px;">FORM <span style="color:#ffd54f">◑</span></span><span title="NAT · p=0.7212 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #00ff8844;background:#00ff8811;color:#00ff88;font-size:.55rem;margin:2px;">NAT <span style="color:#ffd54f">◑</span></span><span title="SOC_IV · p=0.6894 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ffd54f44;background:#ffd54f11;color:#ffd54f;font-size:.55rem;margin:2px;">SOC_IV <span style="color:#ffd54f">◑</span></span><span title="SOC_DID · p=0.6515 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #ff980044;background:#ff980011;color:#ff9800;font-size:.55rem;margin:2px;">SOC_DID <span style="color:#ffd54f">◑</span></span><span title="TEC · p=0.7394 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #b39ddb44;background:#b39ddb11;color:#b39ddb;font-size:.55rem;margin:2px;">TEC <span style="color:#ffd54f">◑</span></span><span title="ARTE · p=0 · 0 papers" style="display:inline-block;padding:2px 6px;border-radius:3px;border:1px solid #f48fb144;background:#f48fb111;color:#f48fb1;font-size:.55rem;margin:2px;">ARTE <span style="color:#ff3d5a">○</span></span></div></div><button id="btn-historial-mas" onclick="toggleHistorial()" style="background:none;border:1px solid var(--border);color:var(--dim);font-size:.6rem;padding:4px 12px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;margin-top:4px;">▼ Ver 10 más (13 total)</button>
 </div>
 <script>
 function toggleHistorial() {
@@ -611,7 +667,7 @@ function toggleHistorial() {
   });
   if (!anyHidden) {
     entries.forEach(function(el, i) { if (i >= 3) el.style.display = 'none'; });
-    if (btn) btn.textContent = '▼ Ver 9 más (12 total)';
+    if (btn) btn.textContent = '▼ Ver 10 más (13 total)';
   } else {
     if (btn) btn.textContent = '▲ Mostrar menos';
   }
@@ -1359,18 +1415,16 @@ function toggleHistorial() {
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
         <div style="color:var(--green);font-weight:bold;font-size:.68rem;">① Homeostasis</div>
         <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
-          ECE ≤ 0.05 en algún ciclo de la última ventana de 5 runs
-          <b>Y</b> Brier mejoró al menos una vez.<br>
-          <span style="color:var(--dim);">→ Mantener el error dentro de rango sobre el tiempo,
+          ECE_final ≤ 0.05 <b>Y</b> dBrier ≤ 0 (Brier_run ≤ Brier_run−1).<br>
+          <span style="color:var(--dim);">→ Calibración sostenida en el run completo —
           como la temperatura corporal biológica.</span>
         </div>
       </div>
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
         <div style="color:var(--green);font-weight:bold;font-size:.68rem;">② Reproducción con variación</div>
         <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
-          El sistema detecta δ_hist &gt; 0.4 (mejora acumulada) y lanza
-          instancias hijas vía distribución de Poisson.<br>
-          <span style="color:var(--dim);">→ Análogo digital de generar descendencia con mutación.</span>
+          ECE≤0.05 <b>Y</b> Brier mejora este ciclo <b>Y</b> Poisson (p≈9.5% si ECE≤0.05).<br>
+          <span style="color:var(--dim);">→ Trigger ligado a mejora real de calibración — no a métrica de rango interno.</span>
         </div>
       </div>
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
@@ -1431,7 +1485,7 @@ function toggleHistorial() {
           <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">spawns</td>
           <td style="padding:5px 6px;color:var(--muted);">Instancias derivadas generadas (reproducción)</td>
           <td style="padding:5px 6px;color:var(--green);">&gt; 0</td>
-          <td style="padding:5px 6px;color:var(--dim);">Permanece en 0 tras muchos runs con δ_hist alto</td>
+          <td style="padding:5px 6px;color:var(--dim);">ECE≤0.05 ∧ Brier↓ ciclo ∧ p_spawn≈9.5%</td>
         </tr>
       </tbody>
     </table>
@@ -1723,11 +1777,11 @@ Chart.defaults.borderColor = '#1a2a3a';
 Chart.defaults.font.family = "'Courier New',monospace";
 Chart.defaults.font.size = 10;
 
-const LABELS = ["1741", "1742", "1743", "1744", "1745", "1746", "1747", "1748", "1749", "1750", "1751", "1752", "1753", "1754", "1755", "1756", "1757", "1758", "1759", "1760", "1761", "1762", "1763", "1764", "1765", "1766", "1767", "1768", "1769", "1770", "1771", "1772", "1773", "1774", "1775", "1776", "1777", "1778", "1779", "1780", "1781", "1782", "1783", "1784", "1785", "1786", "1787", "1788", "1789", "1790", "1791", "1792", "1793", "1794", "1795", "1796", "1797", "1798", "1799", "1800", "1801", "1802", "1803", "1804", "1805", "1806", "1807", "1808", "1809", "1810", "1811", "1812", "1813", "1814", "1815", "1816", "1817", "1818", "1819", "1820", "1821", "1822", "1823", "1824", "1825", "1826", "1827", "1828", "1829", "1830", "1831", "1832", "1833", "1834", "1835", "1836", "1837", "1838", "1839", "1840", "1841", "1842", "1843", "1844", "1845", "1846", "1847", "1848", "1849", "1850", "1851", "1852", "1853", "1854", "1855", "1856", "1857", "1858", "1859", "1860", "1861", "1862", "1863", "1864", "1865", "1866", "1867", "1868", "1869", "1870", "1871", "1872", "1873", "1874", "1875", "1876", "1877", "1878", "1879", "1880", "1881", "1882", "1883", "1884", "1885", "1886", "1887", "1888", "1889", "1890", "1891", "1892", "1893", "1894", "1895", "1896", "1897", "1898", "1899", "1900", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1909", "1910", "1911", "1912", "1913", "1914", "1915", "1916", "1917", "1918", "1919", "1920", "1921", "1922", "1923", "1924", "1925", "1926", "1927", "1928", "1929", "1930", "1931", "1932", "1933", "1934", "1935", "1936", "1937", "1938", "1939", "1940"];
-const ECE    = [0.00808, 0.00808, 0.00808, 0.00808, 0.00013, 0.00013, 0.00012, 0.00012, 0.00012, 0.00012, 0.0002, 0.00026, 0.00032, 0.00037, 0.00041, 0.00045, 0.00048, 0.00051, 0.00054, 0.00056, 0.00058, 0.0006, 0.00062, 0.00063, 0.00065, 0.00066, 0.00067, 0.00068, 0.0007, 0.00071, 0.00072, 0.00072, 0.00073, 0.00074, 0.00075, 0.00075, 0.00076, 0.00077, 0.00077, 0.00078, 0.00078, 0.00079, 0.00079, 0.0008, 0.0008, 0.00081, 0.00081, 0.00082, 0.00082, 0.00082, 0.00083, 0.00083, 0.00083, 0.00084, 0.00084, 0.00084, 0.00085, 0.00085, 0.00085, 0.00085, 0.00086, 0.00086, 0.00086, 0.00086, 0.00086, 0.00087, 0.00087, 0.00087, 0.00087, 0.00087, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00091, 0.00146, 0.00144, 0.00143, 0.00144, 0.00142, 0.00141, 0.00137, 0.00134, 0.00131, 0.00129, 0.00127, 0.00125, 0.00124, 0.00123, 0.00121, 0.0012, 0.00119, 0.00118, 0.00118, 0.00117, 0.00116, 0.00116, 0.00115, 0.00115, 0.00114, 0.00114, 0.00113, 0.00113, 0.00112, 0.00112, 0.00112, 0.00111, 0.00111, 0.00111, 0.0011, 0.0011, 0.0011, 0.0011, 0.00109, 0.00109, 0.00109, 0.00109, 0.00109, 0.00108, 0.00108, 0.00108, 0.00108, 0.00108, 0.00108, 0.00108, 0.00107, 0.00107, 0.00107, 0.00107, 0.00107, 0.00107, 0.00107, 0.00107, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00106, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00105, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104, 0.00104];
-const KAPPA  = [0.476, 0.4674, 0.9612, 0.9525, 0.9017, 0.5211, 0.4802, 0.5763, 0.6314, 0.6156, 0.2178, 0.5121, 0.5636, 0.587, 0.6004, 0.6235, 0.6444, 0.6618, 0.6765, 0.6892, 0.7073, 0.7236, 0.7381, 0.7507, 0.7608, 0.7673, 0.7649, 0.7355, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4757, 0.4602, 0.9474, 0.4764, 0.4714, 0.5663, 0.545, 0.5279, 0.4854, 0.5497, 0.6345, 0.7341, 0.7743, 0.7959, 0.8094, 0.8187, 0.8255, 0.8308, 0.8351, 0.8386, 0.8292, 0.8314, 0.8367, 0.8618, 0.8647, 0.8646, 0.8788, 0.8163, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758];
-const LSERIE = [0.0, 0.0, 0.0, 0.1161, 0.0, 0.0, 0.0, 0.0, 0.0084, 0.0094, 0.0278, 0.0276, 0.0325, 0.037, 0.056, 0.0492, 0.0528, 0.0558, 0.0601, 0.0712, 0.0792, 0.0687, 0.071, 0.1095, 0.08, 0.0768, 0.0782, 0.0788, 0.0818, 0.0834, 0.0843, 0.0844, 0.0869, 0.0873, 0.0999, 0.0907, 0.0906, 0.0939, 0.0925, 0.0929, 0.1432, 0.1058, 0.1117, 0.0991, 0.0993, 0.1197, 0.1021, 0.1004, 0.1023, 0.1019, 0.1182, 0.1149, 0.1073, 0.7843, 0.7458, 0.735, 0.8275, 0.7441, 0.8148, 0.6994, 0.7997, 0.7032, 0.6877, 0.7875, 0.7372, 0.6582, 0.7518, 0.6357, 0.5892, 0.7497, 0.8924, 0.6056, 0.5913, 0.601, 0.8914, 0.6955, 0.5978, 0.579, 0.5676, 0.5641, 1.0, 0.584, 0.6513, 0.4061, 0.3914, 0.3878, 0.4632, 0.3874, 0.5782, 0.3617, 0.531, 0.4688, 0.4148, 0.3729, 0.3566, 0.352, 0.4506, 0.3563, 0.685, 0.3633, 0.0, 0.0, 0.0, 0.7476, 1.0, 0.5899, 0.5587, 0.5495, 0.5386, 0.5472, 0.5548, 0.529, 0.5054, 0.5216, 0.4802, 0.4693, 0.462, 0.4512, 0.5604, 0.5192, 0.5626, 0.5149, 0.4487, 0.4264, 0.4229, 0.4127, 0.4373, 0.414, 0.4108, 0.4055, 0.4103, 0.4153, 0.4044, 0.3991, 0.5908, 0.3963, 0.3982, 0.417, 0.3931, 0.4448, 0.4249, 0.3944, 0.5586, 0.4542, 0.4307, 0.3913, 0.3931, 0.3904, 0.3977, 0.7287, 0.6689, 0.4283, 0.3769, 0.0151, 0.0518, 0.0199, 0.1236, 0.1167, 0.198, 0.2432, 0.311, 0.0698, 0.0408, 0.0479, 0.046, 0.1435, 0.4712, 0.0634, 0.0459, 0.279, 0.1488, 0.0796, 0.0443, 0.0564, 0.3506, 0.1417, 0.0636, 0.0714, 0.0521, 0.0689, 0.5845, 0.2448, 0.5777, 0.132, 0.1039, 0.1096, 0.1898, 0.1865, 0.1201, 0.1191, 0.4567, 0.2369, 0.254, 0.1539, 0.1259, 0.1296, 0.2348, 0.5177, 0.3212, 0.2027];
-const SSERIE = [0.8181, 0.8657, 0.9085, 0.9471, 0.9721, 0.9951, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9444, 0.8876, 0.8307, 0.7825, 0.7399, 0.6959, 0.6615, 0.6253, 0.5981, 0.568, 0.5461, 0.5266, 0.5022, 0.4827, 0.4685, 0.4516, 0.4409, 0.4315, 0.4176, 0.4003, 0.3953, 0.3901, 0.3851, 0.3761, 0.3742, 0.3755, 0.3767, 0.3777, 0.3785, 0.354, 0.3488, 0.3439, 0.3482, 0.3526, 0.3567, 0.3571, 0.3602, 0.3559, 0.358, 0.3526, 0.3498, 0.3491, 0.3499, 0.3508, 0.3518, 0.3493, 0.3499, 0.3413, 0.3431, 0.4386, 0.5247, 0.6021, 0.6718, 0.6345, 0.6257, 0.6197, 0.6147, 0.611, 0.6071, 0.6031, 0.6011, 0.6007, 0.5994, 0.6007, 0.6025, 0.6046, 0.6072, 0.6029, 0.6015, 0.5735, 0.5521, 0.5381, 0.5273, 0.5179, 0.5102, 0.5013, 0.4952, 0.49, 0.4857, 0.4814, 0.4772, 0.4742, 0.472, 0.4548, 0.4548, 0.4546, 0.453, 0.4535, 0.4497, 0.4479, 0.4487, 0.4363, 0.4335, 0.4328, 0.4353, 0.4375, 0.4396, 0.441, 0.4158, 0.4042, 0.4118, 0.4198, 0.428, 0.4298, 0.4322, 0.4316, 0.4312, 0.4287, 0.4252, 0.4203, 0.4223, 0.4249, 0.4271, 0.4291, 0.4283, 0.4187, 0.421, 0.4236, 0.4197, 0.4197, 0.4215, 0.4241, 0.4261, 0.42, 0.4201, 0.4223, 0.4241, 0.4263, 0.4277, 0.4151, 0.413, 0.402, 0.4042, 0.4067, 0.4089, 0.4086, 0.4085, 0.4102, 0.4117, 0.4039, 0.4029, 0.4015, 0.403, 0.4051, 0.4068, 0.4056, 0.3965, 0.3936, 0.3949];
+const LABELS = ["5923", "5924", "5925", "5926", "5927", "5928", "5929", "5930", "5931", "5932", "5933", "5934", "5935", "5936", "5937", "5938", "5939", "5940", "5941", "5942", "5943", "5944", "5945", "5946", "5947", "5948", "5949", "5950", "5951", "5952", "5953", "5954", "5955", "5956", "5957", "5958", "5959", "5960", "5961", "5962", "5963", "5964", "5965", "5966", "5967", "5968", "5969", "5970", "5971", "5972", "5973", "5974", "5975", "5976", "5977", "5978", "5979", "5980", "5981", "5982", "5983", "5984", "5985", "5986", "5987", "5988", "5989", "5990", "5991", "5992", "5993", "5994", "5995", "5996", "5997", "5998", "5999", "6000", "6001", "6002", "6003", "6004", "6005", "6006", "6007", "6008", "6009", "6010", "6011", "6012", "6013", "6014", "6015", "6016", "6017", "6018", "6019", "6020", "6021", "6022", "6023", "6024", "6025", "6026", "6027", "6028", "6029", "6030", "6031", "6032", "6033", "6034", "6035", "6036", "6037", "6038", "6039", "6040", "6041", "6042", "6043", "6044", "6045", "6046", "6047", "6048", "6049", "6050", "6051", "6052", "6053", "6054", "6055", "6056", "6057", "6058", "6059", "6060", "6061", "6062", "6063", "6064", "6065", "6066", "6067", "6068", "6069", "6070", "6071", "6072", "6073", "6074", "6075", "6076", "6077", "6078", "6079", "6080", "6081", "6082", "6083", "6084", "6085", "6086", "6087", "6088", "6089", "6090", "6091", "6092", "6093", "6094", "6095", "6096", "6097", "6098", "6099", "6100", "6101", "6102", "6103", "6104", "6105", "6106", "6107", "6108", "6109", "6110", "6111", "6112", "6113", "6114", "6115", "6116", "6117", "6118", "6119", "6120", "6121", "6122"];
+const ECE    = [0.001, 0.001, 0.001, 0.001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9e-05, 0.00017, 0.00023, 0.00029, 0.00033, 0.00038, 0.00041, 0.00044, 0.00047, 0.0005, 0.00052, 0.00055, 0.00057, 0.00058, 0.0006, 0.00062, 0.00063, 0.00064, 0.00066, 0.00067, 0.00068, 0.00069, 0.0007, 0.00071, 0.00071, 0.00072, 0.00073, 0.00074, 0.00074, 0.00075, 0.00076, 0.00076, 0.00077, 0.00077, 0.00078, 0.00078, 0.00079, 0.00079, 0.0008, 0.0008, 0.0008, 0.00081, 0.00081, 0.00081, 0.00082, 0.00082, 0.00082, 0.00083, 0.00083, 0.00083, 0.00084, 0.00084, 0.00084, 0.00084, 0.00085, 0.00085, 0.00085, 0.00085, 0.00086, 0.00086, 0.00086, 0.00086, 0.00086, 0.00086, 0.00087, 0.00087, 0.00087, 0.00087, 0.00087, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 0.0001, 0.00017, 0.00023, 0.00029, 0.00034, 0.00038, 0.00041, 0.00045, 0.00048, 0.0005, 0.00053, 0.00055, 0.00057, 0.00059, 0.0006, 0.00062, 0.00063, 0.00064, 0.00066, 0.00067, 0.00068, 0.00069, 0.0007, 0.00071, 0.00072, 0.00072, 0.00073, 0.00074, 0.00074, 0.00075, 0.00076, 0.00076, 0.00077, 0.00077, 0.00078, 0.00078, 0.00079, 0.00079, 0.0008, 0.0008, 0.0008, 0.00081, 0.00081, 0.00082, 0.00082, 0.00082, 0.00083, 0.00083, 0.00083, 0.00083, 0.00084, 0.00084, 0.00084, 0.00084, 0.00085, 0.00085, 0.00085, 0.00085, 0.00086, 0.00086, 0.00086, 0.00086, 0.00086, 0.00087, 0.00087, 0.00087, 0.00087, 0.00087, 0.00087, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00088, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.00089, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009, 0.0009];
+const KAPPA  = [0.476, 0.476, 0.476, 0.476, 0.476, 0.476, 0.4759, 0.4759, 0.4759, 0.4759, 0.2198, 0.5112, 0.5631, 0.5866, 0.6001, 0.6088, 0.615, 0.6195, 0.623, 0.6258, 0.6539, 0.6786, 0.7004, 0.7192, 0.7346, 0.7451, 0.7458, 0.7194, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.476, 0.4694, 0.9703, 0.5742, 0.4867, 0.486, 0.477, 0.6348, 0.6802, 0.558, 0.4221, 0.5111, 0.563, 0.5865, 0.6, 0.6088, 0.6149, 0.6195, 0.623, 0.6289, 0.6564, 0.6807, 0.7021, 0.7206, 0.7358, 0.746, 0.7465, 0.7199, 1.0, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758, 0.4758];
+const LSERIE = [0.0, 1.0, 0.0, 0.2469, 0.4091, 0.0, 0.0, 0.593, 0.7131, 1.0, 0.7088, 1.0, 0.4285, 0.3475, 0.4144, 0.4363, 0.4658, 0.5112, 0.5864, 0.7861, 0.6271, 0.9979, 1.0, 0.8483, 0.5255, 0.489, 0.5054, 0.5118, 0.5321, 0.5855, 0.6774, 0.5959, 0.6041, 0.6736, 0.6218, 0.6297, 0.6345, 0.6463, 0.6924, 0.6273, 1.0, 0.6059, 0.7467, 0.5917, 0.7882, 0.6085, 0.595, 0.5925, 0.6331, 0.6949, 0.874, 0.7481, 0.8482, 0.6464, 0.7448, 0.743, 0.74, 0.6912, 0.9805, 0.9284, 1.0, 0.6219, 0.4766, 0.4143, 0.4022, 0.4343, 0.5221, 0.3345, 0.4799, 0.3526, 0.3643, 0.3475, 0.3492, 0.4549, 0.7621, 0.3569, 0.3297, 0.4364, 0.4083, 0.414, 1.0, 0.3866, 0.8104, 0.4981, 0.4025, 0.2317, 0.2444, 0.3904, 0.2457, 0.3597, 0.6599, 0.3915, 0.3842, 0.3332, 0.4079, 0.4078, 0.6223, 0.416, 0.803, 0.2404, 0.0, 0.0, 0.0, 0.0142, 1.0, 0.0, 0.265, 0.0, 0.0, 0.0406, 0.2356, 0.0, 0.0618, 0.0316, 0.0534, 0.1344, 0.0874, 0.0993, 0.1123, 0.1214, 0.1687, 0.1474, 0.1476, 0.216, 0.257, 0.1726, 0.1789, 0.1803, 0.3326, 0.1958, 0.198, 0.2032, 0.2059, 0.2084, 0.2112, 0.2105, 0.2189, 0.2257, 0.2228, 0.2402, 0.3633, 0.2607, 0.3289, 0.2516, 0.2481, 0.2677, 0.2531, 0.2497, 0.2536, 0.252, 0.289, 0.2663, 0.2681, 0.3077, 0.7415, 0.7336, 0.7896, 0.7488, 0.8296, 0.7649, 0.9358, 0.7527, 0.7653, 0.7916, 0.723, 0.7163, 0.8189, 0.7148, 1.0, 0.4019, 0.4425, 0.3986, 0.5037, 0.3988, 0.389, 0.3202, 0.3264, 0.3356, 0.3007, 0.314, 0.4365, 0.3324, 0.4227, 0.3942, 0.2929, 0.2919, 0.2748, 0.338, 0.2407, 0.2393, 0.3102, 0.2506, 0.2917, 0.3823, 0.4475, 0.4217, 0.4216, 0.2953, 0.3798, 0.2361];
+const SSERIE = [1.0, 1.0, 1.0, 1.0, 0.9344, 0.9135, 0.911, 0.8738, 0.8333, 0.78, 0.7504, 0.7053, 0.7031, 0.7064, 0.705, 0.7022, 0.6978, 0.6907, 0.6793, 0.6557, 0.6367, 0.603, 0.5589, 0.5329, 0.5353, 0.5403, 0.5435, 0.5459, 0.5465, 0.5427, 0.532, 0.5288, 0.5253, 0.5167, 0.513, 0.509, 0.5051, 0.5006, 0.4929, 0.4912, 0.4477, 0.4448, 0.4302, 0.4312, 0.4181, 0.422, 0.4266, 0.4311, 0.4315, 0.4265, 0.4132, 0.4115, 0.4018, 0.4096, 0.4086, 0.4078, 0.4021, 0.3999, 0.3808, 0.3726, 0.3535, 0.3615, 0.3785, 0.3958, 0.4114, 0.4225, 0.4261, 0.4376, 0.4399, 0.4488, 0.4563, 0.4639, 0.4706, 0.471, 0.4548, 0.4614, 0.4684, 0.4684, 0.4678, 0.4666, 0.4326, 0.4341, 0.4207, 0.4235, 0.4304, 0.4447, 0.457, 0.4611, 0.4717, 0.4737, 0.4622, 0.4638, 0.4655, 0.4692, 0.4693, 0.4694, 0.46, 0.459, 0.4431, 0.4512, 0.5359, 0.6123, 0.681, 0.7428, 0.6985, 0.7327, 0.7439, 0.7759, 0.806, 0.83, 0.8364, 0.8613, 0.8789, 0.8972, 0.9118, 0.9187, 0.9285, 0.9365, 0.9426, 0.9474, 0.9452, 0.9451, 0.9449, 0.939, 0.9301, 0.9293, 0.9281, 0.9269, 0.9128, 0.9118, 0.9107, 0.9092, 0.9077, 0.9061, 0.9045, 0.903, 0.901, 0.8986, 0.8967, 0.8935, 0.8341, 0.7968, 0.7525, 0.7248, 0.7004, 0.6754, 0.6552, 0.6375, 0.621, 0.6064, 0.5829, 0.5655, 0.5496, 0.5287, 0.5157, 0.5045, 0.491, 0.4813, 0.4677, 0.4594, 0.4422, 0.4364, 0.4305, 0.423, 0.4183, 0.4143, 0.4056, 0.4018, 0.354, 0.3523, 0.348, 0.3471, 0.3409, 0.3419, 0.3434, 0.3483, 0.3522, 0.3536, 0.3569, 0.3588, 0.3529, 0.3533, 0.3483, 0.3452, 0.3481, 0.3499, 0.352, 0.3504, 0.3522, 0.353, 0.35, 0.3504, 0.3487, 0.3438, 0.3362, 0.3325, 0.3292, 0.3322, 0.3307, 0.3347];
 
 function mkLine(id, data, color, ref) {
   const ctx = document.getElementById(id).getContext('2d');
@@ -2243,7 +2297,7 @@ async function buscarClasicos() {
 
 // ── AUTO-RECARGA via sentinel lum_build_vitae.txt (funciona con file://) ─────
 // Python escribe ese archivo cada vez que regenera el HTML (solo ~20 bytes)
-const _BUILD_TS = '2026-03-28 16:08:28';
+const _BUILD_TS = '2026-04-03 13:30:23';
 (function() {
   let _arKnown = _BUILD_TS.trim(), _arNotif = null;
   // Sentinel PROPIO del dashboard (distinto al del mapa para evitar loops)

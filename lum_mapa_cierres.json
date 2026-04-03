@@ -1,10 +1,8 @@
 {
   "resumen": {
-    "total_papers": 24,
-    "timestamp": "2026-03-26T03:22:17.949112",
-    "ultima_exploracion": "2026-03-25",
-    "n_exploraciones": 1,
-    "resumen_global": "FORM y NAT muestran cierre operatorio consolidado. TEC exhibe proto-cierre en verificación formal e IA. SOC_IV y SOC_DID tienen cierre intersubjetivo parcial bajo tensión metodológica. ARTE presenta el cierre más débil — proto-cierre simbólico-operatorio según Bueno."
+    "total_papers": 0,
+    "timestamp": "2026-04-01T04:01:20.166705",
+    "total_papers_curados": 24
   },
   "mapa": {
     "FORM": {
@@ -24,24 +22,16 @@
       "lum_pe": {
         "n_campos": 13,
         "p_media": 0.7034,
-        "ipu_media": 0.6851,
-        "state_lum": "AMBER",
-        "state_dist": {
-          "AMBER": 12,
-          "GREEN": 1
-        }
+        "ipu_media": 0.5979,
+        "state_lum": "ACTIVO",
+        "state_dist": {}
       },
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0.7034,
-        "semaforo": "AMBER",
-        "hallazgo": "Las ciencias formales exhiben el cierre categorial más robusto: la categoricidad en potencia (Baldwin) garantiza completitud y determina la identidad estructural de los modelos. Evidencia convergente entre teoría de modelos y práctica matemática confirma un cierre operatorio-axiomático plenamente consolidado.",
-        "tendencia": "EXPANSIÓN — activa producción en teoría de modelos y lógica categórica (2023-2024)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -80,6 +70,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.7034,
+        "semaforo": "AMBER",
+        "hallazgo": "Las ciencias formales exhiben el cierre categorial más robusto: la categoricidad en potencia (Baldwin) garantiza completitud y determina la identidad estructural de los modelos. Evidencia convergente entre teoría de modelos y práctica matemática confirma un cierre operatorio-axiomático plenamente consolidado.",
+        "tendencia": "EXPANSIÓN — activa producción en teoría de modelos y lógica categórica (2023-2024)"
       }
     },
     "NAT": {
@@ -98,25 +94,18 @@
         "bueno_ref": "Ciencias β (beta) — cierre por leyes causales"
       },
       "lum_pe": {
-        "n_campos": 10,
+        "n_campos": 13,
         "p_media": 0.7212,
-        "ipu_media": 0.7098,
-        "state_lum": "AMBER",
-        "state_dist": {
-          "AMBER": 10
-        }
+        "ipu_media": 0.613,
+        "state_lum": "ACTIVO",
+        "state_dist": {}
       },
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0.7212,
-        "semaforo": "AMBER",
-        "hallazgo": "Las ciencias naturales exhiben cierre operatorio multinivel: cierre causal en física (leyes invariantes), cierre organizacional en biología (autopoiesis/clausura operacional de Maturana y Varela, Jaeger). La evidencia muestra cierre bien establecido pero con tensión entre niveles de organización (físico/biológico/cognitivo).",
-        "tendencia": "ESTABLE — consolidado en biología teórica, en expansión en filosofía de la física (2022-2024)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -155,6 +144,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.7212,
+        "semaforo": "AMBER",
+        "hallazgo": "Las ciencias naturales exhiben cierre operatorio multinivel: cierre causal en física (leyes invariantes), cierre organizacional en biología (autopoiesis/clausura operacional de Maturana y Varela, Jaeger). La evidencia muestra cierre bien establecido pero con tensión entre niveles de organización (físico/biológico/cognitivo).",
+        "tendencia": "ESTABLE — consolidado en biología teórica, en expansión en filosofía de la física (2022-2024)"
       }
     },
     "SOC_IV": {
@@ -172,25 +167,18 @@
         "bueno_ref": "Ciencias γ (gamma) interpretativas — cierre parcial"
       },
       "lum_pe": {
-        "n_campos": 9,
+        "n_campos": 13,
         "p_media": 0.6894,
-        "ipu_media": 0.6343,
-        "state_lum": "AMBER",
-        "state_dist": {
-          "AMBER": 9
-        }
+        "ipu_media": 0.586,
+        "state_lum": "ACTIVO",
+        "state_dist": {}
       },
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0.6894,
-        "semaforo": "AMBER",
-        "hallazgo": "Las ciencias sociales interpretativas exhiben cierre operatorio intersubjetivo: se cierra a través de consenso sobre constructos, marcos de validación y comunidades epistémicas. No es cierre axiomático (como FORM) ni causal-experimental (como NAT), sino de tipo γ: operaciones sobre operaciones humanas. La replicabilidad parcial y las crisis metodológicas indican un cierre en consolidación.",
-        "tendencia": "TENSIÓN — crisis de replicabilidad y disputas epistemológicas activas (2023-2025)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -229,6 +217,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.6894,
+        "semaforo": "AMBER",
+        "hallazgo": "Las ciencias sociales interpretativas exhiben cierre operatorio intersubjetivo: se cierra a través de consenso sobre constructos, marcos de validación y comunidades epistémicas. No es cierre axiomático (como FORM) ni causal-experimental (como NAT), sino de tipo γ: operaciones sobre operaciones humanas. La replicabilidad parcial y las crisis metodológicas indican un cierre en consolidación.",
+        "tendencia": "TENSIÓN — crisis de replicabilidad y disputas epistemológicas activas (2023-2025)"
       }
     },
     "SOC_DID": {
@@ -246,25 +240,18 @@
         "bueno_ref": "Ciencias γ (gamma) diacrónicas — proto-cierre"
       },
       "lum_pe": {
-        "n_campos": 7,
+        "n_campos": 13,
         "p_media": 0.6515,
-        "ipu_media": 0.6465,
-        "state_lum": "AMBER",
-        "state_dist": {
-          "AMBER": 7
-        }
+        "ipu_media": 0.5538,
+        "state_lum": "ACTIVO",
+        "state_dist": {}
       },
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0.6515,
-        "semaforo": "AMBER",
-        "hallazgo": "Las ciencias diacrónicas (historia, arqueología, antropología) exhiben un cierre específico por convergencia de trazas: no replican experimentos sino que acumulan evidencias de naturaleza diferente que convergen en el mismo referente pasado. Este cierre es más débil que el de las ciencias α y β, pero genuinamente operatorio a través de protocolos de datación, análisis isotópico y crítica de fuentes.",
-        "tendencia": "TRANSFORMACIÓN — creciente instrumentalización científica (genómica, IA) de las ciencias históricas (2022-2024)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -303,6 +290,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.6515,
+        "semaforo": "AMBER",
+        "hallazgo": "Las ciencias diacrónicas (historia, arqueología, antropología) exhiben un cierre específico por convergencia de trazas: no replican experimentos sino que acumulan evidencias de naturaleza diferente que convergen en el mismo referente pasado. Este cierre es más débil que el de las ciencias α y β, pero genuinamente operatorio a través de protocolos de datación, análisis isotópico y crítica de fuentes.",
+        "tendencia": "TRANSFORMACIÓN — creciente instrumentalización científica (genómica, IA) de las ciencias históricas (2022-2024)"
       }
     },
     "TEC": {
@@ -320,26 +313,18 @@
         "bueno_ref": "Técnica — cierre operatorio-instrumental"
       },
       "lum_pe": {
-        "n_campos": 6,
+        "n_campos": 13,
         "p_media": 0.7394,
-        "ipu_media": 0.7279,
-        "state_lum": "AMBER",
-        "state_dist": {
-          "AMBER": 5,
-          "GREEN": 1
-        }
+        "ipu_media": 0.6285,
+        "state_lum": "ACTIVO",
+        "state_dist": {}
       },
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0.7394,
-        "semaforo": "AMBER",
-        "hallazgo": "La tecnología e IA muestran proto-cierre operatorio: la cibernética y la verificación formal son los subcampos con mayor evidencia de cierre (bucle cerrado, especificación-implementación). Sin embargo, la IA general y los sistemas complejos permanecen sin cierre categorial pleno — la demarcación es funcional, no axiomática.",
-        "tendencia": "EXPANSIÓN ACTIVA — crecimiento en IA formal y verificación (NeurIPS 2024, Springer 2025)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -378,6 +363,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.7394,
+        "semaforo": "AMBER",
+        "hallazgo": "La tecnología e IA muestran proto-cierre operatorio: la cibernética y la verificación formal son los subcampos con mayor evidencia de cierre (bucle cerrado, especificación-implementación). Sin embargo, la IA general y los sistemas complejos permanecen sin cierre categorial pleno — la demarcación es funcional, no axiomática.",
+        "tendencia": "EXPANSIÓN ACTIVA — crecimiento en IA formal y verificación (NeurIPS 2024, Springer 2025)"
       }
     },
     "ARTE": {
@@ -396,7 +387,7 @@
       },
       "lum_pe": {
         "n_campos": 0,
-        "p_media": 0,
+        "p_media": 0.0,
         "ipu_media": 0,
         "state_lum": "N/A",
         "state_dist": {}
@@ -404,14 +395,9 @@
       "semanticscholar": {
         "n_papers": 0,
         "score_cierre": 0,
-        "papers_top": []
-      },
-      "resultado": {
-        "p_sintetico": 0,
-        "semaforo": "RED",
-        "hallazgo": "Las artes exhiben el cierre categorial menos consolidado de las disciplinas analizadas: no hay un sistema axiomático (FORM), ni leyes causales (NAT), ni operaciones intersubjetivas formalizadas (SOC_IV). Sin embargo, el marco de Bueno (materialismo filosófico) sí ofrece una estructura de cierre simbólico-operatorio: la obra como objeto material que cierra sobre las operaciones estéticas del sujeto contemplante. El score bajo refleja la ausencia de formalización operatoria, no la ausencia de rigor filosófico.",
-        "tendencia": "ACTIVO — renovación desde materialismo filosófico y ciencias cognitivas (2021-2024)",
-        "n_papers": 4
+        "papers_top": [],
+        "hallazgo_clave": "",
+        "tendencia": ""
       },
       "datos_bibliograficos": {
         "papers": [
@@ -450,6 +436,12 @@
         ],
         "n_papers": 4,
         "ultima_actualizacion": "2026-03-25"
+      },
+      "resultado": {
+        "p_sintetico": 0.0,
+        "semaforo": "RED",
+        "hallazgo": "Las artes exhiben el cierre categorial menos consolidado de las disciplinas analizadas: no hay un sistema axiomático (FORM), ni leyes causales (NAT), ni operaciones intersubjetivas formalizadas (SOC_IV). Sin embargo, el marco de Bueno (materialismo filosófico) sí ofrece una estructura de cierre simbólico-operatorio: la obra como objeto material que cierra sobre las operaciones estéticas del sujeto contemplante. El score bajo refleja la ausencia de formalización operatoria, no la ausencia de rigor filosófico.",
+        "tendencia": "ACTIVO — renovación desde materialismo filosófico y ciencias cognitivas (2021-2024)"
       }
     }
   }

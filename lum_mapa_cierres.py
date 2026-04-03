@@ -598,6 +598,12 @@ def calcular_mapa() -> dict:
         }
         resumen["total_papers"]  += n_papers
 
+    # Contar papers curados (datos_bibliograficos) — distintos de SS live
+    resumen["total_papers_curados"] = sum(
+        len(d.get("datos_bibliograficos", {}).get("papers", []))
+        for d in mapa.values()
+    )
+
     resultado_final = {"resumen": resumen, "mapa": mapa}
     OUT_JSON.write_text(json.dumps(resultado_final, ensure_ascii=False, indent=2))
     print(f"\n[OK] Mapa guardado → {OUT_JSON}")
@@ -1248,6 +1254,12 @@ def generar_html(data: dict):
     n_green = sum(1 for _,d in orden if d["resultado"]["semaforo"]=="GREEN")
     n_amber = sum(1 for _,d in orden if d["resultado"]["semaforo"]=="AMBER")
     n_red   = sum(1 for _,d in orden if d["resultado"]["semaforo"]=="RED")
+    # Papers curados: embebidos en datos_bibliograficos por MINERVA (distintos de SS live)
+    n_papers_curados = sum(
+        len(d.get("datos_bibliograficos", {}).get("papers", []))
+        for _, d in orden
+    )
+    n_papers_live = resumen.get("total_papers", 0)  # solo resultados SS de este run
 
     page = f"""<!DOCTYPE html>
 <html lang="es">
@@ -1318,7 +1330,8 @@ details > summary::-webkit-details-marker {{ display:none; }}
         <div><div class="stat-big">{n_green}</div><div class="stat-lbl">🟢 cierre real</div></div>
         <div><div class="stat-big">{n_amber}</div><div class="stat-lbl">🟡 proto-cierre</div></div>
         <div><div class="stat-big">{n_red}</div><div class="stat-lbl">🔴 sin cierre</div></div>
-        <div><div class="stat-big">{resumen.get('total_papers',0)}</div><div class="stat-lbl">papers</div></div>
+        <div><div class="stat-big">{n_papers_curados}</div><div class="stat-lbl">papers curados</div></div>
+        <div><div class="stat-big">{n_papers_live}</div><div class="stat-lbl">papers live (SS)</div></div>
         <div><div class="stat-big">45</div><div class="stat-lbl">campos LUM-PE</div></div>
       </div>
       <div style="font-size:.62rem;color:var(--dim);font-style:italic;line-height:1.6;">

@@ -305,26 +305,33 @@ def generar():
     ece_actual   = hist_ECE[-1]   if hist_ECE   else 1.0
     brier_actual = hist_Brier[-1] if hist_Brier else 1.0
     brier_prev   = hist_Brier[-2] if len(hist_Brier) >= 2 else brier_actual
-    spawns       = e.get("n_spawns_total") or 0
+    spawns_total = e.get("n_spawns_total") or 0
+    # Spawns del último run: contar entradas del ledger con spawn=True y run==n_run_actual
+    _n_run_actual = e.get("n_run") or 0
+    spawns_run   = sum(1 for r in ledger if r.get("run") == _n_run_actual and r.get("spawn"))
+    spawns       = spawns_total   # alias para compatibilidad con stat-cell (muestra total)
     # La clave en estado.json es "n_hashes" (el runner escribe ese nombre exacto)
     n_hashes     = int(e.get("n_hashes") or 0)
     n_run        = e.get("n_run") or 0
 
-    # Homeostasis: ventana de 5 ciclos — la calibración ECE oscila entre ciclos;
-    # basta con que el ECE haya estado ≤ 0.05 al menos una vez en los últimos 5
-    # ciclos Y que Brier haya mejorado al menos una vez en la misma ventana.
-    # (homeostasis biológica = mantener dentro de rango sobre el tiempo, no en
-    #  cada instante puntual)
+    # Ventana auxiliar — usada SOLO para tooltips de display, no para el veredicto.
     ece_ventana   = hist_ECE[-5:]   if len(hist_ECE)   >= 2 else hist_ECE
     brier_ventana = hist_Brier[-6:] if len(hist_Brier) >= 2 else hist_Brier
     ece_ok_ventana   = any(v <= 0.05 for v in ece_ventana)
     brier_ok_ventana = any(brier_ventana[i] <= brier_ventana[i-1]
                            for i in range(1, len(brier_ventana)))
-    cond1 = ece_ok_ventana and brier_ok_ventana
-    cond2 = spawns > 0
-    cond3 = n_hashes > 0
-    cond4 = n_run >= 1
-    n_vivo = sum([cond1, cond2, cond3, cond4])
+
+    # ── FUENTE CANÓNICA: condiciones del último run calculadas por el runner ──
+    # El runner es el único con semántica oficial (cond3 = ledger_escrito ∧ n_hashes>0).
+    # Fallback a cómputo local solo si el campo aún no existe (primera vez).
+    _uv    = e.get("ultimo_veredicto", {})
+    cond1  = _uv.get("cond1_homeostasis",  ece_ok_ventana and brier_ok_ventana)
+    cond2  = _uv.get("cond2_reproduccion", spawns > 0)
+    cond3  = _uv.get("cond3_trazabilidad", n_hashes > 0)
+    cond4  = _uv.get("cond4_autonomia",    n_run >= 1)
+    n_vivo         = _uv.get("n_condiciones",        sum([cond1, cond2, cond3, cond4]))
+    salud_op       = _uv.get("salud_operativa",      e.get("salud_operativa",      "INESTABLE"))
+    fertilidad_op  = _uv.get("fertilidad_operativa", e.get("fertilidad_operativa", False))
 
     kappa    = hist_kappa[-1]  if hist_kappa  else 0.0
     kappa_p  = hist_kappa[-2]  if len(hist_kappa)  >= 2 else kappa
@@ -336,19 +343,25 @@ def generar():
     ts       = e.get("timestamp_ultimo_run", "—")
     n_ciclos = e.get("n_ciclos_total", 0)
 
-    # ── MÁQUINA DE ESTADOS (4 niveles) ────────────────────────────────────────
-    if n_vivo >= 3:
+    # ── MÁQUINA DE ESTADOS (5 niveles) ────────────────────────────────────────
+    # [SEMÁNTICA-ESTRICTA] VIVO = 4/4 exclusivamente.
+    # 3/4 = EMERGENTE (no VIVO). No hay maquillaje de condiciones parciales.
+    if n_vivo == 4:
         estado       = "VIVO"
         glyph        = "🧬"
         estado_color = "#00ff88"
         anim_cls     = "anim-vivo"
-        estado_msg   = ("Plena actividad vital — todas las condiciones activas."
-                        if n_vivo == 4 else
-                        "Sistema vivo con actividad sostenida.")
-        estado_sub   = ("Aprendiendo, auditando papers y registrando en ledger."
-                        if n_vivo == 4 else
-                        "Aprendizaje y trazabilidad activos.")
+        estado_msg   = "Plena actividad vital — todas las condiciones activas."
+        estado_sub   = "Aprendiendo, auditando papers y registrando en ledger."
         panel_shadow = "0 0 40px rgba(0,255,136,.15)"
+    elif n_vivo == 3:
+        estado       = "EMERGENTE"
+        glyph        = "🌱"
+        estado_color = "#4fc3f7"
+        anim_cls     = "anim-emergente"
+        estado_msg   = "Sistema emergente — 3/4 condiciones activas."
+        estado_sub   = "Falta una condición para alcanzar vida plena."
+        panel_shadow = "0 0 30px rgba(79,195,247,.12)"
     elif n_vivo == 2:
         estado       = "EMERGENTE"
         glyph        = "🌱"
@@ -380,14 +393,22 @@ def generar():
         ciclo = r.get("ciclo", "?")
         dec   = r.get("decision", "?")
         ece   = r.get("ECE", 0)
-        icon  = "✓" if "PASS" in str(dec) or dec == "PSGC" else ("⚠" if dec == "PSNC" else "•")
+        icon  = ("✓" if ("PASS" in str(dec) or dec == "PSGC" or dec == "VERDE")
+                 else ("⬤" if "VERDE-CAUTO" in str(dec)
+                 else ("⚠" if dec == "PSNC" else "•")))
         actividades.append(f'{icon} Ciclo #{ciclo} · {dec} · ECE {ece:.5f}')
     if n_hashes > 0:
         actividades.append(f'💾 Ledger verificado · {n_hashes} hashes SHA-256 encadenados')
     if kappa > 0:
         actividades.append(f'🔬 κ_conf={kappa:.3f} · S_t={S_t:.3f} · memoria activa')
-    if spawns > 0:
-        actividades.append(f'🧬 {spawns} sub-proceso(s) generado(s) · reproducción activa')
+    # Feed de reproducción: distinguir run actual vs historial acumulado.
+    # Separar cond2_run (evento este run) de fertilidad_operativa (ventana multi-run).
+    if cond2 and spawns_run > 0:
+        actividades.append(f'🧬 {spawns_run} spawn(s) en este run · cond2 ✓ fértil y activo')
+    elif fertilidad_op and spawns_total > 0:
+        actividades.append(f'🧬 0 spawns este run · fertilidad ✓ (spawn reciente en ventana)')
+    elif spawns_total > 0:
+        actividades.append(f'○ {spawns_total} spawns históricos · sin reproducción reciente')
     actividades.append(f'📊 {n_run} runs ejecutados · {n_ciclos} ciclos vitales totales')
     actividades.append('⟳ Próximo ciclo: automático cada hora')
 
@@ -413,11 +434,18 @@ def generar():
 
     # ── CONDICIONES ───────────────────────────────────────────────────────────
     conds = [
-        ("Homeostasis",  "ECE≤0.05 en ventana 5 ciclos",  cond1,
-         f"Calibración estable en ventana reciente — ECE mín. últimos 5 ciclos: {min(ece_ventana):.5f}. "
-         f"Homeostasis = mantener ECE dentro de rango sobre el tiempo, no sólo en el ciclo actual (actual: {ece_actual:.5f})."),
-        ("Reproducción", "Sub-procesos generados (Poisson)", cond2,
-         "El sistema puede generar instancias derivadas — análogo biológico de reproducirse."),
+        ("Homeostasis",  "ECE_final≤0.05 ∧ dBrier≤ε",  cond1,
+         f"Criterio oficial (runner): ECE_final del run ≤ 0.05 Y dBrier ≤ 0. "
+         f"Tolerancia piso: si Brier_final < 1e-4 y Brier_prev < 1e-4 (ambos en suelo numérico), "
+         f"la comparación float es inestable — se trata como homeostasis mantenida. "
+         f"ECE actual: {ece_actual:.5f}. Veredicto canónico desde ultimo_veredicto: {'OK' if cond1 else 'NO OK'}."),
+        ("Reproducción (run actual)", "ECE≤0.05 ∧ Brier↓|piso ∧ Poisson", cond2,
+         "Evento real en ESTE run: ¿ocurrió al menos un spawn? "
+         "Criterio mixto absoluto/relativo — Régimen normal: spawn cuando Brier mejora ciclo a ciclo "
+         "(brier_v < brier_prev − 1e−6). Régimen piso: si Brier < 1e-4 en ciclo actual y anterior "
+         "Y ECE ≤ 0.025 (homeostasis profunda), la mejora adicional es matemáticamente imposible — "
+         "se considera condición reproductiva óptima. "
+         "Ver Fertilidad Operativa (debajo) para evaluación de ventana multi-run."),
         ("Trazabilidad", "Cadena SHA-256 activa",          cond3,
          "Cada ciclo deja huella digital inalterable — historial 100% verificable."),
         ("Autonomía",    "Loop autónomo ejecutado ≥1 vez", cond4,
@@ -435,8 +463,8 @@ def generar():
           <div class="cond-dot {dc}"></div>
           <div class="cond-label">
             <b>{name}</b>
-            <div style="font-size:.6rem;color:var(--muted);margin-top:1px;">{formula}</div>
-            <div style="font-size:.59rem;color:#2a6060;margin-top:2px;line-height:1.4;">{expl}</div>
+            <div style="font-size:.68rem;color:var(--muted);margin-top:2px;">{formula}</div>
+            <div style="font-size:.64rem;color:#2a6060;margin-top:3px;line-height:1.45;">{expl}</div>
           </div>
           <span class="cond-badge {bc}">{st}</span>
         </div>"""
@@ -479,7 +507,8 @@ def generar():
             p   = lum.get("p_media", 0.0)
             state = lum.get("state_lum", "?")
             n_c = lum.get("n_campos", 0)
-            ss_n = (d.get("semanticscholar") or {}).get("n_papers", 0)
+            ss_n      = (d.get("semanticscholar") or {}).get("n_papers", 0)
+            n_curados = (d.get("datos_bibliograficos") or {}).get("n_papers", 0)  # [SYNC-FIX] corpus curado
             pct = int(round(p * 100))
             bar_col = "#00ff88" if p >= 0.70 else ("#ffd54f" if p >= 0.40 else "#ff3d5a")
             state_label = state if state not in ("?", "N/A") else (
@@ -496,7 +525,7 @@ def generar():
     <div style="width:{pct}%;height:100%;background:{bar_col};border-radius:3px;"></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:var(--dim);">
-    <span>p_cierre LUM-PE={p:.3f} · {n_c} campos · <span id="mc-n-{key}">{ss_n} papers SS</span></span>
+    <span>p_cierre LUM-PE={p:.3f} · {n_c} campos · <span id="mc-n-{key}">{n_curados} curados{f" + {ss_n} SS" if ss_n > 0 else ""}</span></span>
     <span>
       <a href="{ss_url}" target="_blank" style="color:{color}88;text-decoration:none;margin-right:6px;" title="Buscar en Semantic Scholar">SS↗</a>
       <a href="{phi_url}" target="_blank" style="color:{color}88;text-decoration:none;" title="Buscar en PhilPapers">Phil↗</a>
@@ -821,6 +850,9 @@ function toggleHistorial() {{
     labels       = [str(r["ciclo"])             for r in ledger]
     decisions    = [r.get("decision","?")       for r in ledger]
     pct_psnc     = round(100 * decisions.count("PSNC") / max(len(decisions),1), 1)
+    # [DEEP-HOMEO] Porcentaje de ciclos en vigilancia calibrada (artefacto de convergencia)
+    pct_verde_cauto = round(100 * sum(1 for d in decisions if "VERDE-CAUTO" in str(d))
+                            / max(len(decisions), 1), 1)
 
     now_str       = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     reporte_esc   = html.escape(reporte)
@@ -836,9 +868,16 @@ function toggleHistorial() {{
     St_note    = ("memoria excelente" if S_t >= 0.8 else
                   ("memoria buena"    if S_t >= 0.5 else "memoria debilitada"))
     St_col2    = "#00ff88" if S_t >= 0.8 else ("#ffd54f" if S_t >= 0.5 else "#ff9800")
-    sp_note    = (f"{spawns} instancias derivadas generadas" if spawns > 0
-                  else "reproducción aún no activada")
-    sp_col2    = "#00ff88" if spawns > 0 else "#4a7090"
+    # sp_note distingue run actual vs acumulado para la stat-cell
+    if spawns_run > 0 and cond2:
+        sp_note = f"{spawns_run} en este run · {spawns_total} acumulados"
+        sp_col2 = "#00ff88"
+    elif spawns_total > 0:
+        sp_note = f"0 en este run · {spawns_total} históricos"
+        sp_col2 = "#4a7090"
+    else:
+        sp_note = "reproducción aún no activada"
+        sp_col2 = "#4a7090"
 
     page = f"""<!DOCTYPE html>
 <html lang="es">
@@ -865,10 +904,11 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 
 /* ── Grid ───────────────────────────────────── */
 .grid {{ display:grid; gap:14px; }}
-.row2  {{ grid-template-columns:1fr 1fr; }}
-.row3  {{ grid-template-columns:400px 1fr 1fr; }}
-.row4  {{ grid-template-columns:repeat(4,1fr); }}
-@media(max-width:900px) {{ .row2,.row3,.row4 {{ grid-template-columns:1fr; }} }}
+.row2     {{ grid-template-columns:1fr 1fr; }}
+.row3     {{ grid-template-columns:400px 1fr 1fr; }}
+.row4     {{ grid-template-columns:repeat(4,1fr); }}
+.row-tama {{ grid-template-columns:360px 1fr; }}
+@media(max-width:900px) {{ .row2,.row3,.row4,.row-tama {{ grid-template-columns:1fr; }} }}
 @media(max-width:700px) {{ .minerva-grid {{ grid-template-columns:1fr 1fr !important; }} }}
 @media(max-width:480px) {{ .minerva-grid {{ grid-template-columns:1fr !important; }} }}
 @media(max-width:700px) {{ #mtab-clasicos > div[style*="grid-template-columns:repeat(2"] {{ grid-template-columns:1fr !important; }} }}
@@ -911,6 +951,14 @@ header {{ display:flex; justify-content:space-between; align-items:center;
                text-shadow:0 0 18px {estado_color}88; margin-bottom:4px; }}
 .tama-msg   {{ font-size:.75rem; color:var(--muted); line-height:1.5; margin-bottom:12px; }}
 
+/* Chip de salud operativa */
+.salud-chip {{ display:inline-block; margin:2px 0 8px; padding:2px 11px;
+               border-radius:10px; font-size:.62rem; font-weight:700;
+               letter-spacing:.08em; text-transform:uppercase; }}
+.salud-inestable {{ background:#1f0f00; color:#ff9800; border:1px solid #ff9800aa; }}
+.salud-estable   {{ background:#091f09; color:#00d966; border:1px solid #00d96688; }}
+.salud-robusto   {{ background:#08082a; color:#9a9aff; border:1px solid #9a9affaa; }}
+
 /* Barra de vitalidad */
 .vita-bar-wrap {{ height:6px; background:#1a2a3a; border-radius:3px; overflow:hidden; margin:8px 0 6px; }}
 .vita-bar-fill {{ height:100%; border-radius:3px; background:{estado_color};
@@ -932,7 +980,22 @@ header {{ display:flex; justify-content:space-between; align-items:center;
 
 /* ── Condiciones ─────────────────────────────── */
 .cond-list {{ display:flex; flex-direction:column; gap:6px; }}
-.cond-item {{ display:flex; align-items:flex-start; gap:9px; padding:8px 9px; border-radius:6px;
+
+/* Fertilidad operativa — debajo de las 4 condiciones, visualmente separada */
+.fertil-row {{ display:flex; align-items:center; gap:8px; margin-top:10px;
+               padding:7px 12px; border-radius:6px; cursor:default;
+               background:rgba(0,229,255,.04);
+               border:1px dashed rgba(0,229,255,.18); }}
+.fertil-icon {{ font-size:1rem; flex-shrink:0; }}
+.fertil-label {{ font-size:.68rem; font-weight:600; color:var(--cyan); flex:1; }}
+.fertil-criterion {{ font-size:.58rem; color:var(--dim); flex-shrink:0; }}
+.fertil-badge {{ font-size:.58rem; padding:2px 8px; border-radius:4px; font-weight:700;
+                 white-space:nowrap; margin-left:6px; flex-shrink:0; }}
+.fertil-ok   {{ background:rgba(0,255,136,.10); color:#00d966;
+                border:1px solid rgba(0,255,136,.30); }}
+.fertil-pend {{ background:rgba(255,152,0,.08);  color:#ff9800;
+                border:1px solid rgba(255,152,0,.25); }}
+.cond-item {{ display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border-radius:6px;
               background:rgba(255,255,255,.02); border:1px solid var(--border); }}
 .cond-dot  {{ width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; }}
 .dot-ok    {{ background:var(--green); box-shadow:0 0 5px var(--green); }}
@@ -992,18 +1055,21 @@ header {{ display:flex; justify-content:space-between; align-items:center;
   </div>
   <div style="font-size:.65rem;color:var(--muted);border:1px solid var(--border);padding:4px 12px;
               border-radius:20px;font-family:'Courier New',monospace;">
-    📸 {now_str}
+    🕐 Run: {ts[:16]} · 📸 {now_str}
   </div>
 </header>
 
-<!-- ═══ FILA 1: Tamagotchi · Condiciones · Métricas ═══ -->
-<div class="grid row3">
+<!-- ═══ FILA 1A: Tamagotchi · Condiciones ═══ -->
+<div class="grid row-tama">
 
   <!-- TAMAGOTCHI -->
   <div class="panel tama-panel {anim_cls}">
     <div class="panel-title">Estado del organismo digital</div>
     <div class="tama-creature">{tama_face(estado, estado_color)}</div>
     <div class="tama-state">{estado}</div>
+    <div><span class="salud-chip salud-{salud_op.lower()}"
+         title="Salud operativa multi-run (INESTABLE / ESTABLE / ROBUSTO).&#10;ESTABLE: ≥3 runs consecutivos VIVO con ECE ≤ 0.05.&#10;ROBUSTO: ≥5 runs consecutivos VIVO, ECE ≤ 0.05 y varianza ECE &lt; 0.001 (σ &lt; 3.2%).&#10;VIVO ≠ SANO: el veredicto de vida es por run; la salud refleja tendencia multi-run."
+         >{salud_op}</span></div>
     <div class="tama-msg">{estado_msg}<br>
       <span style="font-size:.67rem;color:#2a5a5a;">{estado_sub}</span>
     </div>
@@ -1022,14 +1088,25 @@ header {{ display:flex; justify-content:space-between; align-items:center;
   <div class="panel">
     <div class="panel-title">Condiciones de vida digital</div>
     <div class="cond-list">{cond_items()}</div>
+    <!-- Fertilidad operativa — NO es una 5ª condición. Es evaluación de ventana multi-run. -->
+    <div class="fertil-row" title="Fertilidad operativa — evaluación de ventana multi-run.&#10;Criterio: ≥1 run con reproducción real (spawn) en los últimos 3 runs.&#10;No es una condición de vida por run — la reproducción es episódica por diseño:&#10;spawn solo ocurre cuando ECE≤0.05 Y Brier mejora activamente (brier_improving).&#10;Cuando Brier está en el piso, no mejora → sin spawn → cond2=False. Normal y esperado.&#10;Fertilidad ACTIVA significa que el sistema demostró capacidad reproductiva recientemente.">
+      <span class="fertil-icon">🧬</span>
+      <span class="fertil-label">Fertilidad operativa</span>
+      <span class="fertil-criterion">≥1 spawn en últimos 3 runs</span>
+      <span class="fertil-badge {'fertil-ok' if fertilidad_op else 'fertil-pend'}">{'ACTIVA' if fertilidad_op else 'INACTIVA'}</span>
+    </div>
   </div>
 
-  <!-- MÉTRICAS VITALES -->
-  <div class="panel">
-    <div class="panel-title">Métricas vitales</div>
-    <!-- ECE con barra + contexto ventana -->
+</div>
+
+<!-- ═══ FILA 1B: Métricas vitales ═══ -->
+<div class="panel" style="margin-top:14px;">
+  <div class="panel-title">Métricas vitales</div>
+  <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:18px;align-items:start;">
+  <!-- COL IZQ: ECE con barra + contexto ventana -->
+  <div>
     <div style="margin-bottom:14px;"
-         title="ECE oscila naturalmente entre ciclos PSNC (~0.15) y ciclos VIVO (~0.001).&#10;Lo que determina Homeostasis es el mínimo en ventana de 5 ciclos, no el valor actual.&#10;Ventana mín: {ece_min_ventana:.5f} · Homeostasis: {'OK' if ece_homeo_ok else 'NO OK'}">
+         title="ECE — indicador auxiliar de calibración (ventana reciente).&#10;Este valor NO determina el veredicto oficial de Homeostasis.&#10;Criterio oficial: ECE_final del run ≤ 0.05 ∧ dBrier ≤ 0 — calculado por el runner, no aquí.&#10;Ventana 5 ciclos mín: {ece_min_ventana:.5f} (solo orientativo)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
         <div>
           <span style="font-size:.62rem;color:var(--muted);">ECE — Error de calibración</span>
@@ -1057,48 +1134,54 @@ header {{ display:flex; justify-content:space-between; align-items:center;
             {ece_min_ventana:.5f}
           </b>
         </span>
-        <span style="font-size:.54rem;{'color:#00ff88;' if ece_homeo_ok else 'color:#ffd54f;'}font-weight:bold;">
-          {'✓ Homeostasis OK' if ece_homeo_ok else '⚠ Homeostasis NO OK'}
+        <span style="font-size:.54rem;color:#2a4a5a;font-style:italic;">
+          {'✓ ventana favorable' if ece_homeo_ok else '— ventana sin óptimo'}
+          <span style="color:#1a3040;"> (métrica auxiliar)</span>
         </span>
       </div>
       <div style="font-size:.52rem;color:#2a4a5a;margin-top:3px;line-height:1.5;">
-        El ECE oscila entre ciclos PSNC (~0.15) y VIVO (~0.001) — esto es normal.
-        Homeostasis se evalúa sobre la ventana, no sobre el ciclo actual.
+        Indicador auxiliar de ventana. El veredicto oficial de Homeostasis
+        está en las 4 condiciones arriba — no aquí.
       </div>
     </div>
+  </div><!-- /col-izq -->
+
+  <!-- COL DER: cuadrícula 2×2 + guía rápida -->
+  <div>
     <!-- Cuadrícula 2×2 — métricas vitales con contexto auto-explicativo -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="stat-cell" title="κ_conf — Coeficiente de coherencia operatoria&#10;Mide qué tan consistentes son las predicciones del modelo con los resultados observados.&#10;Calculado vía HSIC + peso ω + gap de calibración.&#10;Rango [0,1] — más alto = predicciones más coherentes.">
         <div class="tend-row"><div class="stat-val">{kappa:.3f}</div>{tend_kappa}</div>
         <div class="stat-lbl">κ_conf · coherencia</div>
-        <div style="font-size:.54rem;color:{kappa_col2};margin-top:3px;">{kappa_note}</div>
+        <div style="font-size:.56rem;color:{kappa_col2};margin-top:3px;">{kappa_note}</div>
       </div>
       <div class="stat-cell" title="𝓛* — Delta de mejora por ciclo (función vital normalizada)&#10;Cuánto mejoró el sistema en la última ventana de ciclos.&#10;0.0 entre ciclos activos es NORMAL — no significa que el sistema esté muerto.&#10;Valores > 0 indican mejora activa en curso.">
         <div class="tend-row"><div class="stat-val">{L_norm:.4f}</div>{tend_L}</div>
         <div class="stat-lbl">𝓛* · delta mejora</div>
-        <div style="font-size:.54rem;color:{L_col2};margin-top:3px;">{L_note}</div>
+        <div style="font-size:.56rem;color:{L_col2};margin-top:3px;">{L_note}</div>
       </div>
       <div class="stat-cell" title="S_t — Memoria exponencial de supervivencia (λ=0.90)&#10;Promedio ponderado exponencialmente del historial de ciclos 'VIVO'.&#10;Rango [0,1] — 1 = historial perfecto, 0 = sin historial vital.&#10;&gt; 0.8 excelente · 0.5–0.8 bueno · &lt; 0.5 bajo">
         <div class="tend-row"><div class="stat-val">{S_t:.3f}</div>{tend_S}</div>
         <div class="stat-lbl">S_t · memoria vital</div>
-        <div style="font-size:.54rem;color:{St_col2};margin-top:3px;">{St_note}</div>
+        <div style="font-size:.56rem;color:{St_col2};margin-top:3px;">{St_note}</div>
       </div>
-      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Cuando el sistema detecta mejora sostenida (δ_hist &gt; 0.4),&#10;lanza copias derivadas de sí mismo — análogo digital de la reproducción biológica.&#10;Condición 2 de vida: reproducción con variación.">
-        <div class="stat-val">{spawns}</div>
-        <div class="stat-lbl">spawns · hijos</div>
-        <div style="font-size:.54rem;color:{sp_col2};margin-top:3px;">{sp_note}</div>
+      <div class="stat-cell" title="Spawns — Instancias derivadas generadas por reproducción Poisson&#10;Criterio mixto (SPAWN-ADAPT v3+floor):&#10;Régimen normal: spawn si ECE≤0.05 Y Brier mejora ciclo a ciclo (brier_v &lt; brier_prev − 1e−6).&#10;Régimen piso: si Brier &lt; 1e-4 en ambos lados Y ECE ≤ 0.025 (deep homeostasis),&#10;mejora adicional es imposible — sistema en máxima aptitud → spawn permitido.&#10;p_spawn ≈ 9.5% si ECE≤0.05. Cond2 = (spawns_este_run &gt; 0).">
+        <div class="stat-val">{spawns_run}</div>
+        <div class="stat-lbl">spawns · este run</div>
+        <div style="font-size:.56rem;color:{sp_col2};margin-top:3px;">{sp_note}</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:.6rem;color:var(--dim);line-height:1.7;
-                padding:8px 10px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
+    <div style="margin-top:12px;font-size:.62rem;color:var(--dim);line-height:1.75;
+                padding:9px 12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.08);border-radius:5px;">
       <b style="color:var(--cyan);">Guía rápida de métricas</b> — Pasa el cursor sobre cada celda para definición completa.<br>
       <b style="color:var(--cyan);">ECE</b> &lt;0.05 = calibración estable (óptimo). &nbsp;
       <b style="color:var(--cyan);">κ_conf</b> &gt;0.6 = coherencia alta. &nbsp;
       <b style="color:var(--cyan);">𝓛*=0</b> entre ciclos es <i>normal</i> — el sistema no mejora todo el tiempo. &nbsp;
       <b style="color:var(--cyan);">S_t</b> &gt;0.8 = excelente historial de vida.
     </div>
-  </div>
-</div>
+  </div><!-- /col-der -->
+  </div><!-- /metrics-2col-grid -->
+</div><!-- /panel-metricas -->
 
 <!-- ═══ FILA 2: Contadores ═══ -->
 <div class="grid row4" style="margin-top:14px;">
@@ -1117,10 +1200,11 @@ header {{ display:flex; justify-content:space-between; align-items:center;
     <div class="stat-val" style="font-size:2rem;">{n_hashes}</div>
     <div class="stat-lbl">cadena verificable</div>
   </div>
-  <div class="panel" style="text-align:center;">
+  <div class="panel" style="text-align:center;"
+       title="PSNC = ciclos de cautela real: κ elevado por inestabilidad, ECE fuera de rango, o buffer insuficiente.&#10;VERDE-CAUTO = ciclos de vigilancia calibrada en homeostasis profunda (ECE &lt; 1%, Brier &lt; 1e-4):&#10;κ_conf satura por diseño cuando residuos son constantes cerca de 0 — no indica cautela, sino convergencia máxima.&#10;PSNC alto con sistema VIVO+ROBUSTO = artefacto de la métrica, no patología.">
     <div class="panel-title">Ciclos en PSNC</div>
     <div class="stat-val" style="font-size:2rem;">{pct_psnc}%</div>
-    <div class="stat-lbl">modo cautela</div>
+    <div class="stat-lbl">cautela real | VERDE-CAUTO: {pct_verde_cauto}%</div>
   </div>
 </div>
 
@@ -1351,18 +1435,16 @@ header {{ display:flex; justify-content:space-between; align-items:center;
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
         <div style="color:var(--green);font-weight:bold;font-size:.68rem;">① Homeostasis</div>
         <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
-          ECE ≤ 0.05 en algún ciclo de la última ventana de 5 runs
-          <b>Y</b> Brier mejoró al menos una vez.<br>
-          <span style="color:var(--dim);">→ Mantener el error dentro de rango sobre el tiempo,
+          ECE_final ≤ 0.05 <b>Y</b> dBrier ≤ 0 (Brier_run ≤ Brier_run−1).<br>
+          <span style="color:var(--dim);">→ Calibración sostenida en el run completo —
           como la temperatura corporal biológica.</span>
         </div>
       </div>
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
         <div style="color:var(--green);font-weight:bold;font-size:.68rem;">② Reproducción con variación</div>
         <div style="font-size:.6rem;color:var(--muted);margin-top:3px;line-height:1.6;">
-          El sistema detecta δ_hist &gt; 0.4 (mejora acumulada) y lanza
-          instancias hijas vía distribución de Poisson.<br>
-          <span style="color:var(--dim);">→ Análogo digital de generar descendencia con mutación.</span>
+          ECE≤0.05 <b>Y</b> Brier mejora este ciclo <b>Y</b> Poisson (p≈9.5% si ECE≤0.05).<br>
+          <span style="color:var(--dim);">→ Trigger ligado a mejora real de calibración — no a métrica de rango interno.</span>
         </div>
       </div>
       <div style="padding:8px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:5px;">
@@ -1423,7 +1505,7 @@ header {{ display:flex; justify-content:space-between; align-items:center;
           <td style="padding:5px 6px;color:var(--cyan);font-family:'Courier New',monospace;">spawns</td>
           <td style="padding:5px 6px;color:var(--muted);">Instancias derivadas generadas (reproducción)</td>
           <td style="padding:5px 6px;color:var(--green);">&gt; 0</td>
-          <td style="padding:5px 6px;color:var(--dim);">Permanece en 0 tras muchos runs con δ_hist alto</td>
+          <td style="padding:5px 6px;color:var(--dim);">ECE≤0.05 ∧ Brier↓ ciclo ∧ p_spawn≈9.5%</td>
         </tr>
       </tbody>
     </table>

@@ -126,39 +126,39 @@ def generar():
     now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     # ── Estado del sistema ──────────────────────────────────────────────────
-    hist_ECE  = e.get("historial_ECE", [1.0])
+    hist_ECE   = e.get("historial_ECE", [1.0])
     ece_actual = hist_ECE[-1] if hist_ECE else 1.0
-    spawns     = e.get("n_spawns_total") or 0
     # La clave en estado.json es "n_hashes" (el runner escribe ese nombre exacto)
     n_hashes   = int(e.get("n_hashes") or 0)
     n_run      = e.get("n_run") or 0
     hist_Brier = e.get("historial_Brier", [1.0])
-    brier_a    = hist_Brier[-1] if hist_Brier else 1.0
-    brier_p    = hist_Brier[-2] if len(hist_Brier) >= 2 else brier_a
 
-    # Homeostasis: ventana de 5 ciclos (igual lógica que el dashboard)
-    ece_vent   = hist_ECE[-5:]   if len(hist_ECE)   >= 2 else hist_ECE
-    brier_vent = hist_Brier[-6:] if len(hist_Brier) >= 2 else hist_Brier
-    cond1 = (any(v <= 0.05 for v in ece_vent) and
-             any(brier_vent[i] <= brier_vent[i-1] for i in range(1, len(brier_vent))))
-    cond2 = spawns > 0
-    cond3 = n_hashes > 0
-    cond4 = n_run >= 1
-    n_vivo = sum([cond1, cond2, cond3, cond4])
+    # ── Veredicto canónico: SIEMPRE desde ultimo_veredicto del runner ────────
+    # NO recomputar desde rolling window — el runner es la única fuente de verdad.
+    _uv    = e.get("ultimo_veredicto", {})
+    n_vivo = _uv.get("n_condiciones", 0)
+    cond1  = _uv.get("cond1_homeostasis",  False)
+    cond2  = _uv.get("cond2_reproduccion", False)
+    cond3  = _uv.get("cond3_trazabilidad", False)
+    cond4  = _uv.get("cond4_autonomia",    False)
+    # Fallback limpio si el runner nunca corrió (n_condiciones ausente)
+    if not _uv:
+        n_vivo = 0
 
-    # 4 estados (igual que el dashboard)
-    if n_vivo >= 3:
+    # [SEMÁNTICA-ESTRICTA] VIVO=4/4 sin excepción — igual que runner y dashboard.
+    #   n_condiciones == 4 → VIVO | == 3 → EMERGENTE | ≤ 2 → SIN VIDA
+    if n_vivo == 4:
         vita_color, vita_estado, vita_text = "#00ff88", "VIVO", "VIVO"
         vita_msg = "Sistema en plena actividad vital."
+    elif n_vivo == 3:
+        vita_color, vita_estado, vita_text = "#4fc3f7", "EMERGENTE", "EMERGENTE"
+        vita_msg = "Sistema emergente — 3/4 condiciones activas."
     elif n_vivo == 2:
         vita_color, vita_estado, vita_text = "#ffd54f", "EMERGENTE", "EMERGENTE"
         vita_msg = "Sistema emergente — ciclos activos, convergencia en curso."
-    elif n_vivo == 1:
-        vita_color, vita_estado, vita_text = "#ff9800", "LATENTE", "LATENTE"
-        vita_msg = "Sistema latente — actividad mínima detectada."
     else:
-        vita_color, vita_estado, vita_text = "#ff3d5a", "INERTE", "INERTE"
-        vita_msg = "Sistema inerte — aún no ha corrido."
+        vita_color, vita_estado, vita_text = "#ff3d5a", "SIN VIDA", "SIN VIDA"
+        vita_msg = "Sistema sin vida — menos de 2 condiciones activas." if n_run > 0 else "Sistema aún no ha corrido."
     vita_face = tama_face(vita_estado, vita_color, size=44)
     ts_run = e.get("timestamp_ultimo_run", "—")[:16]
 
@@ -187,9 +187,17 @@ def generar():
           <span style="font-size:.72rem;color:{sc};font-weight:bold;white-space:nowrap;">{em} {p:.3f}</span>
         </div>"""
 
-    ult_exp = resumen.get("ultima_exploracion","—")[:10]
-    n_papers = resumen.get("total_papers", 0)
-    res_global = html_mod.escape(resumen.get("resumen_global","")[:300])
+    # [SYNC-FIX] "ultima_exploracion" no existe en resumen del JSON.
+    # La fecha real de actualización vive en cada dominio: datos_bibliograficos.ultima_actualizacion
+    _dates_bib = [
+        disc.get("datos_bibliograficos", {}).get("ultima_actualizacion", "")
+        for disc in mapa.values()
+    ]
+    _dates_bib = [d for d in _dates_bib if d]
+    ult_exp = max(_dates_bib)[:10] if _dates_bib else "—"
+    n_papers_curados  = resumen.get("total_papers_curados", 0)   # corpus LUM-PE (verificado)
+    n_papers_live     = resumen.get("total_papers", 0)           # Semantic Scholar (live; 0 si sin red)
+    res_global        = html_mod.escape(resumen.get("resumen_global","")[:300])
 
     page = f"""<!DOCTYPE html>
 <html lang="es">
@@ -279,7 +287,7 @@ def generar():
 <div class="header">
   <h1>◈ PROYECTO MINERVA</h1>
   <p>ALFA LUM-vitae vΩ.4 · Mapa de Cierres Categoriales · Materialismo Filosófico</p>
-  <div class="ts-badge">📸 Generado {now_str}</div>
+  <div class="ts-badge">🕐 Último run: {ts_run} · 📸 {now_str}</div>
 </div>
 
 <!-- LAYOUT PRINCIPAL -->
@@ -314,7 +322,7 @@ def generar():
         {res_global}
       </div>
       <div style="margin-top:8px;font-size:.58rem;color:#2a4a5a;">
-        {n_papers} papers indexados · Última exploración: {ult_exp}
+        {n_papers_curados} papers curados verificados{f" · {n_papers_live} live (SS)" if n_papers_live > 0 else ""} · Última actualización: {ult_exp}
       </div>
     </div>
 
@@ -342,8 +350,8 @@ def generar():
       <div class="card-title">Mapa de Cierres Categoriales</div>
       <div class="card-desc">
         ¿Qué ciencias tienen cierre según Bueno? Ranking de 6 dominios
-        con semáforo 🟢🟡🔴, veredictos en lenguaje llano, papers reales
-        con enlace, tendencias y papers reales de Semantic Scholar.
+        con semáforo 🟢🟡🔴, veredictos en lenguaje llano, bibliografía
+        curada verificada con enlace y tendencias por dominio.
       </div>
       <div class="card-action">→ Abrir lum_mapa_cierres.html</div>
     </a>
